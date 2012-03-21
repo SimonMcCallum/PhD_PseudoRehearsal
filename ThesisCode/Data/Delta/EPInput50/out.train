@@ -1,0 +1,67 @@
+                     numTrials 1
+                 learningConst 0.1 			  //	(double)net->N // learning scalar
+                      momentum 0
+                maxLearntPatts 50
+              patternsFromFile no
+               patternFilename letters.txt  // the file containing 
+                trainingEpochs 500
+                  learningType STRICTDELTA
+                      numCheck 2000
+              maxSpuriousPatts 1000
+                maxPseudoPatts 0   
+      maxSamplesForPseudoPatts 0   
+            maxUnlearningPatts 50 //default
+  maxSamplesForUnlearningPatts 1000 //default
+          unlearningCutoffHigh 1  //default
+           unlearningCutoffLow 1 //default
+           unlearningCycleSize 1000 //default
+               unlearningConst 0.002 //default
+                unlearningType unlearningStandard //default
+         unlearningSuperHeated FALSE //default
+         uniqueUnlearningPatts FALSE //default
+         pseudoRehearsalCutoff 0.2
+    useMaxLowestLearntvsCutoff 0 //default
+                 errorCriteria 0.001
+                     errorTail 0.99
+                 errorCalcType DELTAERROR // SIGMOIDERROR , DELTAERROR the type of error.
+              allEpochLearning FALSE //default
+            initialNumberPatts 1 // 0.05 N //16
+                          step 1
+                numLearntPatts 1*maxLearntPatts  // 16
+             hebbianNoiseLevel 0.0 //default
+                 hebbianCycles 1 //default
+             uniquePseudoPatts FALSE //default
+   removeLearntFromPseudoPatts FALSE //default
+   adjustLearningForPobability FALSE // this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+                  noiseOnInput yes 
+                 noiseOnOutput FALSE //not implemented yet
+         gaussianRelativeRange 0.1 
+         gaussianAbsoluteRange 0.5
+         noiseHetroAssociative no 
+               hetroNoiseLevel 0.05
+          noiseHebbianNegative FALSE
+                generateProbOn 0.5 //This is the proability of a unit being on in the generated patterns
+  generateActivationExactLevel FALSE // this force the units to be apriori correlated as there
+           reorderUnitsinPatts 0
+            calcSpuriousBasins 0
+              calcLearntBasins 0
+   saveStabilityProfilePattern 49 48 47 46 45 // -1 means do not save any profile
+         displayTestedPatterns on
+        displayLearntPattUnits off
+        displayLearntPattInput off
+     displayLearntPattNetInput off
+      displayLearntPattSummary on
+      displaySpuriousPattUnits off
+      displaySpuriousPattInput off
+   displaySpuriousPattNetInput off
+    displaySpuriousPattSummary on
+        displayPseudoPattUnits off 
+        displayPseudoPattInput off //default
+     displayPseudoPattNetInput off //default
+      displayPseudoPattSummary on //default
+          displaySpuriousPatts off
+ displaySpuriousPatternDetails off
+          includePseudoInError FALSE
+                 realRehearsal FALSE
+          realRehearsalPercent 1.0
+       numSpuriousPatsProfiles 5

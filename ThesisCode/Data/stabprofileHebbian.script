@@ -1,0 +1,54 @@
+# 
+# $Id: stabprofileHebbian.script,v 1.2 2003/05/20 12:23:24 simon Exp $
+#
+# Requires data files "[123].dat" from this directory,
+# so change current working directory to this directory before running.
+# gnuplot> set term <term-type>
+# gnuplot> load 'simple.dem'
+#
+set output
+
+type=1 ### 1 == pict,    0 == latex
+
+
+
+if(type == 0) set term pslatex; set output 'hebbgraph.tex'
+
+##the next line is to see what is going on in a pict.  Also useful to save for viewing in PDF format.
+if(type == 1) set term pict color dashes "Monaco" 10 500 375
+
+#no need to set range let the plot find it itself
+#set yrange [0:0.5]
+#set xrange [-0.5:49.5]
+
+if(type == 0) set title 'Stability Profile'
+if(type == 1) set title 'Stability Profile'
+set xlabel 'Number of learnt patterns'
+set ylabel 'Unit'
+set zlabel 'Net Input'
+
+set format y "%3.3f"
+set tics out
+set grid ytics
+set xtics nomirror norotate 1,4,65
+if(type == 0)set format x "$%g$";set format y "$%g$"
+if(type == 1)set format x "%g";set format y "%g"
+
+#this is how to set a key
+
+set key top right spacing 1.2 width +1 box
+set boxwidth 0.8
+
+set view 80, 345, 1.2, 1
+
+set isosamples 10
+show isosamples
+
+set surface
+f(x,y) = 0 
+splot  f(x,y)  title "stable", 'Hebbian/stabprofilePat0.dat' index 0:25:1 using -2:($0):($1) title "Hebbian" with linespoints
+
+# this is how to tilte things 
+# plot [-10:+10] 'stabProfile.dat' title '$\mathcal{N}$' with line, '3.dat' title '$\mathcal{M}$odel' with line 
+reset
+

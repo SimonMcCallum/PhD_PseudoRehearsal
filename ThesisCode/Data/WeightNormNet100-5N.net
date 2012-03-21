@@ -1,0 +1,22 @@
+                             N 100		//	Number of units in the network
+                activationType THRESHOLD  	//	The activation type of the network
+                            ON 1  
+                           OFF -1
+                     maxCycles 4*N
+                    relaxation ASYNCHRONOUS // SYNCHRONOUS or ASYNCHRONOUS
+                          bias FALSE
+                   learnTiming ONLINE //BATCH 
+              symmetricWeights 0			//TRUE
+             weightCappingType NOCAP	//NOCAP , HARDCAP, SOFTCAP
+            weightCappingValue 2
+                   weightDecay off // 
+              weightDecayValue 0.1 //10% ie weight*(1-val)
+       weightNormalisationType NORMALISENET  //{NONORMALISATION, NORMALISENET, NORMALISEUNIT};
+      weightNormalisationValue 10*N 			// the point at which to normalise
+          calcHammingDistRelax on
+         noiseDuringRelaxation no
+lenghtOfTimeStableInRelaxation 100
+                  sampleProbOn 0.5 		//This is the proability of a unit being on during sampling
+                 gnuplotGraphs off			//TRUE
+                    debugLevel 0
+                    

@@ -1,0 +1,58 @@
+N					100		//	Number of units in the network
+activationType    			THRESHOLD  	//	The activation type of the network
+# 	For threshold we need to define the output of the unit when above and 
+# 	below threshold  these are
+
+ON    						 1  
+OFF   						0
+# 	When relaxing the network the maximum number of cycles to relax
+maxCycles    				4*N
+#	Form of relaxation
+relaxation    				ASYNCHRONOUS // SYNCHRONOUS or ASYNCHRONOUS
+#	Calculating the ratio using a number of units as a percent of N the 
+#	number of units
+unitsInRatio    			0.1 //	ie 0.1    10%
+
+#	Is there a bias unit
+bias 					FALSE
+
+#	 What type of learning batch or online
+learnTiming    				ONLINE //BATCH 
+
+#	 This forces the connections to be symmetric 
+symmetricWeights    		FALSE			//TRUE
+    
+weightCappingType    		NOCAP	//NOCAP , HARDCAP, SOFTCAP
+weightCappingValue    		2*N
+    
+weightDecay    			off // 
+weightDecayValue    		0.1 //10% ie weight*(1-val)
+    
+
+weightNormalisationType    	NONORMALISATION 
+# choises     NONORMALISATION
+#             NORMALISENET
+#             NORMALISEUNIT
+
+weightNormalisationValue    	50*N 			// the point at which to normalise
+
+
+calcHammingDistRelax 		on
+    
+noiseDuringRelaxation    	no
+
+gaussianNoiseType    		        ABSOLUTE //Remember to check training for noise type
+lenghtOfTimeStableInRelaxation		100
+gaussianRelativeRangeForRelaxation    	0.1
+gaussianAbsoluteRangeForRelaxation    	0.1*N
+    
+sampleProbOn    			0.5 		//This is the proability of a unit being on during sampling
+    
+    
+gnuplotGraphs    			off			//TRUE
+
+    
+#	 The debugging level  0 is no debugging 
+debugLevel    				0
+
+

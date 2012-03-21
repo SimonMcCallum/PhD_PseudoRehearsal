@@ -1,0 +1,121 @@
+numTrials			1 
+learningConst    		0.1 			  //	(double)net->N // learning scalar
+momentum                	0
+maxLearntPatts          	5
+patternsFromFile		no
+patternFilename			letters.txt  // the file containing 
+
+
+trainingEpochs          	2
+        
+learningType          		STRICTDELTA
+			
+numCheck          		2000
+maxSpuriousPatts		1000
+maxPseudoPatts			000   
+#maximum number of patterns to store as Pseudo patterns
+maxSamplesForPseudoPatts	000   
+#How many sample to try to get the appropriate number of pseudo items 
+
+pseudoRehearsalCutoff       	0.2
+# /*this is the cut off that prevents spurious states from being included as pseudo items.
+# 0.0 for this values means no cutoff at all.*/
+
+unlearningProtocolInital    	10 //not implemented
+unlearningProtocolRepeat	10,50 //as above
+
+unlearningCutoffHigh           	20  //To do normal unlearning make the high and low the same;
+unlearningCutoffLow           	1
+unlearningCycleSize         	1000
+unlearningType  		unlearningStandard
+unlearningSuperHeated		FALSE
+
+unlearningConst             	0.001
+uniqueUnlearningPatts          	FALSE  //This prevents the pseudo items from being repeated.  
+
+
+
+errorCriteria          		0.001
+
+errorTail          		0.99
+
+errorCalcType         		DELTAERROR // SIGMOIDERROR , DELTAERROR the type of error.
+
+
+initialNumberPatts        	5 // 0.05 N //16
+step          			1
+numLearntPatts          	1*maxLearntPatts  // 16
+
+hebbianNoiseLevel          	0.0 // This is the noise when training the network with hebbian learning
+hebbianCycles          		1  // Number of cycles to learn the set of patterns with hebbian learning
+
+
+uniquePseudoPatts               TRUE  //This prevents the pseudo items from being repeated.  
+removeLearntFromPseudoPatts     FALSE // true if you  want pure spurious patterns as the pseudo items.
+    
+adjustLearningForPobability    	FALSE // this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+
+gaussianNoiseType          	RELATIVE
+gaussianRelativeRange          	0.1 
+# noise for delta learning as related to mean weight 0.5 half the mean weight
+gaussianAbsoluteRange          	0.25*N
+    
+noiseOnInput          		no 
+# The noise for delta learning.  By input I mean that we disturb the 
+# unit input.  Thus units close to their decision surface
+# will be affected by noise while units already strongly set will 
+# not increase their learning*/
+
+noiseOnOutput          		FALSE //not implemented yet
+
+noiseHetroAssociative          no 
+# Okay here is the deal with hetro noise.  It disrupts the "hetroNoiseLevel" level of units in the pattern.  
+# It gives the network a single relaxation
+# checks the relaxed state against the desired.  Ie did the network in one step get to the desired output.
+# This did give a warning in the result when the network had 3 units that had 0 input.  
+# This is bad for the ratio measure.  It also looks strange.  
+# The reason for this is that the network, when given a small number of patterns, with asymmetric weight
+# connections can have some units that will have 0 input and so have zero output.  
+# If the unit is zero in all the patterns
+# then it will have no errors.  This can be fixed in many ways.  
+# One add noise on the unit input
+# make the weights symmetric
+# add enough patterns so that a unit is on in at least one pattern.
+
+
+hetroNoiseLevel          			0.05
+
+
+noiseHebbianNegative          		FALSE
+
+#-----------------------------------------------
+
+generateProbOn          			0.5 //This is the proability of a unit being on in the generated patterns
+generateActivationExactLevel        FALSE // this force the units to be apriori correlated as there
+
+#is a exact number of units that are ON
+
+reorderUnitsinPatts          	0
+
+calcSpuriousBasins		0
+calcLearntBasins		0
+   saveStabilityProfilePattern 0 1 2 3 4// -1 means do not save any profile
+       numSpuriousPatsProfiles 5
+         displayTestedPatterns on
+        displayLearntPattUnits off
+        displayLearntPattInput off
+     displayLearntPattNetInput off
+      displayLearntPattSummary on
+      displaySpuriousPattUnits off
+      displaySpuriousPattInput off
+   displaySpuriousPattNetInput off
+    displaySpuriousPattSummary on
+        displayPseudoPattUnits off 
+        displayPseudoPattInput off //default
+     displayPseudoPattNetInput off //default
+      displayPseudoPattSummary on //default
+          displaySpuriousPatts on
+ displaySpuriousPatternDetails off
+
+
+  

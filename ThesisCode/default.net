@@ -1,0 +1,49 @@
+N			64 //default
+activationType    	THRESHOLD //default
+ON    			 1  //default
+OFF   			-1  //default
+maxCycles    		4*N //default
+relaxation    		ASYNCHRONOUS //default  
+#options SYNCHRONOUS or ASYNCHRONOUS
+unitsInRatio    	0.1 //default
+#example 0.1  10%
+bias 			FALSE //default
+#options TRUE or FALSE
+learnTiming    		ONLINE //default
+#options ONLINE or BATCH 
+symmetricWeights    	FALSE //default
+#options TRUE or FALSE
+weightCappingType    	NOCAP //default
+#options NOCAP or HARDCAP or SOFTCAP
+weightCappingValue    	0.1*N   //default
+    
+weightDecay    		off //default 
+weightDecayValue    	0.1 //default
+#0.1 = 10% ie weight*(1-val)
+    
+weightNormalisationType    NONORMALISATION //default
+#options NONORMALISATION or NORMALISENET or NORMALISEUNIT
+weightNormalisationValue   1*N //default
+# the point at which to normalise
+calcHammingDistRelax 	   on //default
+
+calcInitialChanges 	   off //default
+
+noiseDuringRelaxation      off //default
+
+gaussianNoiseType    	   ABSOLUTE //default
+#options ABSOLUTE or RELATIVE
+#Remember to check training for noise type
+
+lenghtOfTimeStableInRelaxation		100 //default
+gaussianRelativeRangeForRelaxation    	0.5 //default
+gaussianAbsoluteRangeForRelaxation    	1 //default
+    
+sampleProbOn    			0.5 //default
+#This is the proability of a unit being on during sampling    
+gnuplotGraphs    			off //default
+
+debugLevel    				0 //default
+#options 0 or 1 or 2 or 3 or 4
+#The debugging level  0 is no debugging 
+

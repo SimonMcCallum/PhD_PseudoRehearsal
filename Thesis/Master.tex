@@ -1,0 +1,222 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{graphicx}    % needed for including graphics e.g. EPS, PS
+\usepackage{enumitem}
+\usepackage[left=2.5cm,top=1.5cm,right=2.5cm,bottom=2cm,nohead]{geometry}
+\usepackage{multicol}
+\usepackage{moreverb}             %% Verbatim Code Listings
+\usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{longtable}
+
+\usepackage{pstricks}
+\setlist{noitemsep}
+
+\usepackage[colorlinks=true,
+           linkcolor=black,
+           citecolor=black,
+           urlcolor=black]{hyperref}
+%\topmargin -1.5cm        % read Lamport p.163
+%\botmargin -1.5cm        % read Lamport p.163
+%\oddsidemargin -0.04cm   % read Lamport p.163
+%\evensidemargin -0.04cm  % same as oddsidemargin but for left-hand pages
+%\textwidth 16.59cm
+%\textheight 21.94cm 
+%\pagestyle{empty}       % Uncomment if don't want page numbers
+%\parskip 7.2pt           % sets spacing between paragraphs
+%\renewcommand{\baselinestretch}{1.5} % Uncomment for 1.5 spacing between lines
+%\parindent 0pt		 % sets leading space for paragraphs
+
+\usepackage{fixltx2e}
+\usepackage{dblfloatfix}
+\usepackage{wrapfig}
+\usepackage[font=footnotesize,format=plain,labelfont=bf,up]{caption}
+
+\usepackage{color}
+%\newcommand{\comment}[1]{\textcolor{blue}{\emph{#1}}}
+\newcommand{\followedby}{{\Diamond}}
+
+\newcommand{\sigmoid}{{\xy (-5,-2.5);(5,2.5)
+**\crv{(-3.4,-2.5)&(-1,-1.5)&(0,0)&(1,1.5)&(3.4,2.5)}
+\endxy}}
+ 
+\newcommand{\threshold}[1]{
+\setlength{\unitlength}{#1pt}
+\begin{picture}(2,2)   
+    \put(0,0){\line(1,0){1}}
+    \put(1,0){\line(0,1){2}}
+    \put(1,2){\line(1,0){1}}
+\end{picture}}
+
+
+\newcommand{\unitInput}[2]{\ensuremath{\upsilon_{#1}^{#2}}}
+\newcommand{\unitActivation}[2]{\ensuremath{\psi_{#1}^{#2}}}
+\newcommand{\unitThreshold}[2]{\ensuremath{T_{#1}^{#2}}}
+\newcommand{\unitEnergy}[2]{\ensuremath{h_{#1}^{#2}}}
+
+\newcommand{\desired}[2]{\ensuremath{D_{#1}^{#2}}}
+\newcommand{\error}{\ensuremath{e}}
+
+\newcommand{\activationFunction}[1]{\ensuremath{f\!\left(#1\right)}}
+\newcommand{\weight}[1]{\ensuremath{w_{#1}}}
+\newcommand{\weightDecay}{\ensuremath{d}}
+\newcommand{\weightMatrix}[1]{\ensuremath{\mathbf{W}^{#1}}}
+\newcommand{\sign}[1]{\ensuremath{sg(#1)}}
+
+\newcommand{\newterm}[1]{\emph{#1}}
+\newcommand{\term}[1]{\index{#1}#1}
+
+\newcommand{\energy}[1]{\ensuremath{H^{#1}}}
+\newcommand{\word}[1]{``#1''}
+\newcommand{\myVector}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\inputVector}{\ensuremath{\myVector{X}}}
+
+\newcommand{\crosstalk}[1]{\ensuremath{\chi_{#1}}}
+
+\newcommand{\networkState}[1]{\ensuremath{\myVector{Y}^{#1}}}
+\newcommand{\state}[1]{\ensuremath{<#1>}}
+
+\newcommand{\learningConstant}{\ensuremath{\eta}}
+\newcommand{\learningConst}{\learningConstant}
+\newcommand{\learntPatterns}{\ensuremath{m}}
+\newcommand{\overlap}{\ensuremath{m_f}}
+\newcommand{\epochs}{\ensuremath{Ep}}
+
+\newcommand{\ratio}{R}
+\newcommand{\stddev}{\ensuremath{\sigma}}
+\newcommand{\mean}{\ensuremath{\mu}}
+ 
+\newcommand{\note}[1]{{\tt#1}}
+\newcommand{\n}[1]{{\tt#1}}
+\renewcommand{\n}[1]{}
+\newcommand{\done}[1]{}
+\newcommand{\dn}[1]{}
+
+
+\newcommand{\an}[1]{{\color{red}#1}} %for Anthony
+%\renewcommand{\an}[1]{} %remove % to removed text
+\newcommand{\si}[1]{{\color{blue}#1}} %for Simon
+%\renewcommand{\si}[1]{} %remove % to removed text
+\newcommand{\ra}[1]{{\color{red}#1}} %for Rachael
+%\renewcommand{\ra}[1]{} %remove % to removed text
+
+\newcommand{\remove}[1]{}
+
+
+\newcommand{\dejavu}{\latin{d\'{e}j\`{a} vu}}
+\newcommand{\latin}[1]{\textit{#1}}
+
+\newcommand{\super}[1]{\ensuremath{^\textrm{#1}}}
+\newcommand{\sub}[1]{\ensuremath{_\textrm{#1}}}
+
+%anthony edit
+
+\newcommand{\freeRecall}{FR}
+\newcommand{\cuedRecall}{CR}
+\newcommand{\recognition}{Rec}
+\newcommand{\setOfUnits}[1]{\ensuremath{\omega(#1)}}
+\newcommand{\old}[1]{}
+
+\newcommand{\hopnet}[2]{\ensuremath{\mathcal{H}_{#1}^{#2}}}
+\newcommand{\hopnetcapacity}{\ensuremath{M^{\mathrm{cap}}}}
+\newcommand{\bigbullet}{{\bullet}}
+
+\newcommand{\percentON}{\ensuremath{\alpha}}
+\newcommand{\pattern}{\ensuremath{X}}
+\newcommand{\basinthreshold}{\ensuremath{\beta}}
+\newcommand{\permutation}{\ensuremath{\mathcal{P}}}
+
+\newcommand{\unlearningConst}{\ensuremath{-\eta}}
+\newcommand{\unlearningTotal}{\ensuremath{U}}
+
+\newcommand{\patternCorrelation}[2]{\ensuremath{\mathcal{C}_{#1#2}}}
+
+\newcommand{\errorCrit}{\ensuremath{\delta_{l}}}
+\newcommand{\noiseConst}[1]{\ensuremath{\nu_{#1}}}
+\newcommand{\numStore}{\ensuremath{BP}}
+\newcommand{\prprobes}{\ensuremath{\mathcal{P}p}}
+\newcommand{\pritems}{\ensuremath{\mathcal{P}i}}
+\newcommand{\samplingProb}{\ensuremath{\mathcal{S}^n_p}}
+\newcommand{\codingProb}{\ensuremath{\mathcal{\alpha}}}
+\newcommand{\maximumCycles}{\ensuremath{r}}
+
+\newcommand{\numpats}{\ensuremath{P}}
+\newcommand{\numcycles}{\ensuremath{C}}
+
+\newcommand{\numberBasinSamples}{\ensuremath{s}}
+
+\newcommand{\param}[1]{{\tt #1}}
+
+\hyphenation{pseudoitem pseudo-item}
+\hyphenation{pseudorehearsal pseudo-rehearsal}
+\hyphenation{pseudopopulation pseudo-pop-ulation}
+
+%%\usepackage{xy}
+%%\xyoption{dvips}
+\input xy
+\xyoption{all}
+
+\graphicspath{{/Figures/}}
+
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+
+\usepackage{sfheaders}
+% Alter some LaTeX defaults for better treatment of figures:
+    % See p.105 of "TeX Unbound" for suggested values.
+    % See pp. 199-200 of Lamport's "LaTeX" book for details.
+    %   General parameters, for ALL pages:
+    \renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+    \renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+    %   Parameters for TEXT pages (not float pages):
+    \setcounter{topnumber}{2}
+    \setcounter{bottomnumber}{2}
+    \setcounter{totalnumber}{2}     % 2 may work better
+    \setcounter{dbltopnumber}{2}    % for 2-column pages
+    \renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+    \renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+    %   Parameters for FLOAT pages (not text pages):
+    \renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+	% N.B.: floatpagefraction MUST be less than topfraction !!
+    \renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+	% remember to use [htp] or [htpb] for placement
+\newcommand\tm[0]{\texttrademark}
+\newcommand\cp[0]{\copyright}
+
+\hypersetup{
+   pdfauthor  = {Anthony Robins, Simon McCallum},
+   pdftitle = {},
+   pdfsubject = {},
+   pdfkeywords = {}
+} 
+
+\author{\small Anthony Robins \footnote {\texttt{
+						\href{mailto:anthony@cs.otago.ac.nz}{anthony@cs.otago.ac.nz}
+						\hspace{16mm}$^{+}$~\href{mailto:simon.mccallum@hig.no}{simon.mccallum@hig.no}}}\\
+		  \small University of Otago\\
+		  \small New Zealand\\
+		  \and \small Simon McCallum $^{+}$\\
+		  \small Gj\o{}vik University College\\
+		  \small Norway}
+\date{\small \today}
+
+%-------------------------------------------------------------------------DOCUMENT
+\begin{document}         
+\title{McCallum2010a Hopfield type networks as memory systems:
+			Capacity, stability, effectiveness}
+			
+\maketitle
+\color{black}
+\include{Paper1}
+
+%\include{Paper2}
+
+%\include{AllFigures}
+
+%\renewcommand{\bibfont}{\footnotesize}
+\bibliography{thesis}
+
+ 
+\end{document}
+
+

@@ -1,0 +1,27 @@
+                             N 64 //default
+                activationType THRESHOLD //default
+                            ON 1  //default
+                           OFF -1  //default
+                     maxCycles 4*N //default
+                    relaxation ASYNCHRONOUS //default  
+                  unitsInRatio 0.1 //default
+                          bias FALSE //default
+                   learnTiming ONLINE //default
+              symmetricWeights FALSE //default
+             weightCappingType NOCAP //default
+            weightCappingValue 0.1*N   //default
+                   weightDecay off //default 
+              weightDecayValue 0.1 //default
+       weightNormalisationType NONORMALISATION //default
+      weightNormalisationValue 1*N //default
+          calcHammingDistRelax on //default
+         noiseDuringRelaxation off //default
+             gaussianNoiseType RELATIVE // ABSOLUTE
+lenghtOfTimeStableInRelaxation 100 //default
+gaussianRelativeRangeForRelaxation 0.5 //default
+gaussianAbsoluteRangeForRelaxation 1 //default
+                  sampleProbOn 0.5 //default
+                 gnuplotGraphs off //default
+                    debugLevel 0 //default
+            calcInitialChanges off //default
+                    randomSeed 1

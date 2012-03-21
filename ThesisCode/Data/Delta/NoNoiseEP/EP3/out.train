@@ -1,0 +1,66 @@
+                     numTrials 1 
+                 learningConst 0.1 			  //	(double)net->N // learning scalar
+                      momentum 0
+                maxLearntPatts 5
+              patternsFromFile no
+               patternFilename letters.txt  // the file containing 
+                trainingEpochs 3
+                  learningType STRICTDELTA
+                      numCheck 2000
+              maxSpuriousPatts 1000
+                maxPseudoPatts 000   
+      maxSamplesForPseudoPatts 000   
+            maxUnlearningPatts 50 //default
+  maxSamplesForUnlearningPatts 1000 //default
+          unlearningCutoffHigh 20  //To do normal unlearning make the high and low the same;
+           unlearningCutoffLow 1
+           unlearningCycleSize 1000
+               unlearningConst 0.001
+                unlearningType unlearningStandard
+         unlearningSuperHeated FALSE
+         uniqueUnlearningPatts FALSE  //This prevents the pseudo items from being repeated.  
+         pseudoRehearsalCutoff 0.2
+    useMaxLowestLearntvsCutoff 0 //default
+                 errorCriteria 0.001
+                     errorTail 0.99
+                 errorCalcType DELTAERROR // SIGMOIDERROR , DELTAERROR the type of error.
+              allEpochLearning FALSE //default
+            initialNumberPatts 5 // 0.05 N //16
+                          step 1
+                numLearntPatts 1*maxLearntPatts  // 16
+             hebbianNoiseLevel 0.0 // This is the noise when training the network with hebbian learning
+                 hebbianCycles 1  // Number of cycles to learn the set of patterns with hebbian learning
+             uniquePseudoPatts TRUE  //This prevents the pseudo items from being repeated.  
+   removeLearntFromPseudoPatts FALSE // true if you  want pure spurious patterns as the pseudo items.
+   adjustLearningForPobability FALSE // this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+                  noiseOnInput no 
+                 noiseOnOutput FALSE //not implemented yet
+         gaussianRelativeRange 0.1 
+         gaussianAbsoluteRange 0.25*N
+         noiseHetroAssociative no 
+               hetroNoiseLevel 0.05
+          noiseHebbianNegative FALSE
+                generateProbOn 0.5 //This is the proability of a unit being on in the generated patterns
+  generateActivationExactLevel FALSE // this force the units to be apriori correlated as there
+           reorderUnitsinPatts 0
+            calcSpuriousBasins 0
+              calcLearntBasins 0
+   saveStabilityProfilePattern 0 1 2 3 4// -1 means do not save any profile
+         displayTestedPatterns on
+        displayLearntPattUnits off
+        displayLearntPattInput off
+     displayLearntPattNetInput off
+      displayLearntPattSummary on
+      displaySpuriousPattUnits off
+      displaySpuriousPattInput off
+   displaySpuriousPattNetInput off
+    displaySpuriousPattSummary on
+        displayPseudoPattUnits off 
+        displayPseudoPattInput off //default
+     displayPseudoPattNetInput off //default
+      displayPseudoPattSummary on //default
+          displaySpuriousPatts on
+ displaySpuriousPatternDetails off
+      unlearningProtocolInital 10 //not implemented
+      unlearningProtocolRepeat 10,50 //as above
+       numSpuriousPatsProfiles 5

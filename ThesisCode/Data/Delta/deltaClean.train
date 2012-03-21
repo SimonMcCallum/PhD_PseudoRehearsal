@@ -1,0 +1,55 @@
+                     numTrials 100 
+                 learningConst 1 			  //	(double)net->N // learning scalar
+                      momentum 0  //0.5
+                maxLearntPatts 2*N
+              patternsFromFile no
+               patternFilename letters.txt  // the file containing 
+                trainingEpochs 5000
+                  learningType STRICTDELTA // or UNLEARNING
+                      numCheck 0
+              maxSpuriousPatts 1000
+                maxPseudoPatts 1000   
+      maxSamplesForPseudoPatts 1000   
+         pseudoRehearsalCutoff 0.3
+      unlearningProtocolInital 10 //not implemented
+      unlearningProtocolRepeat 10,50 //as above
+          unlearningCutoffHigh 1  //To do normal unlearning make the high and low the same;
+           unlearningCutoffLow 1
+           unlearningCycleSize 1000
+                unlearningType unlearningStandard
+         unlearningSuperHeated FALSE
+               unlearningConst 0.001
+         uniqueUnlearningPatts FALSE  //This prevents the pseudo items from being repeated.  
+                 errorCriteria 0.001
+                     errorTail 0.99
+                 errorCalcType DELTAERROR // SIGMOIDERROR , DELTAERROR the type of error.
+            initialNumberPatts 3 // 0.05 N //16
+                          step 1
+                numLearntPatts 1*maxLearntPatts  // 16
+             hebbianNoiseLevel 0.0 // This is the noise when training the network with hebbian learning
+                 hebbianCycles 1  // Number of cycles to learn the set of patterns with hebbian learning
+             uniquePseudoPatts TRUE  //This prevents the pseudo items from being repeated.  
+   removeLearntFromPseudoPatts FALSE // true if you  want pure spurious patterns as the pseudo items.
+   adjustLearningForPobability FALSE // this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+                  noiseOnInput yes 
+                 noiseOnOutput FALSE //not implemented yet
+         noiseHetroAssociative no 
+               hetroNoiseLevel 0.1
+          noiseHebbianNegative FALSE
+                generateProbOn 0.5 //This is the proability of a unit being on in the generated patterns
+  generateActivationExactLevel FALSE // this force the units to be apriori correlated as there
+           reorderUnitsinPatts 0
+            calcSpuriousBasins 0
+              calcLearntBasins 0
+   saveStabilityProfilePattern 0 // -1 means do not save any profile
+         displayTestedPatterns on
+        displayLearntPattUnits off
+        displayLearntPattInput off
+     displayLearntPattNetInput off
+      displayLearntPattSummary on
+      displaySpuriousPattUnits off
+      displaySpuriousPattInput off
+   displaySpuriousPattNetInput off
+    displaySpuriousPattSummary on
+ displaySpuriousPatternDetails off
+ 

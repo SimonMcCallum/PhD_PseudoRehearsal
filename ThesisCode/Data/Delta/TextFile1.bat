@@ -1,0 +1,1 @@
+..\..\Release\annescode.exe ..\Net64.net deSerialPosition.train > SerialPosition.data

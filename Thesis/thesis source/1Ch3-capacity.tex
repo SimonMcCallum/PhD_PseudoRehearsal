@@ -1,0 +1,110 @@
+\chapter{Catastrophic Forgetting in MLP Networks}
+\label{chap:CF}
+
+Catastrophic forgetting (CF) is the sudden and total loss of a memory system's ability to recognise or recover stored memories.  It has been identified as a problem for multi-layer perceptron (MLP) type architectures~\citep{McCloskey1989,French1992,Robins1995}. In this chapter we briefly review possible causes and solutions in MLP networks, including reducing representational overlap, rehearsal, and pseudorehearsal.  In the next chapter we discuss the possible causes of catastrophic forgetting for an auto-associative task in Hopfield networks and compare possible solutions for this problem.
+
+Catastrophic forgetting occurs in learning environments that require many items to be learnt in succession.  First a set of items are learnt until the system remembers them, and then more items are added.  This continual addition of new information is more like the real environment in which biological neural networks have to operate, than static tasks where all the information is present at one time.  If biological networks suffered from CF then new information would obliterate recall for all previous events, and as a result animals would only ever have short term memory.  This task of learning many items over an extended time, where only the current information is present,  highlights the ``stability/plasticity dilemma''~\citep{Grossberg1987}.  The problem is how to keep the current behaviour stable while allowing the flexibility and plasticity necessary to incorporate new information.
+
+Ideally when a learning system finds a solution to a problem (in the case of an ANN finds a set of weights that map inputs to outputs) the solution should be robust enough to cope with learning new solutions to different problems. As the problems presented change over time, important solutions (ones which are critical to survival) would be retained even when solutions have to be found to new problems. Most ANNs err on the side of excessive plasticity. These learning systems are designed to use all the available resources to solve the current problem as fast as possible.  By utilising every available resource they disrupt the solutions to previously presented problems.  For these ANNs if a connection is involved in the mapping from input to output for a new problem, its weight will be adjusted.  If the weights had been tuned to solve a previous set of problems, then by wrenching them towards new values the balance that was important for the previous learning is destroyed. Grossberg suggests the analogy of a human trained to recognise the word ``cat'', and subsequently to recognise the word ``table'', being then unable to recognise ``cat''. This is what we will call catastrophic plasticity, where unmanaged plasticity, the ability to change the weights in the network, is the primary cause of catastrophic forgetting.
+
+\section{Catastrophic Plasticity}
+\n{possibly reorganise so CP after and CF before}
+
+While stability/plasticity issues are very general, the term ``catastrophic forgetting'' has tended to be associated with a subset of learning environments, that of structurally static networks trained using supervised learning. A number of studies have used MLP type networks (typically using back-propagation for training) to highlight the problem of CF and explore various issues~\citep{McCloskey1989, Hetherington89, Ratcliff90, Lewandowsky91, Murre1992, French1992, French1994, French1997, McRae1993, Lewandowsky1995, Sharkey1995, Robins1995, Robins1996, Frean99}. The standard demonstration of the problem uses a network that has been trained on a ``base'' population, and then tests performance once a new item or group of items has been learnt. The effect of this new learning on the old items (base population) can be illustrated by re-testing the base population.  If the performance falls off very sharply it is called ``catastrophic forgetting''.  This sudden and catastrophic loss can occur with only a single new item learnt.
+
+Figure~\ref{fig:MLP-CF} shows the performance of an MLP network trained on a base population and then tested after learning a number of new items.  The primary cause for this type of forgetting is the plasticity of the network rather than capacity of the network.
+
+\begin{figure}[ht]
+	\centering
+		 \input{Figures/MLP-CF} %\includegraphics[width=0.90\textwidth]{Figures/MLP-CF.eps}
+	\caption{Catastrophic forgetting in an MLP network caused by plasticity (adapted from ~\citet{Robins1995}).}
+	\label{fig:MLP-CF}
+\end{figure}
+
+In \citet{Robins1999} we categorised the methods that reduce CF in MLP type networks into three general categories; reducing overlap, rehearsal and pseudorehearsal.
+
+\section{Reducing Overlap in MLP Networks}
+\citet{French1992} suggests that the extent to which catastrophic forgetting occurs is largely a consequence of the overlap of distributed representations, and that the effect can be reduced by reducing this overlap. Rather than plasticity this identifies correlation between patterns as the root of the problems.  Correlated patterns are forced to share representations in the network.  If this overlap is removed the patterns can be learnt without disturbing the currently stored memories. There are various approaches for reducing overlap in the representation of patterns. The novelty rule~\citep{Kortge1990}, activation sharpening~\citep{French1992}, context biasing~\citep{French1994}, and the techniques developed by \citet{Murre1992}, and \citet{McRae1993} all fall within this general framework. The goal of these methods is to decrease the overlap of the internal representation (the hidden units used to represent the mapping from input to output) of patterns that have been learnt.  This has two benefits -- it allows new items to be learnt using units that have not been involved in storing other patterns, and it increases the strength of the units that are involved in learning a pattern making the network less susceptible to interference. \n{google where is this claim from}
+
+This increased orthogonality of hidden unit representations does not, in general, prevent CF from occurring, although it does ameliorate its effects so that retraining of the base population is much faster. 
+
+The novelty rule of \citet{Kortge1990} has been shown to prevent CF, but can only be used with autoencoder (autoassociative) networks. Given that one of the causes of CF in MLP networks is moving all the weights to solve the new problem, it is also possible to ease the problem by pre-training the network on a population which is representative of the both the base population and a selection of possible new patterns.  This could be seen as simulating prior knowledge of a task domain as explored by \citet{Sharkey1995, McRae1993}.  In McRae and Hetherington’s simulations this pre-training reduced the overlap of hidden unit representations in subsequent learning, as the units had already moved their weights to cover the entire space of possible problem to solution mappings.  This unfortunately does not prevent CF as new patterns that were not foreseen in the selection of representative patterns will still cause CF.  This solution also sacrifices some of the other advantages of MLPs such as the ability to generalise to new parts of the pattern space. 
+
+
+
+\section{Rehearsal and Pseudorehearsal in MLP Networks}
+\label{sec:PRMLP}
+A second general approach to preventing catastrophic forgetting involves ``rehearsing'' the base population by incorporating some base population items in to the new learning population. This process deals with the catastrophic plasticity, by allocating some of the plasticity to relearning the base population items.  Assuming that we learn new items one by one in a sequence:
+\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+	\item with access to the entire training population
+	\item for each new item to learn
+	\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt, label=\textbullet]
+		\item construct a new training population with the new item and items selected from the base population
+		\item train with the new population using the same learning algorithm as the base population learning
+	\end{itemize}
+\end{itemize}
+The number of items selected from the base population can vary from no items, resulting in CF, through to all the items which results in the same performance as non-sequential learning where all items to learn are part of the base population~\citep{McClelland1995b}. Significant performance improvements can be achieved with a relatively small number of rehearsed items~\citep{Robins1995}.
+
+Rehearsal requires access to the original base population so that items can be incorporated throughout later learning.  Having access to the base population items from some other store would make the MLP memory system redundant as there is already an accurate recording of all the patterns.  \citet{Robins1995} introduced the idea of a pseudoitem population that could be extracted from the network by probing its current behaviour.  By sampling the underlying function of the network the functional mapping could be retained by careful rehearsal of the associated input-output pairs. This does not require access to the original items, but uses items generated from the network itself.  
+
+With these new pseudoitems the learning procedure would be:
+\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+	\item for each new item to be learnt
+	\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+		\item construct a population of pseudoitems by creating random inputs and passing them forward through the network to generate their associated outputs
+		\item construct a new training population consisting of the new item and some items selected from the population of pseudoitems
+		\item train with the new population using the same learning algorithm as the base population learning
+	\end{itemize}
+\end{itemize}
+This system uses the functional behaviour of the network to protect the performance.  
+
+The use of pseudorehearsal has been shown to be effective for a number of different populations: autoassociative and heteroassociative randomly constructed data sets by \citet{Robins1995}, and by \citet{Ans1997}; autoassociative learning of the Iris data set by \citet{Robins1996}; a classification task using the Mushroom data set by \citet{French1997}; and a structured ``task domain'' by \citet{Silver1996}.  Pseudorehearsal performs well on a number of different problems with different underlying learning algorithms. 
+
+There are limitations to the types of learning algorithms and population sets that pseudorehearsal can improve. The Requirements are:
+\begin{enumerate}
+	\item A network capable of learning both the original base population and the new items.
+	\label{reqCap}
+	\item A learning algorithm where rehearsal is an effective method for improving performance.
+	\label{reqRe}
+	\item A means to extracts items which represent the function of the network.
+	\label{reqPs}
+\end{enumerate}
+
+Requirement \ref{reqCap} results from the need to have the capacity within the network to learn all the patterns presented.  The performance of the system is limited by the capacity, so if the learning system is unable to learn all the patterns, pseudorehearsal will not improve performance.  Pseudorehearsal is only effective in networks where rehearsal is effective and Requirement \ref{reqRe} follows from the tight relationship between rehearsal and pseudorehearsal.  Requirement \ref{reqPs} is the most restrictive for the pseudorehearsal approach.  Finding a mechanism that provides useful pseudoitems is the most difficult aspect of appending pseudorehearsal to a new learning algorithm or network type. The mechanism is different for different network structures.  As pseudorehearsal preserves the ``function'' of the network there needs to be a way to extract this function in order to preserve it.
+
+In an MLP network the function of the network can be extracted by sampling with a random input pattern and passing that input through the network to generate an output.  This pairing of a random input and output accurately represents the function of the network as shown in \citet{Robins1995} and \citet{Frean99}. How well the generated pseudoitems represent the function is important to the preservation of that function.  Too few pseudoitems will not represent the function well and too many will prevent the function from adapting to learn the new items.  The type of pseudoitem generated is also important.  For networks where input--output mapping is not the primary function, such as Hopfield networks, these type of pseudoitems will not help preserve the function of the network (see Section ~\ref{sec:PRSolution} for details of pseudoitem generation in Hopfield networks).
+
+\remove{Unlike some of the weight preservation functions, }
+
+Pseudorehearsal focusses on the function of the network rather than the current weight configuration.  As there are many combinations of weights that will encode a particular base population set, the current set of weights is not preserved.  The training of the network will alter the weights and the behaviour of the network, but if the pseudoitems are an accurate representation of the function these changes will be restricted to the region of the new item. This localisation of changes to the function allows pseudorehearsal to preserve performance in MLP type networks \citep{Robins1995, Frean99}. \citet{Frean99} provides an introduction to the formal analysis of pseudorehearsal in linear MLP networks.
+
+In the solutions so far it is not the capacity of the network that is causing CF, as each of the networks has satisfied Requirement \ref{reqCap} of pseudorehearsal preconditions (page \pageref{reqCap}), and could store all the items if presented simultaneously.  These solutions target the other causes of CF including excessive plasticity in the connections and overlapping representations in hidden layers.  The capacity and the complexity of the function that can be learnt by an MLP network is limited by the network architecture --- the number of units, the number of weights, and the complexity of the activation function.  A network with one unit connecting the input layer to the output layer is very limited in the mappings it can produce.  All networks and learning algorithms have a maximum capacity, and the behaviour near this limit can either be stable or catastrophic.
+
+\section{Catastrophic Capacity}
+\label{sec:CatastrophicCapacity}
+
+Catastrophic forgetting caused by an MLP network reaching capacity can be easily shown in networks with very limited resources, but the problem does scale to large networks.  The most obvious example of catastrophic loss of performance caused by reaching capacity is when there is no solution to a particular set of input--output pairs within the limited network architecture.
+
+The encoder network is a simple MLP network with $N$ inputs, $k$ hidden units, and $N$ output units.  The input units are only connected to the hidden units and the hidden units connect to the output units.  Thus all the information must pass through the small number of hidden units in the centre of the network.  The pairs that form the learning population are unit vectors where only one unit is active, (e.g.\ \state{1,0,0,0,0,0,0,0} $\rightarrow$ \state{1,0,0,0,0,0,0,0}).  For a network with 8 inputs and 8 outputs there are 8 of these pairs.  For any learning system to be able to solve this mapping the number of hidden units $k$ must be larger than $\log_{2}(N)$.  If the number of hidden units is less than this the network will be unable to learn the mapping as there is not enough complexity in the structure of the network.  
+
+The thermal delta learning rule presented by \citet{Frean90} is an attempt to ameliorate this problem.  The principle is that over time the learning rule changes its response to errors.  Early in the learning process all errors are treated as equally important, but as learning proceeds the weighting for correcting small errors is increased and large errors are reduced.  The principle is that if the network is unable to solve competing tasks it should give up on some of the problem set to focus of solving those which are close to a solution.  The affect of this is that the network will start to ignore the training items with large errors.  A temperature variable is used to weight the importance of the errors.  The temperature is reduced during the learning epoch, with the cooler temperatures focussing on small errors.  By the end of the allocated epochs the network is only making small changes to perfect the set of patterns that are possible to learn.
+
+In a Hopfield network this allows the network to ignore patterns that are difficult to learnt. The thermal rule will learn a subset of the random population which may share a number of similarities.  With this selection of a group of patterns that are easy to learn together, the maximum number of patterns that can be learnt increases.  This does not mean that there is now more information stored in the network than the theoretical maximum.  
+
+The theoretical information capacity of a network is a measure of the amount of information that can be stored in the network.  This can be calculated independently of the learning algorithm as it relies on the number of individually adjustable elements, usually the weighted connections, in the network.
+
+The amount of information in a set of patterns is related to how similar they are.  The first pattern in a population contains a lot of information as the network has not learnt anything about the population.  If the following patterns are almost identical to this first pattern, each new pattern only adds a small amount of information to the total information complexity of the learning population.  Measures of the capacity of a network given by the number of patterns that can be learnt, are given using random patterns.  A set of 10 randomly generated patterns contain almost twice the amount of information of a set of 5 generated patterns.  With non independent pattern the amount of information in the first 5 pattern is likely to be much higher than in the next 5 patterns as some of the dependencies will already have been learnt by the network.  For an in depth analysis of the information capacity of Hopfield networks see \citet{McEliece1987, Lowe1999, Lowe2005}
+
+The most common solution to a structurally limited network is to increase the resources available without increasing the complexity of the learning problem.  For MLP networks this can be done by increasing the number of hidden units.  Finding the right number of hidden units for a task is still considered a trial and error process of estimating a reasonable number and evaluating the results. Unfortunately for the Hopfield network there are no hidden units, and so the complexity of the internal structure of the network cannot be increased without changing the network into a generic recurrent network which is no longer directly comparable with the original network.
+
+The other resource limit applied to MLP networks is the number of epochs that are allocated to solving the current problem.  If the number of epochs is severely limited then the learning algorithm may not have time to converge on a solution.  The number of epochs allocated to learning is usually limited, as it is often unknown if the current network is guaranteed to converge on a solution for a particular problem.  There are various approaches to estimating an appropriate number of epochs to allocate to a particular task, some of which involve monitoring the performance of the network to see if the error is continuing to decrease, or if the network has plateaued, or started to diverge. 
+
+\section{Summary}
+
+The main feature of catastrophic forgetting is the sudden and dramatic loss of performance of a neural network.  In MLP networks this can be caused by unmanaged plasticity (catastrophic plasticity), or limited theoretical capacity (catastrophic capacity).  
+
+The solutions to catastrophic plasticity include rehearsal, pseudorehearsal and overlap reduction.  Rehearsal is very effective at removing CF but requires a secondary memory store for the base population which would render the MLP irrelevant.  Pseudorehearsal is able to improve the performance of the MLP to almost the same level as rehearsal without having to continually refer back to the base population.  Pseudorehearsal provides a mechanism that works within the resources of the MLP.  In the next chapter we will investigate the application of pseudorehearsal to an entirely different type of network, the Hopfield network.
+
+Limited capacity is also a potential problem for MLP networks.  This is a problem for any system that is dealing with complex learning tasks with limited resources.  There are two main limitations, structural and time.   If the network's structure is not capable of learning the task then no matter how long the network is given it will never converge on a solution for the whole training set.  To solve the problem of limited capacity more resources can be added to the network, such as additional hidden units.  Other methods involve altering the learning algorithm so that over time it gives up trying to learn items with large errors and focuses on improving items that are close to a solution.
+
+In the next chapter we investigate the causes of catastrophic forgetting in Hopfield networks and evaluate several potential solutions.

@@ -1,0 +1,563 @@
+%! iTeXMac(project): thesis.pTexMac
+%! iTeXMac(input):thesis.tex 
+\chapter{Background}
+\label{chap:Background}
+
+Artificial neural networks (ANNs) have proven to be extremely effective in several problem domains.  Feed forward neural networks, in which activation is passed forward through the network, have been shown to be able to  approximate any functional mapping from a set of real numbers to another set of real numbers with arbitrary precision \(\Re^N \Rightarrow \Re^N \)~\citep{Hornik1989, Stinchcombe1999}.
+
+Most ANN learning algorithms are based on \newterm{concurrent} learning, in which the entire training set is presented and trained as a single, complete entity.  Once the network has reached a set level of performance, no further information is learnt by the network.  The system moves from training into a performance phase. 
+
+\begin{figure}[htbp]
+	\begin{center}
+		\scalebox{0.5}{\includegraphics{Figures/Diagram1.eps}}
+		\caption{Training a traditional network.}
+		\label{fig:training}
+	\end{center}
+\end{figure}
+
+In contrast, human learning is an ongoing, lifelong process. It is \newterm{sequential} in that we can learn new information at any time and integrate it into what we already know. Most ANN learning algorithms are not capable of sequential learning because of a fundamental underlying problem: when new information is learnt by a network it significantly disrupts or even eliminates information that has been previously learnt. This problem has been identified in many forms in memory literature -- it is commonly called the ``catastrophic forgetting'', ``catastrophic interference'', or ``serial learning'' problem~\citep{Hetherington89, McCloskey1989, Lewandowsky91, French1992, McRae1993, Sharkey1995, Robins1995, French1999, Ans2002, Robins2004}.
+
+\section{Memory}
+
+Digital computers store data as discrete packets of information.  These are stored in a medium designed to prevent one piece of information disrupting or interfering with the information currently stored in other parts of the medium. This type of memory has many desirable properties.  The lack of interference means that new memories can be stored without fear of corruption, and there is an \latin{a priori} limit to the amount of data this type of memory can store. This limit is defined by the number of individual memory areas available and the size of the memories to store.  These systems are often  very stable where a single bit of data, a 1 or a 0, will remain in the same state for years.  The lack of interference means that the data stored (memory) remains stable as long as the medium remains stable.  These properties are desirable for situations where each individual event contains distinct information that needs to be recalled {\em exactly}.  An example of the type of system would be a banking transaction system.
+
+\nocite{Pfeiffer1965} %find a way to include this reference for my father :)---good width----
+
+There are however some situations where this sort of discrete memory does not perform well.   The process of storing information locally at a physical level has pervaded the way we think about information stored on a computer.  Unfortunately the real world does not allow us to deal with every piece of information as an individual event that needs to be stored separately from other pieces of information. The discrete storage used in computers does not support building associations between similar events or memories.  For example ``buying apples from the corner store'' is as similar to ``buying oranges from the corner store'' as to ``hunting wildebeest in Mozambique''. Indeed, it would be difficult to develop the idea of prototypes or to generalize learning without the ability to see the similarities present in the real world~\citep{Medin1984}.
+
+It is precisely the fact that having seen a lion kill a family member, we run from any large furry animal, that helped us survive.  If we stored information so separately that there was no way of telling when events were similar we would soon fall victim to similar but distinct predators.  Humans instinctively identify similarities and this can make it difficult to understand why computers can not make these ``obvious'' connections between very similar events.  Ideally computer systems would have two types of memory -- a precise system for situations like banking transactions, and an overlapping similarity system for dealing with situations in the real world in a way that humans can understand.  There are a number of problems that need to be overcome in order to create a memory system that is functionally similar to animals.  These include: catastrophic forgetting, where old information is forgotten suddenly; information overload, where the system cannot store new items and memory breaks down; and spurious memory, where events that never happened are ``recalled''.
+  
+The input to the sensory system of most animals contains far too much information to be able to store each individual sensory event as a separate memory.  The amount of storage required to deal with just a few hours of experience would entirely overwhelm most uncompressed discrete storage media.  Consider the human visual system, with approximately one million optic nerve cells leaving the retina~\citep{Jonas1992},  each of which has a maximum firing rate of about 100 Hz~\citep{Kim1993}.  This gives a maximum data rate of about 100,000,000 bits per second (100Mbit or about 12MB per second).  In one minute this would be 750MB, in one hour 45GB and for a 16 hour waking day 720GB i.e., in the order of  \(10^{12}\) bytes.  
+
+Calculating the storage capacity of the human brain is very difficult. There is no clear distinction between stored information and the processing of that information, or indeed what exactly it means to store information. We can make claims about the maximum information complexity of an animal's brain based on the number of individual components and their connectivity.  This upper bound in complexity is likely to be much higher than the actual capacity as it ignores redundancy, relay and amplification, and other processing that would not increase the total amount of information stored.  Even with these caveats the capacity of the human brain is not large compared to the sensory input.  The human brain is estimated to contain \(10^{11}\) neurons each with an average of about \(10^{3}\) connections.  Thus the maximum amount of information that could be stored is in the order of \(10^{14}\) bytes given one byte per synapse.  If our {\em entire} brain was dedicated to storing every bit of data coming from our eyes we would be able to store about 100 days of vision.  Given that there are millions of neurons for audition, olfaction, and somatosensory systems, this estimate is very conservative and we would probably only be able to store a full sensory record for a few weeks.
+
+It is obvious from these figures that much of the information coming into the brain must be either discarded, filtered or compressed, or indeed all three of these in combination.  The most obvious compression available is related to time.  The fact that the world remains similar from one instant to the next can be used to reduce the amount of information that needs to be stored.  Rather than storing each micro-second as a separate event, systems that can identify objects in the environment and store view dependant models~\citep{Riesenhuber2002} of the objects, only need to store a small amount of information about where the object is and if it has changed in some way.  The consistency of gaze and flow of information into the nervous system naturally lends itself to this sort of compression.
+
+It is extremely useful to be able to identify an object from many angles and have some form of content addressable memory to access information about objects that have similar features.  Accessing information about objects and behaving in an environmentally appropriate way can be aided by both prototypical objects and object classes.  Prototypes emphasise the similarities between a set of objects in a class, where object classes provide boundaries between types of objects.
+
+To take advantage of these similarities, similar memories could be stored so that the information that is similar is only stored once in a shared area of the medium. Learning to identify objects in a view independent way relies on object persistence so that different views can be bound to the same object.  Without some degree of view independent memory for objects it would be difficult to form any consistent object based behaviours. 
+
+One of the earliest identified learning procedures for memory is reinforcement learning, as described by \citet{Pavlov1927}. His studies of classical conditioning required animals to be able to identify an association between the ringing of a bell and the presentation of food.  Given that the bell was manually rung the generated sounds would be similar but not identical.  Thus the animals were identifying similar rather than identical sounds and responding in an appropriate way.  
+
+Both classical conditioning and operant conditioning demonstrate animals' ability to associate rewards with objects or events.  Even bees can learn to associate fragrance with food reward~\citep{Mercer01}.  The evolutionary advantage of associating behaviour with sensory stimuli is reflected in the memory systems that have evolved in animals.
+
+\section{Single Neuron Models}
+
+To understand the nature of the mammalian memory system it is essential to look in to its underlying structure.  Just as the performance of computer memory is related to the structure and nature of the single binary unit storage, so real neural networks have some features which are directly related to the nature of the base units, the individual neurons.
+
+We can analyse the behaviour of a biological neural network at many levels of abstraction.  The most abstract is at the functional level of \emph{input} \(\rightarrow\) \emph{processing} \(\rightarrow\) \emph{output}.  This abstraction can be applied, in a reductionist way, to any part of the network from the whole network down to the propagation of signals down the axon of the neuron.  In the construction of artificial models of neural networks the building blocks (units) of the network may represent synapses, individual neurons, a number of neurons or a whole cerebral lobe.  When discussing behaviour at this level of abstraction we will refer to the components as units rather than neurons.  For the rest of this thesis `units' will refer to components with functional behaviour similar to that of individual neurons rather than neuron clusters or entire lobes. 
+
+There are a range of unit models at the level of individual neurons, the simplest being proposed by \citet{McCulloch1943} which describes units whose function is that of traditional logical circuits.  Units have only two binary inputs and a single output.  The output depends on an activation function applied to the two inputs.  The function tests the summed input against a threshold and gives a true/false, $1/0$ response. 
+\begin{equation}
+	\label{eq:Threshold}
+	\unitActivation{}{} = (A + B) > \unitThreshold{}{}
+\end{equation}
+This can be visualised as a unit with connections as shown in Figure~\ref{fig:McCullochAndPittsUnit}.
+
+\begin{figure}[ht]
+	\begin{center}
+		\input{figures/McCulloch}
+	\end{center}
+	\caption{McCulloch and Pitts unit.}
+	\label{fig:McCullochAndPittsUnit}
+\end{figure}
+
+A much more complex model for neuronal activation was proposed by \citet{Hodgkin1952} describing the activation of a squid giant axon.  This model is widely used as it is regarded as an accurate model of the propagation of the action potential of a biological neuron.  The equation for the activation and propagation of signals is relatively complex (see Equation~\eqref{eq:HodgkinHuxley}).  \begin{equation}
+		\label{eq:HodgkinHuxley}
+		I = C_m \cdot {\Delta V_{m}}/{\Delta t} + I_{Na} + I_{K} + I_{L}
+\end{equation}
+where
+\begin{eqnarray*}
+	I_{Na} &=& G_{Na} \cdot m^{3} \cdot h \cdot (V_{m}-E_{Na})\ \ \\
+	I_{K}  &=& G_{K} \cdot n^{4} \cdot (V_{m}-E_{K})\\
+	I_{L}  &=& G_{L} \cdot (V_{m}-E_{L})
+\end{eqnarray*}
+where 
+$I$ is the total ionic current across the membrane of the neuron, 
+$C_m$ is the probability of there being enough activation to open the channel, 
+$I_{Na}, I_{K}, I_{L}$ are the individual currents for sodium, potassium, and the linear leakage from the cell, 
+$V_m$ is the total membrane potential, 
+$G_i$ is the maximum conductance for a channel $i$, and
+$E_i$ is equilibrium voltage for each channel of sodium, potassium, and linear leakage,
+$m^3$ and $n^4$ fit the non-linear response of the channels to a change in voltage.
+
+
+Recently this model has been challenged, as it does not exactly match the recorded data from the membrane potential from neurons in the mammalian cortex~\citep{Naundorf06}.  A new model for cortical neuron activation is presented by \citet{Naundorf06} which includes sodium channels with a positive feedback mechanism which is a better fit to the recording for the early depolarisation of the neuronal membrane.  This faster depolarisation would allow networks to respond with a wider range of propagation speeds and response times compared to networks built with Hodgkin-Huxley type units.  It is unknown, at this stage, what effect this more accurate model will have on network level behaviour.  This demonstrates one of the problems encountered when building models that rely heavily on a particularly complex model.  When the minute details of the model change, all of the results have to be examined to determine if they are still valid.
+
+
+The complexity of these unit models makes the analysis of the function of the network much more difficult.  As the units' complexity starts to match that of real neurons it becomes very difficult to differentiate what is functionally significant and what is idiosyncratic for the particular model.  In this thesis we will use a relatively simplistic unit model based on the \emph{perceptron} presented by \citet{Rosenblatt1958}.  Networks which use many of these perceptron units in layers are designated as \newterm{multi-layer perceptrons} (MLP) networks. In the following sections we will refer to the components of an artificial neural network as units rather than perceptrons.  The following sections describe the features of these units.
+
+\subsection{Unit Input}
+Each unit receives input which is the sum of the weights connecting that unit with other units.
+\begin{equation}
+    \label{eq:unitInput}
+    \displaystyle\unitInput{j}{} =\sum_{i=1}^{N}(\unitActivation{i}{}\weight{ij})
+\end{equation}
+where \(\unitActivation{i}{}\) is the activation of the unit i, \(\weight{ij}\) is the weight of the connection from unit \(j\) to unit \(i\), and \(N\) is the total number of units connected to unit $j$.
+
+This sum of weighted inputs ignores the interesting calculations that occur at the synaptic level, for example shunting inhibition~\citep{Blomfield1974, London2005, Gasparini2006}. However, these interactions can be approximated by inserting more non-linear units to fit more complex calculations.
+
+\subsection{Unit Activation}
+To determine the output, or activation, of a unit, the input is passed through an activation function \activationFunction{}.  There are many ways of applying activation functions.  Two categories are linear and non-linear activation functions.  It has been shown that the linear activation functions do not provide enough complexity to solve many real world problems such as the exclusive--or (XOR) function~\citep{Minsky1969}.  Thus we will focus on the non-linear activation functions. 
+
+In most real neurons the axon hillock mediates the production of an action potential. The neuron either activates and sends an action potential, or remains quiet. This means that the neuron has a non-linear response to input.  There are neurons that have a linear response to a stimulus, for example, the rods and cones in the retina produce a response that is, for the majority of activation levels, linear with respect to the number of photons stimulating the cells~\citep{Marr1979}.  The idea of a threshold as the non-linearity is used in many artificial models of neuronal activation.  The simplest model using a threshold \unitThreshold{}{} is the ``greater than'' logical test as described in Equation~\eqref{eq:Threshold}.
+
+For the simple threshold model presented Equation~\eqref{eq:Threshold}, the activation calculation can be rewritten to refer to the time (t) at which the activation occurs (t-1 is the activation in the previous time step).  The equation is:
+\begin{equation}
+    \label{eq:unitActivation}
+    \unitActivation{i}{t} =\activationFunction{\unitInput{i}{t-1} -\unitThreshold{i}{}}
+\end{equation}
+This can be seen diagrammatically in Figure~\ref{fig:unitDiagram}.
+\begin{figure}
+  \begin{center}
+%        \input{Figures/unitDiagram}
+\begin{tabular}{c}
+            \xymatrix@R=3pt{
+            &T\ar[ddr]\\
+            \ar[drr]\\
+            \ar[rr] &&*=<25pt>[o][F]{\threshold{6}} \ar[r]|-{\unitActivation{}{}}  &\\
+\ar[urr]\\
+            &\ar[uur] 
+            }
+\end{tabular}        
+        \caption{Diagrammatic view of a unit receiving input from five units and a threshold.}
+        \label{fig:unitDiagram}
+  \end{center}
+\end{figure}
+
+The original perceptron model~\citep{Rosenblatt1958} used the sign function as the activation function: \begin{equation}
+    \label{eq:signFunction}
+        \unitActivation{i}{} = \sign{\unitInput{i}{}-\unitThreshold{i}{}}
+\end{equation}
+
+The most common non-linear activation function used in neural networks is a sigmoid function.  The sigmoid function provides a smooth monotonically increasing activation value.  Part of the popularity of the sigmoid function is that it is differentiable, giving the ability to estimate how the activation function will change given small changes to the input of the unit.  Whereas the threshold function changes its activation suddenly, the sigmoid changes smoothly and continuously.  Small changes to the weights of the network make small changes to the output of the sigmoid units creating a smooth output surface.  This surface is used by back-propagation and other learning algorithms to systematically approach a set of weights that solve the given problem.  The surface can be visualised as being created by the small changes in the activation value of the output unit as the weights are changed.  Threshold functions have plateaus where the output does not change for a large number of different weights, whereas the smooth sigmoidal function provides a gradient at all points on the surface.  The error of the network can also be visualised as a surface in the space of all possible weights, where the surface is the sum of the error of the network over the given learning tasks.  Given an error surface, a solution to a problem is where the error is zero, or if it does not reach zero, the minimum error value on the surface.  Given the smooth surface, gradient descent will be able to find at least a local minima, if not the global minimum.
+
+It is possible to simulate the smooth error surface created by a sigmoidal activation function by applying noise\footnote{Noise and the random numbers used to generate the noise are too important to leave to chance.  Therefore we have implemented the algorithm presented by \citet{Marsaglia1990} so that our results are suitably random and yet repeatable on various machines by initialization with a seed. The seed used for every data run is included in the output, enabling replication if required.  If the random seed is omitted from the parameter file the current time is used instead (see Appendix~\ref{app:Parameters}).} to the input of a threshold function.  This creates a probabilistic activation for the unit.  Units very close to their threshold have a probabilistic activation of 50\%.  The threshold value defines the position of the \newterm{decision surface} as part of the activation surface.  The activation surface is the surfaced defined by the activation of a unit across all possible inputs.  The decision surface is where the unit changes its activation.  If each input unit defines an axis then the activation function defines a hyper-surface in the hyper-cube formed by the inputs.  Changing the weights changes the shape of the activation surface and the position of the decision surface.  A unit is ``close'' to the decision surface if small changes to the weights change its activation state.  Another form of ``close'' to the decision surface is the number of input units that would have to change to cause this change in activation.  We refer to the former version when we use the phrase ``close to the decision surface''.   Noise on the input to a unit that is close to the descision surface may result in the unit changing from active to inactive or \latin{vice versa}, while noise added to a unit that has input far from the decision surface will only cause change infrequently.
+
+\n{
+If the noise applied to the unit inputs is generated from a Gaussian distribution then the probabilistic activation of the unit, which is the cumulative distribution function $\Phi$, approximates the sigmoid activation function as the number of iterations increases. This can be seen in Figure~\ref{fig:sigmoid-gaus} and is show in Equation~\eqref{eq:sig-gaus}. 
+\begin{align}
+			\label{eq:sig-gaus} g(x) &\approx \Phi(x)
+\end{align}
+where
+\begin{align*}
+			g(x) &= \frac{1}{1+e^{-x}}\\
+			\Phi(x) &= \frac{1}{2}\left(1+\mathtt{erf}\left(\frac{x}{\sigma \sqrt{2}}\right)\right)
+\end{align*}
+
+\begin{figure}[htbp]
+	\center
+	\scalebox{0.9}{\input{Figures/sigmoid-gaus}}
+	\caption{Comparison of the sigmoid function with the cumulative distribution function for a Gaussian with $\sigma^2=3.0$.}
+	\label{fig:sigmoid-gaus}
+\end{figure}
+
+}
+
+\subsection{Updating Connections}
+\label{sec:connections}
+
+The strength of the input to a unit $i$ is determined by the strength of the connections and the number of connected units that are active.  Changing the strength of the connections alters the input to the unit, which in turn, may cause the output to change.  The function to alter the connections is called the \newterm{learning algorithm}. 
+
+A connection's strength can be represented as a Boolean value, integer weights, or more commonly as floating point numbers.  Both integer and Boolean representation limit the amount of information that can be stored in connections.  This limitation can have significant influence on the performance of some learning algorithms.  Processes that require very accurate values or gradient descent are often less effective and in some cases will not work at all with limited information per connection.
+
+The connections are usually initialised as either $0$ or a small randomised value either side of $0$.  The learning algorithm makes small positive and negative alterations to these connections.  If unit $j$ is active and the connection between unit $j$ and unit $i$ (denoted \weight{ji}{}) increases then the input to unit $i$ will increase by the activation value of unit $j$ times the increase in the connection weight \weight{ji}{}.
+
+In real neural networks there are many mechanisms involved in the alteration of connections between neurons.  \newterm{Long Term Potentiation} (LTP) describes the increase in connection strength between neurons which is demonstrated by an increase in the likelihood that the post-synaptic neuron will become active when the pre-synaptic neuron sends an action potential.  There is still debate about the mechanisms that underpin LTP~\citep{Malenka1999,Palmer2004}, but for our purpose it is sufficient that there is a mechanism that changes the connection strength between neurons.
+
+\section{Learning Algorithms}
+\label{sec:learningAlg}
+
+Learning algorithms can be broken down into three categories: supervised, reinforcement, and unsupervised.  The distinction can be made by the amount of information required for each system.  Supervised learning requires an external agent or ``teacher'' to provide the desired output.  The output units in the network compare themselves to the desired outputs and estimate the direction, and possibly the distance, between the current state and the desired state.  The sum of the distances between the current output and the desired output is often used as the error of the network.  The learning algorithm uses this direction and distance to alter the connections to the output units, and other units, in order to decrease the error.  
+
+Reinforcement learning only requires a single signal giving a measure of ``goodness''.  A unit will update its connections to other units based on the principle of increasing the likelihood of the events that lead to the reinforcement.  This is a somewhat blind mechanism as it has no information about which direction will improve performance.  Without a gradient on the error surface, reinforcement learning just amplifies activities that were associated with a ``good'' signal and depresses associations that resulted in negative feedback.  
+
+The last category, unsupervised algorithms, have no notion of the desired or correct answer.  The network changes its connections based on patterns in the input data.  The only goal that could be attributed to unsupervised learning is the desire to find similarity or correlation between events in the environment.  The fact that networks are able to perform any interesting alterations to their behaviour without a predefined goal is remarkable.  Unsupervised learning can find structure in input data or reproduce either single events, or sequences.
+
+\subsection{Hebbian Learning}
+Hebbian learning is a form of learning that was suggested by~\citet{Hebb49}.  The key feature of Hebbian learning is that associations between neurons will be enhanced after each learning cycle.  When one unit contributes to the activation of another unit, that connection will be strengthened so that there is an increase in the potential for unit A to activate unit B~\citep{Hebb49}.  The biological basis for this learning algorithm was discovered much later in the form of LTP.  Hebbian learning is now used to refer to most forms of learning which increase the correlation between the activation of units in a network.  This is most commonly seen in an unsupervised context, as it does not require any goal or direction to focus learning.  
+
+When we use this principle in an artificial neural network, it provides a rule for the alteration of the connections between units.  The connection strength increases when the units at each end are simultaneously active.  Active units are represented by a $1$ and inactive by $0$.  The learning rule is
+\begin{equation}
+	\label{eq:Hebbianlearning}
+	\Delta\weight{ij} = \learningConstant\unitActivation{i}{}\unitActivation{j}{}
+\end{equation}
+where \(\weight{ij}\) is the strength of the connection from unit \(j\) to
+unit \(i\), \learningConstant\  is the learning constant, and \unitActivation{i}{} is the activation of a unit $i$ in the network.
+
+\begin{table}[htbp]
+	\begin{center}
+		\begin{tabular}{rr|r|r}
+			\multicolumn{2}{r}{}&\multicolumn{2}{c}{\(\unitActivation{i}{}\)}\\
+						&&$1$&$0$\\
+\cline{2-4} $\unitActivation{j}{}$&$1$&$+$&$0$\\
+\cline{2-4} &$0$&$0$&$0$\\
+		\end{tabular}
+	\end{center}
+	\caption{Weight changes using the Hebb rule, with +1/0 activations.}
+	\label{tab:WeightChangesHebbian}
+\end{table}
+
+\begin{figure}[hbtp]
+  \begin{center}
+        \begin{tabular}{c}
+            \xymatrix@R=3pt{
+            *=<20pt>[o][F]{A} \ar[drr]|-{\weight{AC}}\\
+            &&*=<20pt>[o][F]{C}\\            
+            *=<20pt>[o][F]{B} \ar[urr]|-{\weight{BC}}
+            }
+        \end{tabular}
+        \caption{Diagram of a simple 3 unit network with one output unit, two input units and two weighted connections.}
+        \label{fig:hebbianLearning}
+  \end{center}
+\end{figure}
+
+
+This can be seen diagrammatically in Figure~\ref{fig:hebbianLearning}. If unit $A$ activates at the same time as unit $C$ and thus contributes to its activation then the connection $\weight{AC}$ will increase in strength so that the next time unit $A$ is active, $C$ is more likely to be active. 
+
+The extension from associating units that are firing to auto-associative content addressable memory (CAM) is relatively straightforward.  An auto-associative task is where the network has to produce an output which is identical to the input.  Auto-associative learning is important for CAM as it can provide a way to learn patterns which can later be found with a partial stimulus.  The Hebbian rule suits the task of auto-association as individual units are adjusted to become associated, and this adjustment allows groups of units to become associated.  These groups of associated units form the content of the remembered event.  This process is described in Section~\ref{sec:hopfieldnetworks}.
+
+There is at least one major problem with the Hebb postulate as it has been used in artificial neural networks.  The learning function provides no mechanism for decreasing the connection strength between units.  The function only describes a mechanism for strengthening the connection.  Without some form of decay or inhibition, the network would quickly saturate with activation as all the connections increase in strength. One possible solution to this problem is to leave the association rule unchanged, but adjust the activation values of the units.  If the sign function~\sign{} is used as the activation of the units then negative values are introduced to the system.  When a negative output is associated with a positive input the resulting change will be negative and thus move the connection strength toward the negative values. 
+
+Using the Hebbian learning rule from Equation~\eqref{eq:Hebbianlearning} we now have an algorithm that can make both positive and negative changes to the connections in the network. Table~\ref{tab:WeightChangesHopfield} shows the result of applying Equation~\eqref{eq:Hebbianlearning} to activations that are either $-1$ or $+1$.
+
+\begin{table}[htbp]
+	\begin{center}
+		\begin{tabular}{rr|r|r}
+			\multicolumn{2}{r}{}&\multicolumn{2}{c}{\(\unitActivation{i}{}\)}\\
+						&&$1$&$-1$\\
+\cline{2-4} $\unitActivation{j}{}$&$1$&$+$&$-$\\
+\cline{2-4} &$-1$&$-$&$+$\\
+		\end{tabular}
+	\end{center}
+	\caption{Weight changes with +1/-1 activations.}
+	\label{tab:WeightChangesHopfield}
+\end{table}
+
+It is possible to alter the learning on networks with $0$ and $+1$ as the activation values so that the association rule generates the same weights as the $-1,+1$ space: $\Delta\weight{ij} = (2\unitActivation{i}{}-1)(2\unitActivation{j}{}-1)$.
+
+There are other solutions to the problem of a lack of inhibition.  Simple solutions include having a universal decay term applied once every time step, or to normalise the input to units so that when one connection increases its strength other connections are decreased~\citep{Chechik2001}, or have separate LTP and LTD learning rules such as the CPCA~\citep{Norman2003}.  Investigating the influence of each of these changes to the learning algorithm is beyond the scope of this thesis.
+
+\subsection{Delta Learning}
+\label{sec:deltaLearning}
+
+The delta learning algorithm\footnote{Delta learning is sometimes referred to as the ``Widrow--Hoff rule'' as these authors first introduced this style of learning~\citep{Widrow1960}.} uses the simple approach of altering the connections to a unit so that the output of the unit is more like the desired output.  Because of the requirement for a ``correct'' desired output, delta learning is usually used as a supervised learning algorithm.  In our case we will be using delta learning for an auto-associative task, and so the desired output is in fact the input signal.  This allows us to use delta learning, which is usually only considered for supervised learning tasks, while retaining the advantages of unsupervised learning and having all the information locally available.
+
+The simplest form of delta learning is to subtract the actual output from the desired output and use the result as an error term.  This error term is used to alter the connections to the output unit.  \citet{Rosenblatt1958} used a delta learning rule to train the units which he called perceptrons. The formulation is:
+\begin{equation}
+	\Delta\weight{ij} = \learningConstant(\desired{i}{} - \unitActivation{i}{})\unitActivation{j}{}
+\end{equation}
+where $\learningConstant$ is a learning constant, $\desired{i}{}$ is the desired output and $\unitActivation{i}{}$ is the activation of unit $i$.
+
+Using this learning algorithm, if the desired $\desired{i}{}$ output is $1$ and the current activation of the unit $\unitActivation{i}{}$ is $-1$, then there will be a $+\learningConstant$ addition to all the connections from units that had $+1$ activations.  Because of the symmetry in the network, this occurs both from unit $j$ to $i$ and also from unit $i$ to $j$.  The total change for the +1,-1 space is therefore $2\learningConstant$.  Given the same pattern of activation, the sum of the weighted input to the unit will be increased by:
+\begin{equation}
+	\Delta\unitInput{i}{}=2\learningConstant\,\sum_{j=1}^{m}\unitActivation{j}{}
+\end{equation} 
+where $m$ is the number of units connected to unit $i$.
+
+This learning algorithm has been shown to always converge in a finite time if the desired output is linearly separable~\citep{Novikoff1962}.  This means that if a set of weights exist that can solve the linearly separable problem this simple delta learning rule will find a solution. This result makes delta learning a very attractive algorithm for many problems.  An example of a linearly separable problem is show in Table~\ref{tab:AND}, and the diagram of the network in Figure~\ref{fig:perceptron}  
+
+However, there are limitations to delta learning, as hinted at by the condition of linear separability.  For problems such as XOR, where the outputs of the network cannot be constructed from a linear combination of the inputs, there is no set of weights directly connecting input to the output that can solve the problem.  This limits the solution space of the single layer delta learning system.  Multilayer systems can solve arbitrary functional mappings, with back-propagation~\citep{Rumelhart86} being the first algorithm that could learn these mappings.
+
+One of the problems with delta learning on threshold functions is that it only makes changes to the weights when there is an error in the output of the unit.  Given an activation function such as the sign or threshold function, the only error signal values are $1,0,-1$ for threshold and $2,0,-2$ for sign.  As the network is using this error to adjust the weights it will stop adjusting them as soon as the outputs are just on the correct side of the decision surface.  Figure~\ref{fig:AND} shows a possible decision surface that solves the \emph{AND} problem.  This solution is not particularly stable as the surface is close to the two points at $<1,1>$ and $<0,1>$.  An alteration to the threshold $\unitThreshold{}{}$ could easily move the decision surface so that one of the training points would generate an error.  This arises because the learning stops as soon as the decision surface provides the desired output where all four training patterns give the desired output. 
+
+\begin{table}
+	\centering
+	\begin{tabular}{rr|r|r|r}
+			A&B&AND &\unitActivation{}{}&\error\\
+			\hline
+			1&1&1        & 0                 & 1\\
+			1&0&0        & 0                 & 0\\
+			0&1&0        & 0                 & 0\\
+			0&0&0        & 0                 & 0\\
+	\end{tabular}
+	\caption{The training patterns, inputs, and outputs for an untrained network on the AND problem. \unitActivation{}{} is the output of the network and $\error\ $ is the error.}
+	\label{tab:AND}
+\end{table}
+
+\begin{figure}[hbtp]
+  \center
+    \begin{tabular}{c}
+        \xymatrix@R=3pt{
+        *=<20pt>[o][F]{A} \ar[drr]|-{0.0}\\
+        &&*=<20pt>[o][F]{\threshold{5}}\ar[r]|-{\unitActivation{}{}}&\\            
+        *=<20pt>[o][F]{B} \ar[urr]|-{0.0}
+        }
+    \end{tabular}
+    \caption{Diagram of the untrained, two input, one output network from Table~\ref{tab:AND}.} 
+    \label{fig:perceptron}
+\end{figure}
+
+\begin{figure}[htbp]
+ 
+  \begin{center}
+%        \input{Figures/perceptron}
+        \input{Figures/perceptronSurface}
+        \caption{Activation surface for the \emph{AND} function learnt by a perceptron network. The decision surface appears as a cliff in the activation surface.  The values for the weights are $wA=0.2,\ wB=1$ and $ \unitThreshold{}{}=-1.1$.}
+        \label{fig:AND}
+  \end{center}
+\end{figure}
+
+This fragility can be alleviated by adding noise to the calculations in the network.  The two types of noise that we use are noise on the summed input to a unit, ``input noise'', and noise on the propagated activation of the units in a learnt pattern which in effect changes the autoassociative learning task into a slightly heteroassociative task, ``heteroassociative noise''. 
+
+Input noise is the application of noise to the input of a unit so that it generates an error when close to the decision surface.  These additional errors move the least stable units further away from the decision surface.  This noise can be either absolute or relative. Absolute noise uses a random number generated from a Gaussian distribution with a mean of zero and a sigma $\sigma = \noiseConst{}$.  Absolute input noise can be seen as defining a gradient from the decision surface which units move away from.  The larger the $\sigma$ the more often units will have their input disrupted and therefore generate errors resulting in learning.  Relative noise is where the width of the Gaussian ($\sigma$) is scaled to match the current mean input to the units.  This forces noise to continually be applied during the whole learning process.  As the mean input to the units increases so does the amount of noise. This forces the network to continue to learn until the maximum number of epochs are reached as there is no way to converge on an error free network, as the noise scales to ensure there are always errors to correct.  Relative noise also makes the inputs to the units more uniform in magnitude.  Units whose summed input is lower than the mean are more likely to receive learning and thus increase their summed input.  This can be visualised as a force field extending from the decision surface which continually pushes the decision surface away from the defined training points.
+
+The result of this noise can be visualised in the simple network above trying to learn the ``AND'' function.  Input noise visually creates a Gaussian blur around the training points forcing the decision surface to move away. Figure~\ref{fig:noisePerceptron} shows the result of training with the application of absolute Gaussian noise with a mean of $0$ and a deviation $\sigma^{2}=2$ on the input to the output unit of the network learning the ``AND'' function.  The decision surface has moved further away from the training points.  The weights of the network have increased to compensate for the noise, and symmetry starts to emerge as the network tries to optimise the distance from the training points.
+
+\begin{figure}[ht]
+  \begin{center}
+        \input{Figures/noisePerceptronSurface}
+        \caption{Activation surface for the \emph{AND} function learnt by a perceptron network with Gaussian noise.  The decision surface appears as a cliff in the activation surface. The values for the weights are $wA=3.19,\ wB=3.17$ and $ \unitThreshold{}{}=-4.97$.}
+        \label{fig:noisePerceptron}
+  \end{center}
+\end{figure}
+
+Heteroassociative noise (\noiseConst{h}) is where a percentage of the input units are flipped before the error is generated. This alters the summed input to the output units, and therefore the actual outputs used to generate errors.  Units which were only just on the correct side of the decision surface may now generate an error and have their weights changed. This is called heteroassociative noise as for a Hopfield network it changes the autoassociative task into a slightly heteroassociative task, as the inputs which have been altered by noise, are no longer identical to the desired output.  This input to output mapping is aimed at forming a basin of attraction around a learnt pattern, by forcing patterns that are close to the learnt pattern to relax to the learnt pattern.  The noise level is usually relatively low $\noiseConst{h} <10\%$.  
+
+In Hopfield networks delta learning was proposed as a local learning rule by \citet{Diederich1987}.  This performs the standard error correction on every unit, using the auto-associative approach in which, during training, the input is the desired output.  The procedure is:
+\begin{itemize}[label=\textbullet, rightmargin=1.5cm]
+	\item while the total error of the population is above a threshold repeat 
+	\begin{itemize}[label=\textbullet]
+		\item for each pattern in the base population
+		\begin{itemize}[label=\textbullet]
+			\item initialise the network with the pattern to learn
+			\item if using heteroassociative noise, alter the activation of \noiseConst{h} of the units.  
+			\item if using input noise, add Gaussian noise $\noiseConst{i}\ $ to the input of all output units  			
+			\item calculate the outputs for all units
+			\item generate the error based on the difference between these outputs and the original pattern
+			\item update the weights based on the error above
+		\end{itemize} 
+	\end{itemize}
+\end{itemize}
+This process may take many iterations to converge on weights that make all of the training items, called the base population, stable.  The level and the type of noise also contribute to the length of time required to converge on a solution.  Noise is important for making the learnt items more stable and creating a basin of attraction around each pattern.  The noise makes the weights both larger and more symmetric which combine to make the learnt patterns more robust.
+
+
+
+\subsection{Local Learning}
+
+One of the important features of a biologically plausible learning processes is that it has to be \newterm{local}.  For a learning algorithm to be local it must make changes to the connections between units based \emph{only} on information that relates to the connection or the two units which it connects. Local calculations do not require values acquired from the whole learning population or from the entire network.  Hebbian learning is the prototypical local learning algorithm.  The pseudo inverse~\citep{Hertz1991, Storkey1997} learning rule is an example of a non-local learning procedure.
+
+Delta learning is a local learning algorithm as all the information to make an update is available locally, so long as there is an input which represents the desired output.  If the goal of the network is \term{auto-associative} then the input can act as the desired output.  This allows us to explore the use of Delta learning in a local learning context.
+
+
+\section{Hopfield Networks}
+\label{sec:hopfieldnetworks}
+
+The model of associative memory that will form the basis of this thesis is the \term{Hopfield Network}.  The essence of this model was first presented by \citet{Pastur77} as a model of magnetic spin glass systems in physics.  The model became popular as a model of memory after \citet{Hopfield82} proposed it as a form of \term{content addressable} memory.  Hopfield networks have remained relevant to both the artificial intelligence and the physics communities. 
+
+\subsection{Hopfield Network Structure}
+
+The network is constructed as a set of \(N\) simple units, with each unit having an associated activation value. The set of units can be represented
+as a vector of activations \(\inputVector \), which describe the current \term{state} of the network.  
+
+\begin{figure}[htb]
+	\begin{center}
+		 \begin{tabular}{c}
+        \xymatrix@R=10pt@C=20pt{
+          &*=<15pt>[o][F]{}\ar@{-}[dl]\ar@{-}[dd]\ar@{-}[rr]\ar@{-}[drrr]\ar@{-}[ddrr]
+        	    &&*=<15pt>[o][F]{\bigbullet}\ar@{-}[dlll]\ar@{-}[ddll]\ar@{-}[dd]\ar@{-}[dr]\\
+        *=<15pt>[o][F]{}\ar@{-}[rrrr]\ar@{-}[dr]\ar@{-}[drrr]
+        	       &&&&*=<15pt>[o][F]{\bigbullet}\ar@{-}[dlll]\ar@{-}[dl]\\
+          &*=<15pt>[o][F]{\bigbullet}\ar@{-}[rr]
+        	    &&*=<15pt>[o][F]{}
+        }
+        \end{tabular}   
+	\end{center}
+	\caption{Hopfield network of 6 units \hopnet{6,0}{}.}
+	\label{fig:hopnet6}
+\end{figure}
+
+
+Figure~\ref{fig:hopnet6} shows a network of six fully connected units with zero as the low value for the activation function, denoted \hopnet{6,0}{} (\hopnet{6,\pm}{} represents activation of $<1,-1>$ ).  To represent the state of the network we can construct a vector from the top left unit and follow around in a clockwise direction.  The vector  \(\inputVector \) represented by the network above would be \state{0,1,1,0,1,0}.  The state of the network can be represented as any one of the \(2^6\) possible patterns using this vector based approach.    
+
+We can represent the connections in the network as a \term{weight matrix} \weightMatrix{}. Each unit's connections are represented by a row in the matrix. The central diagonal is left blank as we are currently prohibiting self connections.  The weight matrix is either symmetric, as in Figure~\ref{fig:hopnet6}, or asymmetric. For the weight matrix to be symmetric the connection from a unit $i$ to unit $j$ must be the same as the connection from unit $j$ to $i$ ($\weight{ij} = \weight{ji}$) for all units. Hebbian learning makes symmetric updates to the weights in the network and thus creates a symmetric weight matrix.  Symmetry in the weight matrix has the advantage of guaranteeing relaxation to a stable state and will be discussed in the next sections.
+ 
+In addition to the units in the normal Hopfield network it is possible to add a bias unit, a unit which is always active.  For delta learning the connection to the bias unit can be used to store the threshold for a unit.  For Hebbian learning the bias unit is usually removed from the network.  In this thesis all networks will have a bias unit included unless otherwise stated.  Results from the networks have been repeated with bias units removed, and for large networks the results are very similar in either condition.  The justification for this is that when the number of units in the network increases, the contribution of a single bias unit becomes less significant.
+
+The units in the network in Figure~\ref{fig:hopnet6} have an activation value of $1$ and an inactive value of $0$.  As mentioned earlier there is also the possibility of having the inactive value of a unit represented by $-1$, denoted $\hopnet{6,\pm}{}$. The different activation values alter some of the characteristics of the network, particularly the dynamics~\citep{Horn1998,Davey2000}, but many other characteristics are the same, including the total number of possible states, learning algorithms, and connectivity.  As the two types of inactive value are not isomorphic, the activation values used will be included as a parameter influencing the results.
+
+\subsection{Dynamics}
+\label{sec:Dynamics}
+The Hopfield network cycles through many configurations before settling on a stable output pattern.  When a pattern of inputs is presented to the network as a vector $\inputVector$, the activations of all the units are set to match those values.  In the relaxation phase the network is then allowed to calculate the actual output of each unit.  This is done by selecting a unit and performing the sum of all the incoming connections, weighted by connection strength, and passing this value through the activation function.  As each unit is selected it either changes its activation or remains in the current state.  After many cycles where an individual unit may be updated many times the network settles into a stable state where no matter which unit is selected it will remain in the same activation state.
+
+This ability to relax to a stable state is what we describe as the process of recalling a memory. When presented with a vector of input values the network will relax into some state.  The relaxation of a Hopfield network that has been trained with Hebbian learning, and therefore has a symmetric weight matrix, can be shown to follow the Lyapunov, or energy, function~\citep{Hopfield82,Kuhn1991}: 
+\begin{equation}
+	\label{eq:energyNetwork}
+	\displaystyle\energy{}= -\frac{1}{2}\sum^{N}_{i=1}\sum^{N}_{j=1}\weight{ij}\unitActivation{i}{}\unitActivation{j}{}
+\end{equation}
+where the sum \energy{} is monotonically decreasing after each update cycle.  The Lyapunov function guarantees convergence to a stable low energy state in which no unit will change activation as any single unit change would result in a higher energy state.  For an introduction to these forms of calculations see \citet{Hertz1991}. The decrease in energy is caused by the activation function that either leaves the unit the same and thus the energy the same, or changes the activation to match the sum of the inputs, decreasing the energy of the network.
+
+\subsection{Energy Surface}
+\label{sec:energy}
+
+Instead of focussing on the energy of the entire network, it is possible to look at the energy of individual units. Negative energy values are low energy and thus stable, whereas positive values are high energy and unstable.  The greater the magnitude of the energy of a unit (\unitEnergy{}{}) the further the unit is from the decision surface.  For the network to be in a stable state, each individual unit must be stable and therefore have a negative energy.  So both the individual units and the network as a whole have an energy associated with them.  For the network in Figure~\ref{fig:hopnet6}, if the weights are set to zero then the energy will be zero for every unit in any state and so the energy of each of the states is also zero.  
+
+The \newterm{energy} function in \eqref{eq:energyNetwork} can be broken down into its parts for closer analysis.  For \hopnet{N,\pm}{} the energy function can be re-written as   
+\begin{equation}  
+	\displaystyle\energy{p} = -\frac{1}{2} \sum_{i=1}^{N} (\unitInput{i}{p} * \unitActivation{i}{p})  
+\end{equation}
+where \energy{p} is the energy of the network in state $p$, \unitInput{i}{p} is the summed input to unit $i$ given pattern $p$, and \unitActivation{i}{p} is the activation of unit $i$.
+
+The above equation describes the energy of the entire network.  The energy \unitEnergy{i}{p} of unit $i$ given pattern $p$ is:
+\begin{align}  
+	\label{eq:unitEnergy}
+	\unitEnergy{i}{p} &= -\frac{1}{2}(\unitInput{i}{p} * \unitActivation{i}{p})   &\mbox{for}\ \hopnet{N,\pm}{} \\
+	\unitEnergy{i}{p} &= -\frac{1}{2}(\unitInput{i}{p} * ((2*\unitActivation{i}{p})-1)) &\mbox{for}\ \hopnet{N,0}{}
+\end{align}
+
+The network energy is now simply:
+\begin{align} 
+	\displaystyle\energy{p} &= \sum_{i=1}^{N}(\unitEnergy{i}{p})
+	\label{eq:networkEnergy}
+\end{align}
+
+These equations give negative values for units where the unit input (\unitInput{}{}) is the same sign as the unit activation (\unitActivation{}{}), and positive values when there is a difference between the current input and the current output.
+
+If the pattern displayed in Figure~\ref{fig:hopnet6} is converted to $\state{-1,+1,+1,-1,+1,-1}$ for the -1,+1 space, and is learnt using Hebbian learning, every unit will change its weighted connections.   The energy for each unit is:
+
+\begin{align*}  
+	\energy{p} &= \sum_{i=1}^{N}(\unitEnergy{i}{p})&=\mathrm{from}\ \eqref{eq:networkEnergy}\\
+	\unitEnergy{i}{p} &= -\frac{1}{2}\sum_{i=1}^{N} (\unitInput{i}{p} * \unitActivation{i}{p})\\
+	\displaystyle\unitInput{i}{p} &= \sum_{i=1}^{N}(\unitActivation{i}{}\weight{ij})\\
+	\weight{ij} &= \unitActivation{i}{p}\unitActivation{j}{p}\\
+\end{align*}
+
+Having learnt only the original pattern $p=\state{-1,+1,+1,-1,+1,-1}$ every unit has the same energy $\unitEnergy{i}{p}=-5$, and the network's energy is $\energy{p}=-30$.  If unit 1 has its value altered from $-1$ to $+1$ then the energies of each unit are $\state{+5,-3,-3,-3,-3,-3}$ giving a total energy of $-10$.  This pattern is unstable as one of the units has an energy value greater than $0$.  There is a great deal of symmetry in the network with only one pattern learnt, and this can be seen as all patterns that have only one unit flipped are unstable with energy of $\energy{p}=-10$.  With two units flipped, the energies of the units in these states become \state{+3,+3,-1,-1,-1,-1} $\energy{p}=2$.  With three units flipped all the units have energy $\unitEnergy{i}{p}=1$.  The similarity of the unit energy is partly caused by the symmetry of the learning algorithm and partly by the symmetry of the activation values.  
+
+The symmetry between $-1$ and $+1$ activation values means that if all of the units are flipped the energy of the network is the same as the original pattern.  What this means for sampling the space of all possible 6 unit patterns is that 50\% of randomly created patterns will relax to the original pattern \state{-1,+1,+1,-1,+1,-1} and the other 50\% to \state{+1,-1,-1,+1,-1,+1}. Because of this symmetry we will treat relaxation to the inverse of a pattern as equivalent to relation to the original learnt pattern~\citep{Hopfield82}. 
+
+One method for breaking the symmetry in these networks is to add a bias unit.  The bias unit breaks symmetry as it can only be in the active (+1) state.  This is only effective in small networks as the change to the basins of attraction for real and inverse patterns are $N/2+1$ and $N/2-1$ respectively.  When $N$ is large this change becomes insignificant.
+
+\begin{figure}[ht]
+	\center
+	\scalebox{0.7}{\input{Figures/energySurface}}
+	\caption{A 2D representation of the 6D energy surface of a 6 unit network \hopnet{6,\pm}{p} with pattern $p=\state{-1,+1,+1,-1,+1,-1}$ learnt.}
+	\label{fig:EnergySurfaceHopnet}
+\end{figure}
+
+There are $2^N$ states in a binary valued Hopfield network, each with an energy value.  Learning alters the weight matrix which in turn alters the energy value of each of these states.  These states are an example of an $N$ dimensional hypercube, where each state is a vertex of the cube.  Changing the activation value of a unit moves the state along that axis to an adjacent vertex of the cube. Relaxation of the Hopfield network is a path through the hypercube where each change moves to an adjacent vertex with lower energy. \n{I really do mean that it IS a path through the hypercube because that is exactly what happens not just a particular view of what happens.} Thus the energy calculation defines a hyper-surface in the cube.  Figure~\ref{fig:EnergySurfaceHopnet} shows a three dimensional mapping\footnote{This figure does not accurately represent the true shape of the basin of attraction of the patterns as the relationships are lost when the hypercube is flattened to 2D.} of the surface generated in the network above having learnt the pattern \state{-1,+1,+1,-1,+1,-1}.  The two low energy areas in the graph correspond to the learnt pattern and its inverse.
+
+There are a large number of learning algorithms that can form these energy surfaces.  Some of them generate a surface that guarantees relaxation to a stable state while others may never converge.  The variants include Hebbian learning, delta learning, anit--Hebbian learning, pseudo--inverse, and many specialised variants ~\citep{Amit95,Storkey1997,Athithan02}.  The energy surface created by each learning algorithm is distinct, and small changes to algorithms can cause large changes in the energy surfaces created.
+
+\subsection{Capacity}
+\label{sec:capacity}
+There are only a limited number of patterns that can be made to be stable in a Hopfield network.  There are various limits to the amount of information that it is possible to store as well as individual capacities related to the individual learning rules.  The original estimation for the capacity of the Hebbian learning rule was $\hopnetcapacity = 0.14N$~\citep{Amit1987}, where $N$ is the number of units in the network. Rigorous mathematical proofs~\citep{McEliece1987,Bovier1999,Lowe2005} have shown that the upper bound for perfect recall is actually closer to:
+\begin{equation}
+\label{eq:HopnetcapHebbian}
+	\hopnetcapacity = \frac{N}{\gamma \mbox{ln} N}
+\end{equation}
+where $\gamma = 2,4,6$ depending on the exact dynamics of the storage required.  These results were generated on \newterm{independent identically distributed} (i.i.d.) patterns generated by Bernoulli random values of $\pm1$.  The theoretical maximum amount of information that can be stored in the Hopfield network, independent of the learning rule, is $\hopnetcapacity=N$ patterns for networks with symmetric connections, and $2N$ for asymmetric connections~\citep{Gardner1988}. This result is for uncorrelated patterns where the probability of being active is $50\%$, $\percentON=P(x_i=+1)=P(x_i=-1)=0.50$. Unless otherwise stated the simulations in this thesis use these types of patterns.  When patterns other than these are used, they will be noted as $\pattern_{0.2}$ when $\alpha=0.2$, indicating that $20\%$ of the units in the pattern $\pattern_{}$ are active.
+
+There are many different maximum capacity values that can be presented depending on the type of pattern stored~\citep{Amit1987b}, the learning procedure~\citep{Storkey99}, connection symmetry~\citep{Chen2001}, and the definition of successful storage~\citep{Lowe2005}.  The number of learnt patterns that are stable states is only one of the possible measures of the performance of the network.  For the network to be an effective memory recall system there must be a large number of probes that relax to a particular stored pattern and the ratio of learnt patterns to spurious patterns must be high.
+
+Spurious patterns are defined as the stable states in the network that are not part of the learnt set of patterns.  In the \hopnet{6,\pm}{} example above, with one pattern learnt, the only stable state was the learnt pattern and equivalently its inverse.  For Hebbian learning if more than two patterns are learnt, spurious states are created.  As the number of learnt patterns increases the number of spurious patterns also increases at a much faster rate.  Once the network has learnt more than the maximum capacity $(0.14N)$, spurious states start to dominate the networks and the learnt patterns are lost.
+
+The spurious states that are generated initially from the learnt patterns are not just random states.  When the number of learnt patterns is small $<<0.14N$ the spurious patterns generated are combinations (crosstalk \crosstalk{i}) of the learnt patterns~\citep{Amit1987}.
+
+\begin{equation}
+	\label{eq:crosstalk}
+	\displaystyle \crosstalk{i} = \frac{1}{N}\sum_{{j \\ (j \ne i)}}\left( \sum_{p,q (p\ne q)} 		\unitActivation{i}{p}\unitActivation{j}{p}\unitActivation{i}{q}\unitActivation{j}{q}\right)
+\end{equation}
+Equation~\eqref{eq:crosstalk} describes the interaction of patterns that create crosstalk, which can overload the networks when many patterns are learnt.
+
+\subsection{Basins of Attraction}
+\label{sec:Stable}
+
+The basin of attraction for a stable pattern is the set of states which relax to that pattern.  The larger the cardinality of the set the greater the size of the basin of attraction.  In the \hopnet{6,\pm}{} network above with one learnt pattern, the two stable states (the pattern and its inverse) have large basins of attraction.  As the number of patterns learnt by the system increases the size of the basin of attraction of each individual pattern decreases.
+
+The size of a basin of attraction is very important when using the Hopfield network as a content addressable memory (CAM).  If a learnt pattern is to be recalled from a noisy version of the pattern, the noisy probe has to be within the basin of attraction of the learnt pattern.  If the basin is too small then the only patterns that will relax to the learnt pattern are those that start with almost identical activation values.  When the learnt patterns no longer have basins of attraction the memory system is only useful as a familiarity test rather than a CAM.
+
+\subsection{Update Timing}
+\label{sec:update}
+There are two categories of update timing for Hopfield networks; synchronous or asynchronous.  The process described in Section~\ref{sec:Dynamics} is an asynchronous process where each unit is selected at random and that unit is updated.  A slight variation that ensures that each unit gets selected at least once in every $N$ updates is to create a random order of the units in the network and update each unit once per cycle.  The equivalent synchronous process involves every unit updating at the same time. Synchronous updates can be calculated quickly using matrix multiplication with the weight matrix $\weightMatrix{}$ and the current activation of the network $\networkState{t}$ at time $t$:
+\begin{equation}
+	\networkState{t+1} = \networkState{t}\ \cdot\ \weightMatrix{t} 
+\end{equation}
+This dot product calculation is $O(N^2)$ for each cycle.  This update rule unfortunately breaks the convergence guarantee as it can result in the network entering a \newterm{``blinking'' state}~\citep{vanHemmen1997}.  This is where a set of units continually change from one state to the other and back again.  This can easily be visualised in a two unit network connected by a negative weight.  Units $A$ and $B$ are initialised as $+1$ at time $t=0$. \\
+At $t=1$:
+\begin{align*}
+		\unitActivation{A}{1} &= \sign{\weight{AB}*\unitActivation{B}{0}}\\
+													&= \sign{-1*1}\\
+													&= \sign{-1}&\hspace{5cm}\\
+													&= -1
+\end{align*}
+At $t=2$:
+\begin{align*}
+		\unitActivation{A}{2} &= \sign{\weight{AB}*\unitActivation{B}{1}}\\
+													&= \sign{-1*-1}&(B\ \mathrm{updated\ at\ time\ 1})\\
+													&= \sign{+1}&\hspace{5cm}\\
+													&= +1
+\end{align*}
+This network ``blinks'' between state $\state{1,1}$ and $\state{-1,-1}$ as both units are updated at the same time. If only unit $A$ is updated the network will stabilise on either the pattern $\state{-1,1}$ or $\state{1,-1}$.  These two configurations are equally stable and performing an update on either unit will not change the activation state of the network $\networkState{}$.  Given these blinking states, synchronous update is not a behaviourally neutral replacement for asynchronous update.  Van Hemmen (1997) argues that you can use these blinking states as indicators that the network has not found a stable learnt pattern.  This unfortunately means that the ability to relax to a learnt pattern is severely reduced in the network suggested by \citeauthor{vanHemmen1997}.
+
+As relaxation is one of the most common operations performed on the Hopfield network it is important to try to make the implementation as time efficient as possible.  Synchronous updating is fast as there are only $N^2*c$ updates required, where $c$ is the number of cycles before the network relaxes or finds a blinking state. We also need a fast implementation of the asynchronous update procedure.  Because of the random nature of the selection it is common to select a stable unit, which will not change its activation state.  In its raw form the update rule is an example of the classic ``coupon problem'' of collecting items when each item is selected randomly with replacement~\citep{Durrett1996}.  Simple random selection is extremely slow for large networks.  The first simple approach to increasing the speed of relaxation is to create a random permutation of the units and update each unit once per cycle.  This is $O(N^2)$ for each update cycle.  The difference between this and synchronous updating is that each unit is updated and its \emph{new value} is used for all of the subsequent calculations in that cycle.  Permuted order selection has very similar dynamics to the asynchronous update but with a much faster relaxation time.
+
+We propose a faster way to perform a fully asynchronous update -- without altering the dynamics of the system -- by changing the way the units are selected for updating.  Instead of a random permutation of the units, we propose trading space for time by storing all the unit's input values and only selecting from those units which are unstable.  To achieve this we need a list of units that are unstable, which is updated after every unit update.  Using this list we select a unit at random from the list of unstable units and update that unit.  This avoids the need to update units which are not going to change. Creating this list is $O(N^2)$ for the first iteration, but to maintain the list requires only $N$ calculations per unit updating.  When a unit is updated it signals all the other units and changes the recorded sum of their current input.  Thus if a unit $A$ is updated then all the other units will alter their input by the change in $A$ multiplied by the weight of the connection to $A$:
+\begin{equation}
+	\unitInput{B}{} = \unitInput{B}{} + (\unitActivation{A}{t} - \unitActivation{A}{t-1})\weight{BA}  	
+\end{equation}
+where \unitInput{B}{} is the unit input and $(\unitActivation{A}{t} - \unitActivation{A}{t-1})$ is the change in activation for unit $A$.  Thus each unit update is $O(N)$.  For large networks the comparison between the $O(N^2)$ for each cycle and $O(N)$ for each unit update makes this form of updating more than an order of magnitude faster. For a $1000$ unit network \hopnet{1000,\pm}{} with $20$ patterns learnt the comparison between our approach of keeping a list of units that are unstable (List Asynch) and the standard approach of processing a random permutation of the units (Perm Asynch) is shown in Table~\ref{tab:relaxationCycles}.  The numbers represent the averaged number of units that were updated during relaxation.  The $6000$ in ``Spurious -- Least / Perm Asynch'' indicates that there were six cycles through the 1000 unit network, thus $6000$ unit updates.  By comparison only $552$ units were updated for the same condition for ``List Asynch''. List Asynch requires about 10\% of the processing used for Perm Asynch when relaxing to learnt patterns and only 5\% for spurious patterns (for the distinction between spurious and learnt patterns see Section~\ref{sec:Stable}).
+
+\begin{table}[ht]
+	\center
+		\begin{tabular}{cc|c|c|c|c|}
+			&&List Asynch &Perm Asynch &&Comparison L/P\\
+			\cline{2-6}	
+						&Least&$693$&$5,245$&&$13.2\%$\\
+			Learnt&Avg	&$808$&$8,359$&&$9.7\%$\\
+						&Most	&$886$&$10,856$&&$8.2\%$\\
+			\cline{2-6}
+							&Least&$552$&$6,000$&&$9.2\%$\\
+			Spurious&Avg	&$779$&$14,749$&&$5.3\%$\\
+							&Most	&$1095$&$32,000$&&$3.4\%$\\
+			\cline{2-6}			
+		\end{tabular}
+	\center
+	\caption{The number of unit updates during relaxation for list and permutation asynchronous updating. Values are averaged for the 20 learnt patterns and the first 100 spurious patterns found in an \hopnet{1000,\pm}{} network found using 5000 random probes.}
+	\label{tab:relaxationCycles}
+\end{table}
+
+The difference between spurious and learnt patterns indicates that the shape of the basin of attraction for each is different.  The learnt patterns tend to have fewer unit updates before reaching a stable state.  This could indicate that the basin of attraction for a learnt pattern is more symmetric, as for most units selected the update moves toward the stable learnt pattern.  
+
+
+
+\section{Performance}
+\label{sec:performance}
+There are a number of different ways to measure the performance of a CAM system. The relevance of a metric needs to be weighted by the goals of the network.
+Different authors use very different measurements which seem to be chosen to
+best differentiate their network from other solutions (for example compare ~\citet{Christos96} and \citet{vanHemmen1997}).
+ 
+\subsection{Capacity}
+The standard measure of performance is the stability of the patterns that have been stored, the capacity~\citep{Hopfield82}.  If all the desired patterns are stable then the network is considered to be working very well.  When comparing two learning procedures the one that can make more patterns stable is usually considered the best. However simply measuring the number of stable states is not necessarily indicative of an effective learning algorithm.  For example given the constraint of all learnt patterns having exactly 50\% of their units active, we can construct a network where all the weights are negative one.  Every state that has exactly 50\% of its units active will be a stable state in this network.  We can show this by looking at one of these 50\% active states.  Selecting an active unit at random the unit input is:
+\begin{align*}
+	\label{eq:activeAll-1}
+	\unitInput{i}{}&= \sum_{j, j \ne i}^{N} \weight{ij} \unitActivation{j}{}\\
+										&= \sum_{j}^{(N/2)-1}(\weight{ij}*1) + \sum_{k}^{N/2}(\weight{ik}*-1) & \mbox{where }j\in[{\unitActivation{}{p}=1}] , k\in[{\unitActivation{}{p}=-1}]\\
+										&= (\frac{N}{2}-1)(-1*1) + \frac{N}{2}(-1*-1)\\
+										&= -(\frac{N}{2}-1)+ \frac{N}{2}\\
+										&= +1
+\end{align*}
+thus all active units remain active and inactive units remain inactive.  The $N/2-1$ comes from the removal of self connections.  There are ${}_N C_{(N/2)} = N!/((N/2)!(N/2)!)$ of the $2^N$ patterns that are stable in this network.  This is much greater than the $0.14N$.  For example in a 100 unit network there are $10^{29}$ stable states, but these states make no distinction between learnt patterns and spurious patterns.  This problem demonstrates the inadequacy of capacity, without discrimination between types of patterns, as the only measure of performance.
+
+We will refer to the number of learnt patterns that are stable as the \term{recognition capacity}. A pattern that is only just stable, may be recognised but not recalled from similar content.  The example above shows that the number of stable patterns may not be correlated with the performance of the network as a content addressable memory.  Another measure of capacity is the number of learnt patterns that are \emph{recalled}.  The \term{recall capacity} is the number of learnt patterns that are found when probing the network.  This is related to the basin of attraction of the stable learnt patterns.  A large basin allows the content in the ``content addressing'' to have a larger variation from the original pattern.
+
+
+\subsection{Basin Size}
+\label{sec:BasinSize}
+            
+\subsection{Hamming Distance}
+\label{sec:Distmeasure}
+Hamming distance is the bitwise difference between two arrays of Boolean numbers.  The sum of the distance on each axis is used as the total distance between two patterns.  A learnt pattern that is stable will have a Hamming distance between the input and output states of 0 as the pattern will not change during relaxation.  If the requirement for perfect recall of a pattern is relaxed slightly, and a pattern close to a learnt pattern is considered a successful recovery, the distance between the new centre of the basin of attraction and the learnt pattern that is close to it can be used as a measure of the performance of the network.  In \citet{Robins1998} we use this method for comparing different solutions to catastrophic forgetting.  If the Hamming distance between a learnt pattern and the stable pattern it relaxes to is small the assumption is that the centre of the basin of attraction has moved a short distance.  This however is not always the case.  In a network with a very large number of spurious states the distance that any probe moves during relaxation is small.  This is not because the network has moved the centre of a learnt pattern to the new stable state,  but because of the increased likelihood of finding one of the plentiful stable spurious configurations.
+
+The Hamming distance between an unstable learnt pattern and the stable state it relaxes to can be used in conjunction with an estimate of the size of the  stable state's basin of attraction.  If the stable state has a large basin of attraction then it might be possible to claim that the learnt pattern has moved and is ``mostly'' remembered.  To say the pattern has moved, the Hamming distance between the unstable learnt pattern and the associated stable state should be much smaller than the basin of attraction, and the ``basin should only contain a single unstable learnt pattern''.  If the basin contains two or more learnt patterns, then the spurious state might be either a prototype for those patterns, or have a strong correlation to them.  In either case it would be difficult to claim that an individual pattern had been successfully ``remembered'' if it was just one of many unstable learnt patterns that relax to a large spurious pattern.
+
+\section{Conclusion}
+
+In this chapter we introduced a unit model for a neuron.  These units are used to construct Hopfield networks which are the focus of this thesis.  We present two contrasting learning algorithms for adjusting the weights in the network: Hebbian learning with its strong biological basis and simple update rule; and delta learning, a powerful error correcting procedure that guarantees convergence. Both of these procedures alter the weighted connections in the Hopfield network to learn some set of desired patterns. By learning we are referring to making the patterns the content addressable memories in a Hopfield network.
+
+The concept of energy was introduced.  Each unit calculates an energy value.  Positive values indicate that the unit is unstable and will change activation in the next time step, while negative values indicate stable units.  The sum of the individual energies of the units is the total energy of a particular pattern in the network.  If every unit in the pattern has a negative energy then that pattern is a stable state of the network.  Thus, to learn a pattern, the energy of every unit in the network must be altered until they are all negative for that pattern. 
+
+The energy surface of a Hopfield network is defined as the total energy of the network in each possible activation pattern.  Basins of attraction in the energy surface are like ``depressions'' in the surface.  These low energy local minima form the basis of the content addressability of the network.  Probe patterns that are close to a learnt pattern, within the basin of attraction, will relax to the learnt pattern and thus will have addressed the memory by presenting most of the content.  A large basin of attraction means that more memory probes will relax to the pattern at the centre of the basin.  In terms of content addressability, less of the original content is required for a probe to find the learnt pattern.  Stable patterns without a basin of attraction do not fit with the concept of a CAM as they can only be used as a recognition system, because any change of content results in relaxation to a different pattern.
+
+
+There are many performance measures for Hopfield networks.  The most often discussed is the capacity of the network, measured by the number of desired patterns that can be learnt as stable states in the network.  With Hebbian learning the capacity of the network is approximately $0.14N$.  Relying on the capacity as the only measure of performance can be misleading, particularly when the goal is to create a CAM.  Delta learning is able to make as many as $2N$ patterns stable, but these patterns have almost no basin of attraction.  It is also possible to make every pattern with the same set level of activation stable.  This allows ${}_N C_{(N/2)} = N!/((N/2)!(N/2)!)$ pattern to be stable.  This network is not a good CAM even though it has a massive capacity.  Thus, when a large capacity is achieved, the basins of attraction of the stable patterns must also be tested.  A well performing CAM system would have a large number of stable learnt patterns with reasonable basins of attraction.

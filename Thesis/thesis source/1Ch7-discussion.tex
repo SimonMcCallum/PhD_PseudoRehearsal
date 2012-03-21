@@ -1,0 +1,64 @@
+%! iTeXMac(project): thesis.pTexMac
+%! iTeXMac(input):thesis.tex 
+
+\chapter{Discussion}
+\label{chap:Discussion}
+
+One of the motivations for this research is to propose a computational metaphor for what might be happening during memory consolidation in the sleeping brain. In this chapter we investigate if a link can be made between memory processing during sleep and pseudorehearsal.  We then go on to discuss the possible future of this research.
+
+\section{Sleep and Memory Consolidation}
+
+Both pseudorehearsal~\citep{Robins1998} and unlearning \citep{Crick1983} have been linked to the theory that information is consolidated into long term memory during sleep. In this section we describe this sleep consolidation hypothesis and the evidence that supports it.  
+
+
+\subsection{The Consolidation of Learning During Sleep}
+
+There are many theories on the function of sleep, ranging from the physiological to the psychoanalytic (see e.g.\ Moffitt \& Kramer, 1993; Empson, 1993; for overviews of research on sleep and dreaming). Although there are many biological functions associated with sleep, the one we are interested in is the connection between sleep and memory. The theory that some forms of memory either require, or are enhanced by, sleep is known as ``sleep-dependent memory processing'' \citep{Walker2006} and covers a wide variety of processing stages and types.  
+
+Like memory, sleep is not a homogeneous system.  There are several stages of sleep, each of which is physiologically and neurologically distinct.  The most obvious distinction is REM (rapid eye movement) and NREM (non REM) sleep.  While engaged in REM sleep the brain is being heavily stimulated by activity from the brain stem, with waves of activation passing up through the visual areas and into the cortex.  These seemingly random pulses cause the eyes to shudder or move rapidly, hence the name rapid eye movement.  This stage of sleep has been called ``paradoxical sleep'' as the activity of the brain on an EEG appears to be similar to fully awake behaviour.  NREM sleep is very different to both REM and wakeful activity, and has been broken down into four stages, with Stages 3 and 4 being the deepest.  Stage 3 and 4 sleep are also called slow wave sleep (SWS) as there are slow waves of activation visible on an EEG.
+ 
+Initially, studies on memory consolidation were focused on REM sleep \citep{Greenberg1981}, but recent research suggests that the stage of sleep necessary for memory consolidation may depend on the type of memory being processed.  Procedural memory, both visual and motor, appear to be linked to NREM sleep.  Positive correlations between the quantity of NREM sleep and the post sleep improvements in performance have been shown by \citet{Smith1994} and \citet{Walker2002a} for motor skills, and  \citet{Maquet2003} and \citet{Huber2004} for visual tasks.
+
+Changes in the areas that are active during REM sleep also indicate that information is replayed during sleep.   Brain imaging has been used to show that temporal patterns of activation that occurred during training, reoccurred in subsequent REM sleep periods \citep{Pennartz2002,Maquet2000}.  This matching of temporal sequence did not occur in animals that had not received training.  Reactivation of task specific areas of the brain have also been shown in SWS, and the amount of reactivation is positively correlated with next-day improvement~\citep{Peigneux2004}.   
+
+\citet{Walker2006} summarises recent research at three levels: molecular level, where there is an up-regulation of memory specific genes during sleep; electrophysiological level, with robust results for correlations between neural activity during sleep and improved performance; and the most complex level of behavioural research.  The behavioural evidence shows that some types of learning are dependent on sleep, and some are independent of this state.  However they conclude that:
+\begin{quote}``It is now clear that sleep mediates learning and memory processing, but the way in which it does so remains largely unknown.''\citep{Walker2006} \end{quote} 
+It is this question of how sleep mediates memory processing that we are most interested in.
+
+
+\subsection{Sleep and Pseudorehearsal}
+
+If we accept the hypothesis that sleep is important for memory processing, there is still the question of why there is a separate stage of memory processing, and why this occurs during sleep.  Most of the psychological work in this area focuses on defining the relationship between sleep and memory, rather than why it is necessary or how it works.  \citet{Robins1996} proposed that catastrophic forgetting may be the reason for these two stages of memory processing, and that pseudorehearsal in an offline phase may be functionally similar to the role of REM and NREM in the sleeping brain.  This proposal was based on an MLP with back prorogation learning.  In this thesis we have shown that the pseudorehearsal approach works with a biologically plausible Hopfield network, for a more memory--like autoassociative task.
+
+There are several features of the neurological research that link well with a rehearsal, and indeed a pseudorehearsal, explanation of sleep processing.  The replaying of patterns of activation that were active during the learning of a task \citep{Pennartz2002,Peigneux2004} fits very well with the requirement for the replaying of a new pattern to integrate into long term memory.  The waves of random activation flowing from the brain stem could be used to sample the current behaviour of the network, generating the pseudoitem population.
+
+
+\section{Future Work}
+
+The pseudorehearsal system as presented by \citet{Robins1996} and the Hopfield variant suggested by us in \cite{Robins1998} have already been extended by various authors.
+\citet{French1997} and \citet{Ans1997} have used the concept to develop a ``reverberating'' dual network model of the hippocampus and neocortex.  In this model the pseudoitems protect the memories in the neocortex as information is transferred. \citet{Meeter2003} has investigated how to control the amount of pseudorehearsal so that the network does not have ``runaway'' rehearsal where the pseudoitem population dominates the network preventing new learning. \citet{Walker2004b} have analysed a combination of pseudorehearsal and unlearning as possible models for the two different types of sleep involved in memory, REM and SWS.
+
+As part of the research for this thesis we have contributed the Hopfield autoassociative variant for pseudorehearsal, a model of familiarity discrimination for stable patterns, and shown that by filtering the rehearsal population using the energy ratio measure we can achieve much higher memory capacity that any of the other proposed solutions for the serial learning task.  
+
+\subsection{Energy Ratio}
+
+The energy profile and the energy ratio measure that we have used to improve pseudorehearsal could be incorporated into many applications of Hopfield networks.  The ability to determine the type of pattern that has been found by random probing allows the system to differentiate between fantasy and reality. 
+
+A content addressable memory system must be able to access stored patterns by their content.  Ideally, a pattern should be able to be found with some fraction of the content presented.  This is the reason for testing the basin of attraction of the stable learnt patterns, to see how much of the original content is needed to access the memory.  
+
+The energy ratio measure allows us to use the standard Hopfield network model, with its guarantee of finding a stable pattern, and improve its usefulness as a content addressable memory system by enabling it to give a ``yes, I remember X'', or a ``no, that does not seem familiar'' response.  Without the ability to differentiate the spurious memories, the only response is that the input ``reminds me of Y'', which may or may not have actually been part of the learning population.  Additional research is required to assess how useful this measure will be for the large variety of Hopfield like models being used in many research environments.  
+
+\subsection{Biological Analogue of the Energy Ratio Measure}
+
+The energy ratio measure is a very effective computational solution to the problem of familiarity.  There is still the open question of how a biological equivalent could be calculated.  We propose two possible mechanisms: differential firing rates, and extracellular neurotransmitter.  Using the first mechanism, the energy ratio measure could be equated to calculating the difference in the firing rates of cell assemblies, as a high input results in a high firing rate.  If an assembly of active neurons have relatively uniform firing rates then this would be equivalent to a high energy ratio (suggesting that this state is familiar / learnt), whereas a wide range of firing rates would be equivalent to a low ratio (suggesting that the state is novel / spurious).  The extracellular neurotransmitter technique uses the neurotransmitter that is released when a neuron fires. Excess neurotransmitter would indicate saturation. It is possible that synapses close by could respond to these fluctuations in the amount of free neurotransmitter, and using this to calculate a ratio between neurons which are saturated and those that are only just over their decision threshold.  
+
+Given the implication of the perirhinal cortex in familiarity detection, perhaps a calculation similar to the energy ratio measure is occurring in these neurons.  If the neurons are predicting familiarity using the energy ratio measure, then we would expect that heavy external stimulation of a small subset of hippocampal cells would be linked with feelings of unfamiliarity and uncertainty.  Laboratory experiments using this technique may be able to support the current computational model, or they may require the development of other mechanisms to perform the task of determining familiarity.
+
+\section{Conclusion}
+
+This thesis has explored a wide range of issues relating to the capacity and stability of learning in Hopfield networks.  Pseudorehearsal is clearly the best of the proposed solutions to the pervasive problem of catastrophic forgetting.  We have shown that the pseudorehearsal mechanism can be enhanced by using an estimate of the familiarity of randomly retrieved memories, the energy ratio measure. Using this enhanced pseudorehearsal it is possible to store a relatively large amount of information in a Hopfield network using purely local information.
+
+As highly interconnected, dynamical, content addressable memory systems, Hopfield networks are a plausible computational approximation of the properties of memory mechanisms in the mammalian brain.  If it is indeed the case that during the course of its evolution the brain has met and solved the problem of catastrophic forgetting (perhaps, as argued here, via consolidation of newly learned information during sleep), then pseudorehearsal is a plausible candidate for a computational model of this mechanism.
+
+Hence, after a thorough investigation of the problem of catastrophic forgetting, the pseudorehearsal solution stands out as robust and efficient in practical terms, and as a biologically plausible model of an important aspect of human learning and memory.
+

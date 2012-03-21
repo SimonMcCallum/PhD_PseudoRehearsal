@@ -1,0 +1,229 @@
+\chapter{Pattern Knowledge used with Unlearning and Pseudorehearsal}
+\label{chap:Enhancing}
+
+The results from Chapter~\ref{chap:distinguish} show that we can distinguish learnt patterns from the spurious patterns.  In this chapter we discuss how this information might be used to improve the performance of the two system level solutions to catastrophic forgetting.
+
+
+\section{Perfect Unlearning}
+\label{sec:PerfectUnlearning}
+
+In the early papers on unlearning it was suggested that if unlearning could be restricted to just the spurious patterns then it might be possible to improve its performance \citep{Hopfield83,vanHemmen1997}.  
+
+Before testing the energy ratio measure as a way of restricting the unlearning to spurious patterns, we implemented a form of perfect unlearning with perfect information about the patterns.  This is done by referring to the original learning set.  Although this information would not be available to a real memory system, it forms an upper bound on performance for any pattern discrimination system, such as the energy ratio measure. By using perfect information about the types of patterns, we can analyse the assertion that identification of the nature of a pattern will assist unlearning.
+
+\subsection{Algorithm}
+
+The procedure for unlearning only the spurious patterns is similar to the Christos unlearning procedure presented in Section~\ref{sec:ChristosUnlearning} with the addition of a selection phase.  This selection phase labels spurious and learnt patterns and removes the learnt patterns from the unlearning set, thus protecting them from direct unlearning.  The removed learnt patterns are replaced by spurious patterns generated with additional probes.  The new procedure with the filter as indicated ($\rightarrow$) is:
+
+\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+	\item learn a small base population\footnote{The base population is needed, as with only a few patterns learnt there are very few or no spurious patterns found by probing - and therefore nothing to unlearn.} of items
+	\item perform unlearning of ($\unlearningTotal*$base population) items, each of which require
+	\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+		\item probing the network with a random pattern and relaxing to find a stable state
+		\item \hspace{-1cm}\parbox{0.4cm}{$\rightarrow$}\hspace{.6cm}if the stable state is one of the learnt patterns continuing to probe until you find a pattern that is not a learnt pattern
+		\item performing unlearning on the pattern by applying Hebbian learning with a learning constant of $\unlearningConst$
+	\end{itemize}
+	\item for each new pattern to learn
+	\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+		\item learn the new item using Hebbian learning
+		\item perform unlearning of ($\unlearningTotal$) items, each of which require
+		\begin{itemize}[topsep=1ex, leftmargin=1cm, labelsep=0.2cm, itemindent=0pt,label=\textbullet]
+			\item probing the network with a random pattern and relaxing to find a stable state
+			\item \hspace{-1cm}\parbox{0.4cm}{$\rightarrow$}\hspace{.6cm}if the stable state is one of the learnt patterns continuing to probe until you find a pattern that is not a learnt pattern
+			\item performing unlearning on the pattern by applying Hebbian learning with a learning constant of $\unlearningConst$
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+With the removal of the learnt patterns from the unlearning set, all the ``power'' can be focused on removing the unwanted spurious patterns. In theory, this should improve the performance of the learning system.
+
+\subsection{Results of Perfect Unlearning}
+
+Having implemented the above procedure we were initially surprised to discover that this ``enhancement'' did not improve the performance of unlearning at all.  It certainly changes which patterns are remembered, but as shown in Figure~\ref{fig:enhancedULpure} unlearning only the spurious patterns ``Ul Spurious'' causes the performance to collapse over time in a similar way to the original unlearning ``Ul All''.  Unlearning only the spurious patterns delays the decline in performance for a while, but both types of unlearning are well below weight decay after 60 patterns.  Although simple weight decay does not have as high a peak, its consistency over long periods indicates that it is still better than the unlearning systems for longer training runs.
+ 
+\begin{figure}[tbp]
+	\small
+	\begin{center}
+	\input{Figures/Unlearning/enhancedULPure.tex}
+	\end{center}
+	\caption{Unlearning of all patterns ``Ul All'', and unlearning of just the spurious patterns ``Ul Spurious''.  Hebbian learning in \hopnet{100,\pm}{5} network with five patterns learnt followed by new patterns presented one at a time.  Both unlearning conditions have an unlearning population of 50 patterns with unlearning constant of $\unlearningConst = -0.01$, while the weight decay condition is set at $\weightDecay = 0.1$ (100 repetitions, N.B.\ error bars removed for readability).} 
+	\label{fig:enhancedULpure}
+\end{figure}
+
+The unlearning procedure suggested by \citet{vanHemmen1997} is not altered at all by the inclusion of learnt pattern filtering.  As the learnt patterns have virtually no basin of attraction, they are almost never included in the unlearning population.  Out of 1,000,000 unlearning probes only 132 relaxed to learnt patterns.  The exclusion of this small number of patterns had no perceivable influence on the performance of unlearning.
+
+
+\subsection{Assessment of Performance}
+
+The performance of unlearning was not greatly improved by the inclusion of perfect pattern identification.  Part of the reason for this is that unlearning after each new pattern, like weight decay, needs to decrease the influence of the learnt patterns as well as the spurious patterns.  The most recently learnt pattern has the largest basin of attraction, and so receives the most unlearning.  This pattern's large basin is slowly reduced by unlearning, until other patterns become stable.  As a side effect the weights in the network are reduced.  With perfect unlearning we remove the opportunity to decrease the size of the basin of attraction of the most recently learnt pattern, hence unlearning is unable to decrease many of the weights.  Without this decrease, new patterns cannot be learnt.  Thus, being able to distinguish spurious patterns from learnt patterns, even perfectly, does not improve unlearning. 
+
+
+\section{Perfect Pseudorehearsal}
+
+When rehearsing the entire learnt population with every new pattern, the network must be able to retrieve a perfect copy of every pattern.  This is obviously impractical for any real memory system.  Instead of rehearsing every pattern from the entire learnt population, we could rehearse only the learnt patterns that are found by probing.  This changes the task from being able to retrieve all the learnt patterns, to having perfect knowledge about a pattern.  
+
+During ``Full'' rehearsal the patterns are rehearsed with noise so that their basin of attraction is protected.  Pseudorehearsal does not apply noise to the pseudoitems so that they do not generate basins and displace the learnt population.  The new population containing only those patterns found by probing will be learnt with and without noise to find the best combination of pseudorehearsal and knowledge about patterns.
+
+\n{
+One of the major differences between the simple pseudorehearsal algorithm and full rehearsal is that pseudorehearsal only rehearses patterns that are found by probing.  We can construct a combination of these two approaches by altering the pseudoitem population so that it only contains learnt patterns, and by applying noise to this learnt pseudoitem population.  Selecting only the learnt patterns requires perfect knowledge about the type of pattern found by probing. 
+
+Pseudorehearsal is a very effective way of increasing the storage capacity of a Hopfield network.  However, it is still far below the theoretical capacity of $1N$.  There are three main differences between full rehearsal and pseudorehearsal. These are:
+\begin{enumerate}
+\item Pseudorehearsal only rehearses patterns that have been found by probing.
+\item There is no noise applied to the pseudoitems when they are rehearsed.
+\item Pseudorehearsal includes spurious states.
+\end{enumerate} 
+
+To investigate how pseudorehearsal might be improved, we can alter pseudorehearsal so that these differences are removed.  The three differences come from three different conditions placed on rehearsal.  
+\begin{enumerate}
+\item Probing to find the rehearsal population
+\item Noise on the rehearsal population
+\item Removal of spurious states from the rehearsal population. 
+\end{enumerate} 
+}
+
+The results of altering the pseudorehearsal algorithm will be shown in two different networks.  The first network, Net$A$, is a replication of the network and learning task that we presented in \citet{Robins1998}.  This is a 64 unit Hopfield network with 44 patterns in the base population (\hopnet{64,\pm}{44}).  There are 64 items in the learning population, all of which have been generated as simplified alpha-numeric characters.  Examples of these are shown in Figure~\ref{fig:AlphaNumeric} with the full set of 64 shown in Appendix~\ref{app:letters}.  These patterns are correlated and have a coding ratio of below 30\%.  The patterns for the letter 'C' and the letter 'O' have a difference of only 2 units.  These patterns are far too correlated for the unmodified Hebbian learning algorithm to learn more than four patterns.  The 44 pattern base population is a large percentage of the theoretical capacity of the network, and this makes it difficult for delta learning to make all 44 learnt patterns stable and ensure that they have large basins of attraction.
+
+The second network, Net$B$, is a 100 unit network with five patterns in the base population \hopnet{100,\pm}{5}.  The learning patterns for this network are randomly generated with a coding ratio of $50\%$ (see Appendix~\ref{app:EnhPR} for additional parameters).  These patterns are ideal for Hebbian learning, and contain the maximum possible complexity per pattern of any distribution.  The small base population allows pseudorehearsal to solve catastrophic plasticity, without the problem of catastrophic capacity. The results of pseudorehearsal will be shown for both of these networks for each of the following figures, unless stated otherwise.
+
+\subsection{Perfect Pseudorehearsal with Noise}
+
+Full rehearsal uses noise on both the new item and the rehearsal population.  Figure~\ref{fig:Real-probing} shows the performance of full rehearsal, ``Full'', compared to perfect pseudorehearsal with noise, ``PrL\noiseConst{}''.  The performance of full rehearsal is very close to $100\%$, confirming that the network is capable of learning all the patterns.  The restriction to rehearsing only those patterns that were found by probing lowers the performance significantly, but it is still performing well above simple pseudorehearsal ``Pr256''.  
+
+The naming convention we will use in the following pseudorehearsal figures is: ``Pr'' for pseudorehearsal, followed by either a) the number of patterns in the pseudoitem population (e.g.\ ``256'') with an ``*'' if the learnt patterns have been removed; b) ``L'' indicating that only learnt patterns found by probing are included in the pseudoitem population; or c) ``ER'' indicating that only patterns that have an energy ratio above the number indicated (e.g.\ ``0.25'') are included in the pseudoitem population.  If noise is applied to the population then ``\noiseConst{}'' is appended to the end of the name.
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Pseudo/Real-probing64}
+	\vspace{1cm}\\
+	\input{Figures/Pseudo/Real-probing100}
+	\caption{Stable learnt patterns in Net$A$ \hopnet{64,\pm}{44} and Net$B$ \hopnet{100,\pm}{5}. ``Full'' is full rehearsal of every learnt pattern, ``PrL\noiseConst{}'' is rehearsal of just the learnt patterns that were found with 2000 probes, and ``Pr256'' is simple pseudorehearsal of the first 256 patterns found with probing (100 repetitions).}
+	\label{fig:Real-probing}
+\end{figure}
+
+Perhaps the most interesting feature of Figure~\ref{fig:Real-probing} is the difference between full rehearsal and perfect pseudorehearsal ``PrL\noiseConst{}''.  When only the found patterns are rehearsed, the number of patterns that are stable is approximately $0.6N$ in Net$A$ and below $0.3N$ in Net$B$.  The difference between the performance is caused by the correlated patterns and large base population used with Net$A$.  The performance of Net$B$ of $0.3N$ is relatively low compared to full rehearsal, and is only approximately double the number of patterns learnt by simple pseudorehearsal.  This is using perfect knowledge of the patterns that are being rehearsed, and so will act as an upper bound for systems that use an estimate of pattern identity.
+
+\subsection{Perfect Pseudorehearsal without Noise}
+
+The experiments presented in Section~\ref{sec:PRSolution} do not apply noise to the pseudoitems when they are rehearsed.  This allows the protection of the learnt patterns without creating new basins of attraction around the large number of spurious patterns that are usually included in the pseudoitem population.  
+
+In \citet{Robins1998} we compared simple pseudorehearsal with pseudorehearsal with the spurious patterns removed ,``Pr256*''.  In Section~\ref{sec:PseudorehearsalOfStablePatterns} we replicated this work, showing that pseudorehearsal is still relatively effective with all the learnt patterns removed from the pseudoitem population.    Next we compared the use of perfect knowledge to remove either the learnt or the spurious patterns.  Figure~\ref{fig:PR-nonoise} shows the performance of pseudorehearsal without noise on a rehearsal population with the two types of patterns removed.  ``PrL'' is pseudorehearsal of only the learnt patterns, and ``Pr256*'' of only spurious.  Surprisingly, when we limit the rehearsal to only the learnt patterns, the number of stable learnt patterns decreases.  This happens in both Net$A$ and Net$B$.
+
+There are two reasons for this decrease in performance.  The first is that the removal of the spurious patterns results in a very small pseudoitem population.  The network is limited to 2000 probes to find patterns for the pseudorehearsal population.  When limiting the patterns that are included in the population to just the learnt patterns, the size of the pseudoitem population cannot grow larger than the number of stable learnt patterns.  In Net$B$ there are only about 10-15 learnt patterns found during probing.  Thus the pseudoitem population is only about $5\%$ of its normal size of 256 patterns.  Without a large number of pseudoitems the network cannot preserve the original behaviour, as there are too few data points to correct the changes made by learning the new pattern.
+
+The second reason relates to the application of noise.  When learning patterns without noise, delta learning only makes adjustments when the pattern is unstable.  As most of the learnt patterns have relatively large basins of attraction, it takes a large number of changes before they generate errors.  Thus the majority of the damage to the pattern's stability is done well before the pattern becomes unstable.  Preserving the learnt patterns without noise does not protect the basin of attraction of the pattern, and although the learnt patterns remain stable for a while, they quickly lose their basin of attraction and so are not found with random probing, and will not appear in  pseudoitem population.  When a learnt pattern is no longer part of the pseudoitem population it quickly disappears as there is no mechanism to preserve it.
+
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Pseudo/PR-nonoise64}
+	\vspace{1cm}\\
+	\input{Figures/Pseudo/PR-nonoise100}
+	\caption{Stable learnt patterns in Net$A$ \hopnet{64,\pm}{44} and Net$B$ \hopnet{100,\pm}{5}. ``Pr256'' is pseudorehearsal of 256 patterns, ``PrL'' is  pseudorehearsal with only the learnt patterns found with 2000 probes, and ``Pr256*'' is the first 256 spurious patterns (with learnt patterns removed and replaced) found with 2000 probes (100 repetitions, N.B.\ error bars removed for readability).}
+	\label{fig:PR-nonoise}
+\end{figure}
+
+Simply adding noise to all types of pseudorehearsal does not improve the performance of pseudorehearsal.  Adding noise to the rehearsal of every pattern found during sampling quickly degrades the performance of the network.  Figure~\ref{fig:PseudoNoise} shows the performance with noise added to all pseudoitems, ``Pr256\noiseConst{}'', and with the learnt patterns removed, ``Pr256*\noiseConst{}''.  The performance of both is very poor, with fewer than five patterns stable.  Not only is the number of stable patterns low, but they are usually only the first five patterns learnt.  These learnt patterns have no basin of attraction, and only remain stable as a result of the large spurious states that were formed as linear combinations of these patterns when the base population was learnt.  The ``Pr256\noiseConst{}'' and ``Pr256*\noiseConst{}'' are almost identical as the learnt patterns are only found when there are less than five or six patterns learnt.  After that point they have no basin of attraction and so are never found, making their filtering irrelevant.
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Pseudo/PR-noise64}
+	\vspace{1cm}\\
+	\input{Figures/Pseudo/PR-noise100}
+	\caption{Stable learnt patterns in Net$A$ \hopnet{64,\pm}{44} and Net$B$ \hopnet{100,\pm}{5}. ``Pr256'' is simple pseudorehearsal of 256 patterns, ``Pr256\noiseConst{}'' is simple pseudorehearsal with noise added to the all the pseudoitems, and ``Pr256*\noiseConst{}'' is pseudorehearsal with perfect removal of learnt patterns and noise added to the remaining pseudoitems (Pr256 100 repetitions, with \noiseConst{} 20 repetitions).}
+	\label{fig:PseudoNoise}
+\end{figure}
+
+The reason for the original five base population items remaining stable is linked to the discussion of spurious patterns in Section~\ref{sec:PreservingSpuriousItems}.  After only five patterns have been learnt, there are only a few large spurious attractors in the network.  These are the linear combinations of the learnt patterns.  These combination patterns are found in the probing stage, and become part of the pseudoitem population for every new pattern.  As these combination patterns are not part of the learnt population they are not removed by the learnt pattern filter.  Thus they are rehearsed with every pattern and become very stable with large basins of attraction.  The five base population patterns are now the linear combinations of these very stable spurious states.  The rehearsal of the spurious states ensures that the learnt patterns that created them remain stable, without ever being directly rehearsed.  After a moderate number of new patterns are presented, the stable base population patterns have small basins of attraction and are no longer found with random probing.  
+
+With access to perfect knowledge about the patterns found by probing, pseudorehearsal is able to learn prroximately $0.3N$ patterns.  Unfortunately, it still requires access to perfect external knowledge about which patterns were learnt.  As shown in Chapter~\ref{chap:distinguish}, the energy ratio measure can distinguish learnt patterns from spurious patterns with a high degree of accuracy without accessing the original patterns.  We can use this metric with pseudorehearsal to assess the type of pattern found by probing, instead of the infeasible approach of accessing the original base population.  
+
+\section{Energy Ratio Based Pseudorehearsal}
+
+Pseudorehearsal of learnt patterns with noise is able to store $0.3N$ patterns.  In this section we will use the energy ratio measure to replace perfect knowledge about the rehearsal population.  This requires the learnt patterns to have relatively high energy ratios. To achieve this, two types of noise are applied to the network --  heteroassociative noise for the basin of attraction, and absolute input noise to move units away from the decision surface.  For the following examples we used heteroassociative noise of $\noiseConst{h}=5\%$ and absolute input noise of $\noiseConst{i}=0.5$. Figure~\ref{fig:PrER0.25noise} shows the performance of pseudorehearsal with an energy ratio threshold of $0.15$ ($PrER^{0.15}$) in Net$A$ and $0.25$ ($PrER^{0.25}$) in Net$B$.  In Net$B$ the performance of pseudorehearsal with only the high energy ratio patterns (above the threshold for recognition as a learnt pattern) in the rehearsal population is much better than simple pseudorehearsal, and is similar to perfect pseudorehearsal which has access to perfect knowledge about patterns.
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Pseudo/PrER0.15noise64}
+	\vspace{1cm}\\
+	\input{Figures/Pseudo/PrER0.25noise100}
+	\caption{Stable learnt patterns in Net$A$ \hopnet{64,\pm}{44} and Net$B$ \hopnet{100,\pm}{5}. ``Pr256'' is simple pseudorehearsal, ``PrL\noiseConst{}'' is perfect pseudorehearsal, and ``PrER\noiseConst{}'' is pseudorehearsal of the patterns that are above the energy ratio threshold, 0.15 for Net$A$ and 0.25 for Net$B$ (\learningConst =0.1 , \noiseConst{i}= 0.5, \noiseConst{h}=$5\%$) (40 Repetitions).}
+	\label{fig:PrER0.25noise}
+\end{figure}
+
+Pseudorehearsal using only high ratio patterns performs well in Net$B$, but poorly in Net$A$.  There are two reasons for this difference in performance -- 1) the large base population in $A$ lowers the energy ratios as the patterns compete for weights, and 2) the correlated patterns in the alphanumeric task create a number of units that are only just stable.  The two units that are the difference between the `C' and the `O' are continually pulled back and forth between being active and inactive.  This results in the units being close to the decision surface and thus the patterns have a low energy ratio.  Patterns with low energy ratios are not included in the pseudoitem population and so become unstable.
+
+In the 100 unit Net$B$ learning task the energy ratio is able to distinguish learnt patterns with high accuracy.  In the 100 repetitions of learning 100 patterns with 2000 probes per new item (20,000,000 probes), not a single spurious pattern was misclassified as a learnt pattern.  The number of pseudoitems in each population averaged at $18.41$.  This indicates that of the approximately 25 stable patterns, about 18 of these were being found and rehearsed.
+
+\subsection{Additional Measures of Performance}
+
+The number of stable learnt patterns is not the only important measure of performance.  As discussed earlier, it is possible to have a large number of patterns stable without the network being a good content addressable memory. The size of the basins of attraction and the number of random probes that relax to learnt patterns is also important. For the network to be considered to be learning new patterns, a balance must be found between remembering old patterns and learning new patterns.  A system which learns the first few patterns presented, and then ignores new patterns, is ``solving'' the plasticity/stability dilemma by ignoring the need for plasticity.
+
+With learning applied equally to the new items and the pseudoitems there is no guarantee that any given new item will be learnt.  If a pattern is found by probing, and passes the energy ratio threshold, it will be learnt in exactly the same way as a new pattern.  Using this approach the network tends to learn only the first $0.3N$ patterns presented and then stops learning new patterns.  This can be seen in the probability of patterns in different positions being stable in Net$B$ shown in Figure~\ref{fig:PrER0.25-learningRatio}.  Pseudoitems in condition ``1.0'' have the same learning constant and noise ratios as the new items.  After 100 patterns have been learnt, most of the stable patterns are in the first $0.3N$ patterns presented, with the small addition of the most recently learnt patterns. 
+
+\n{think about adding stuff about the U shaped memory curve here - google -}
+
+To ensure that new patterns are stable, we need to apply a different amount of learning to the new pattern as compared to the rehearsed patterns.  To differentiate the new pattern from the previously learnt patterns we decrease the learning constant \learningConst\ and noise constant \noiseConst{} for the rehearsed pseudoitems. Figure~\ref{fig:PrER0.25-learningRatio} shows the marked difference in the probability of patterns being stable and the basin sizes with different learning on the pseudoitems.  Pseudoitems in the ``0.5'' condition have their learning parameters halved -- learning constant $\learningConst =0.05$, heteroassociative noise $\noiseConst{h} = 2.5\%$, and absolute input noise $\noiseConst{i} = 0.25$.  With this differentiation, the stable patterns cluster closer to the most recently learnt pattern.  A new pattern receives more learning than any other pattern, and so has a larger basin of attraction and survives to the next iteration.  The lower learning constant and noise allows older patterns to be forgotten, so that new items can be learnt.  
+
+The average basin of attraction size, indicated by the overlap \overlap, is much larger and more uniform for the ``1.0'' condition than the ``0.5'' condition. The pseudoitems in the ``1.0'' condition receive as much rehearsal as any other pattern, and so all the patterns converge on a similar size of basin.  The overlaps \overlap\ presented are the average for the patterns that were stable.  In the 100 runs, after 100 patterns have been learnt, the $87^{th}$ pattern was only stable in one of the 100 repetitions.  In the one run that it was stable it had a basin overlap of \overlap = 0.772 (the furthest right point of the relatively uniform basin overlaps in the ``100 Overlap'' graph).  The number of data points used to find the average can be seen by comparing the overlap graph with the probability graph directly above it.  If a pattern is stable in 5\% of the repetitions, then the overlap is the average of those 5 stable patterns.  The patterns in the range 60 to 87 are rarely stable, but once in the pseudoitem population they become similar in basin size and overlap to any other rehearsed pattern.  The last 10 patterns (90--100) are much more likely to be stable, not because of rehearsal, but because of their recent learning.  The probability of these patterns being stable is very similar to standard delta learning without any form of rehearsal.  These most recently learnt patterns generally do not have a large enough basin of attraction to be found by random probing, and so are not receiving rehearsal after they were first learnt.  Without rehearsal the basin size and the probability of being stable both decrease sharply.  This explains the discontinuity in the ``1.0'' condition in the ``100 Overlap'' graph at position 87.  The development of this discontinuity can be seen after 50 patterns at the $45^{th}$ position. 
+
+
+\begin{figure}[p]
+\center
+\small
+	\scalebox{0.60}{\input{Figures/Pseudo/PrER0.25-Lr50Stable}}
+	\scalebox{0.60}{\input{Figures/Pseudo/PrER0.25-Lr100Stable}}
+	\vspace{0.5cm}\\
+	\scalebox{0.60}{\input{Figures/Pseudo/PrER0.25-Lr50Overlap}}
+	\scalebox{0.60}{\input{Figures/Pseudo/PrER0.25-Lr100Overlap}}
+	\caption{Probability of being stable and the average size of the basins of attraction for patterns after either 50 patterns have been learnt or 100 patterns have been learnt for Net$B$. ``1.0''  is the same noise on pseudoitems as new items $(\learningConst = 0.1,\ \noiseConst{h}=5\%$ and $\noiseConst{i}=0.5)$ and ``0.5'' has pseudoitems with half the learning and noise constants $(\learningConst = 0.05,\  \noiseConst{h}=2.5\%$ and $\noiseConst{i}=0.25)$.}
+	\label{fig:PrER0.25-learningRatio}
+\end{figure}
+
+Pseudorehearsal with the energy ratio measure is also effective in low coding environments.  Figure~\ref{fig:PRlowAct} shows that pseudorehearsal with an energy ratio threshold of 0.25 is also effective in networks with low coding ratios.  The performance with patterns that are generated with $10\%$ or $20\%$ of their units active shows that this approach is robust with respect to the coding ratio of the patterns.
+
+\begin{figure}[ht]
+\center
+\small
+	\input{Figures/Pseudo/PRlowAct}
+	\caption{Pseudorehearsal applied to learning patterns with low coding ratios.  ``PrER0.25\noiseConst{} - $0.2$'' has $20\%$ of the units active and ``PrER0.25\noiseConst{} - 0.1'' has $10\%$. \hopnet{100,\pm}{5} with energy ratio threshold of $0.25$, learning ratio of $0.5$, 2000 probes to find high energy ratio patterns (0.5 has 100 repetitions, while  0.1 and 0.2 have 20 repetitions).}
+	\label{fig:PRlowAct}
+\end{figure}
+
+\n{This is where the additional graphs of the system working in the 0/1 networks are included.  And with the thermal delta learning rule}
+
+\section{Summary of Performance}
+
+Pseudorehearsal with the energy ratio threshold consistently stores a large number of patterns.  We can now compare this solution with the other feasible solutions presented in this thesis.  For a solution to be feasible it must have access to a learnt pattern only while the pattern is being learnt. Figure~\ref{fig:AllComp} compares the best of each of the feasible solutions in the 100 unit \hopnet{100,\pm}{5} network.  These are broken into two groups -- the Hebbian learning group of weight decay, neuronal regulation, and Christos style unlearning; and the delta learning group of simple pseudorehearsal and pseudorehearsal with the energy ratio threshold.  Simple pseudorehearsal is already better than any of the Hebbian learning solutions, and with the enhancement of the energy ratio measure ``PrER0.25\noiseConst{}'' it stores almost four times as many learnt patterns as simple weight decay.  The significant gap between the solutions is the clearest indication of the success of this combination of delta learning, pseudorehearsal and energy ratio.
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/AllCompWD-PR}
+	\caption{Comparison of the best practical solutions to catastrophic forgetting.  Conditions with (D) are based on delta learning and (H) on Hebbian learning. The conditions are ``PrER0.25\noiseConst{} (D)'' pseudorehearsal with the energy ratio threshold of 0.25 with noise ratio of 0.5, ``Pr256 (D)'' simple pseudorehearsal of 256 patterns, ``NR (H)'' neuronal regulation at $2N$, ``Weight decay (H)'' weight decay of $\weightDecay=0.1$, and ``Unlearning (H)'' unlearning of 50 patterns at \unlearningConst=0.01 (100 repetitions).}
+	\label{fig:AllComp}
+\end{figure}
+
+The various experiments that have been conducted throughout this thesis have been drawn together in a matrix for easier review, Table~\ref{tab:summary}. The best of the feasible solutions, PrER0.25\noiseConst{}, is in the bottom right corner of the table.  
+
+
+\begin{sidewaystable}
+	\scalebox{0.9}{\input{Figures/Summary}}
+	\caption{Matrix of experimental conditions}
+	\label{tab:summary}
+\end{sidewaystable}
+
+
+\section{Conclusion}
+
+One of the early claims made about unlearning is that it removes the spurious ``fantasy'' states from the network.  \citet{Crick1986} even suggested the catch phase ``we dream to reduce fantasy and obsession''.  If the unlearning process is aimed at removing the spurious ``fantasy'' states, then by explicitly filtering all the learnt patterns from the unlearning population there should be an improvement in the performance of the system, which there is not. The unlearning of learnt items is covered by the ``obsession'' part of the phrase.  Unlearning needs to decrease the strength of the most recently learnt pattern to allow new patterns to be learnt.  The experimental results support this need to remove ``obsession''.  Unlearning must remove the large basins of attraction regardless of their origin, and therefore is not able to benefit from additional knowledge about the types of patterns being unlearnt.
+
+Pseudorehearsal, however, can be improved by knowledge about the types of patterns that are being rehearsed.  Full rehearsal prevents catastrophic forgetting caused by excessive plasticity, but requires access to all the learnt patterns.  Limiting the rehearsal to only the patterns that can be found by probing, results in the capacity of the network being much lower, approximately $0.3N$.  This is still much higher than simple delta learning, and is about double the number stored with standard pseudorehearsal.  Remarkably, we can replace perfect knowledge with the energy ratio measure and for certain conditions retain almost the same level of performance.  The main conditions are that the base population be less than $0.3N$ and that the patterns be relatively independent.
+
+The improvement of storage to $0.3N$ is significantly better than the maximum capacity of any of the Hebbian learning based solutions.  It is also higher than the maximum theoretical capacity of Hebbian learning in the static case of approximately $0.14N$.  The inclusion of the energy ratio measure allows the system to provide a level of confidence about the origin of a stable pattern, and a threshold for familiarity.  Increasing the memory capacity and the quality of the information returned from the network makes the combination of pseudorehearsal and energy ratio a very attractive solution to the problem of catastrophic forgetting.  This solution does not require a second copy of the learnt population, nor does it need to process all the patterns before learning them.  It is robust with respect to different numbers of patterns, network size, coding ratios, and noise levels.   
+
+The significant improvement in performance provided by energy ratio pseudorehearsal, and its robustness, make this process a strong candidate for a computational explanation of how catastrophic forgetting may be solved by biological systems.

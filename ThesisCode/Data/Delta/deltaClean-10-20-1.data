@@ -1,0 +1,990 @@
+..\prNet100.net deltaClean-10.train
+..\prNet100.net deltaClean-10.train
+Reading File <..\..\Release\default.net>
+>> Param file ..\..\Release\default.net read: 27 items.
+Reading File <..\..\Release\default.train>
+>> Param file ..\..\Release\default.train read: 89 items.
+Reading File <..\prNet100.net>
+>> Param file ..\prNet100.net read: 89 items.
+Reading File <deltaClean-10.train>
+>> Param file deltaClean-10.train read: 91 items.
+
+                             N 100		//	Number of units in the network
+                activationType THRESHOLD  	//	The activation type of the network
+                            ON 1  
+                           OFF -1
+                     maxCycles 4*N
+                    relaxation ASYNCHRONOUS // SYNCHRONOUS or ASYNCHRONOUS
+                  unitsInRatio 0.1 //	ie 0.1    10%
+                          bias FALSE
+                   learnTiming ONLINE //BATCH 
+              symmetricWeights FALSE			//TRUE
+             weightCappingType NOCAP	//NOCAP , HARDCAP, SOFTCAP
+            weightCappingValue 2*N
+                   weightDecay off // 
+              weightDecayValue 0.1 //10% ie weight*(1-val)
+       weightNormalisationType NONORMALISATION 
+      weightNormalisationValue 50*N 			// the point at which to normalise
+          calcHammingDistRelax on
+         noiseDuringRelaxation off
+             gaussianNoiseType RELATIVE
+lenghtOfTimeStableInRelaxation 100
+gaussianRelativeRangeForRelaxation 0.1 
+gaussianAbsoluteRangeForRelaxation 0.25*N
+                  sampleProbOn 0.5 		//This is the proability of a unit being on during sampling
+                 gnuplotGraphs off			//TRUE
+                    debugLevel 0
+            calcInitialChanges on
+                    randomSeed 1
+                     numTrials 10
+                 learningConst 1 			  //	(double)net->N // learning scalar
+                      momentum 0  //0.5
+                maxLearntPatts 1*N
+              patternsFromFile no
+               patternFilename letters.txt  // the file containing 
+                trainingEpochs 5000
+                  learningType STRICTDELTA // or UNLEARNING
+                      numCheck 0
+              maxSpuriousPatts 1000
+                maxPseudoPatts 1000   
+      maxSamplesForPseudoPatts 1000   
+            maxUnlearningPatts 50 //default
+  maxSamplesForUnlearningPatts 1000 //default
+          unlearningCutoffHigh 1  //To do normal unlearning make the high and low the same;
+           unlearningCutoffLow 1
+           unlearningCycleSize 1000
+               unlearningConst 0.001
+                unlearningType unlearningStandard
+         unlearningSuperHeated FALSE
+         uniqueUnlearningPatts FALSE  //This prevents the pseudo items from being repeated.  
+         pseudoRehearsalCutoff 0.3
+    useMaxLowestLearntvsCutoff 0 //default
+                 errorCriteria 0.001
+                     errorTail 0.99
+                 errorCalcType DELTAERROR // SIGMOIDERROR , DELTAERROR the type of error.
+            initialNumberPatts 0.2*N // 0.05 N //16
+                          step 1
+                numLearntPatts 1*maxLearntPatts  // 16
+             hebbianNoiseLevel 0.0 // This is the noise when training the network with hebbian learning
+                 hebbianCycles 1  // Number of cycles to learn the set of patterns with hebbian learning
+             uniquePseudoPatts TRUE  //This prevents the pseudo items from being repeated.  
+   removeLearntFromPseudoPatts FALSE // true if you  want pure spurious patterns as the pseudo items.
+   adjustLearningForPobability FALSE // this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+                  noiseOnInput yes 
+                 noiseOnOutput FALSE //not implemented yet
+         gaussianRelativeRange 0.1 //default
+         gaussianAbsoluteRange 0.25*N //default
+         noiseHetroAssociative no 
+               hetroNoiseLevel 0.1
+          noiseHebbianNegative FALSE
+                generateProbOn 0.5 //This is the proability of a unit being on in the generated patterns
+  generateActivationExactLevel FALSE // this force the units to be apriori correlated as there
+           reorderUnitsinPatts 0
+            calcSpuriousBasins 0
+              calcLearntBasins 0
+   saveStabilityProfilePattern 0 // -1 means do not save any profile
+         displayTestedPatterns on
+        displayLearntPattUnits off
+        displayLearntPattInput off
+     displayLearntPattNetInput off
+      displayLearntPattSummary on
+      displaySpuriousPattUnits off
+      displaySpuriousPattInput off
+   displaySpuriousPattNetInput off
+    displaySpuriousPattSummary on
+        displayPseudoPattUnits on //default
+        displayPseudoPattInput off //default
+     displayPseudoPattNetInput off //default
+      displayPseudoPattSummary on //default
+          displaySpuriousPatts on //default
+ displaySpuriousPatternDetails off
+      unlearningProtocolInital 10 //not implemented
+      unlearningProtocolRepeat 10,50 //as above
+
+
+**********************TRIAL Number   0 ********************************
+
+
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch:1277
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  1	min:  58.0 mean:  157.46  most: 286.0 -- Stdev: 53.127 Rel:  0.337 Ratio:  0.300 Guess:  0.244  HamDist:  0 Dist = 0
+Pat  1 : stable =  1	min:  54.0 mean:  157.50  most: 288.0 -- Stdev: 55.126 Rel:  0.350 Ratio:  0.261 Guess:  0.227  HamDist:  0 Dist = 0
+Pat  2 : stable =  1	min:  38.0 mean:  134.38  most: 250.0 -- Stdev: 52.098 Rel:  0.388 Ratio:  0.262 Guess:  0.178  HamDist:  0 Dist = 0
+Pat  3 : stable =  1	min:  54.0 mean:  152.34  most: 340.0 -- Stdev: 63.523 Rel:  0.417 Ratio:  0.236 Guess:  0.142  HamDist:  0 Dist = 0
+Pat  4 : stable =  1	min:  52.0 mean:  149.06  most: 250.0 -- Stdev: 52.154 Rel:  0.350 Ratio:  0.292 Guess:  0.227  HamDist:  0 Dist = 0
+Pat  5 : stable =  1	min:  52.0 mean:  148.78  most: 326.0 -- Stdev: 58.511 Rel:  0.393 Ratio:  0.255 Guess:  0.171  HamDist:  0 Dist = 0
+Pat  6 : stable =  1	min:  50.0 mean:  144.94  most: 286.0 -- Stdev: 53.612 Rel:  0.370 Ratio:  0.246 Guess:  0.201  HamDist:  0 Dist = 0
+Pat  7 : stable =  1	min:  50.0 mean:  162.58  most: 268.0 -- Stdev: 53.805 Rel:  0.331 Ratio:  0.271 Guess:  0.253  HamDist:  0 Dist = 0
+Pat  8 : stable =  1	min:  42.0 mean:  138.62  most: 254.0 -- Stdev: 50.310 Rel:  0.363 Ratio:  0.264 Guess:  0.210  HamDist:  0 Dist = 0
+Pat  9 : stable =  1	min:  40.0 mean:  138.18  most: 260.0 -- Stdev: 55.903 Rel:  0.405 Ratio:  0.246 Guess:  0.157  HamDist:  0 Dist = 0
+Pat 10 : stable =  1	min:  48.0 mean:  154.10  most: 300.0 -- Stdev: 56.125 Rel:  0.364 Ratio:  0.259 Guess:  0.208  HamDist:  0 Dist = 0
+Pat 11 : stable =  1	min:  48.0 mean:  160.90  most: 250.0 -- Stdev: 56.310 Rel:  0.350 Ratio:  0.246 Guess:  0.227  HamDist:  0 Dist = 0
+Pat 12 : stable =  1	min:  44.0 mean:  140.82  most: 266.0 -- Stdev: 57.331 Rel:  0.407 Ratio:  0.210 Guess:  0.154  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  44.0 mean:  143.82  most: 268.0 -- Stdev: 55.259 Rel:  0.384 Ratio:  0.242 Guess:  0.182  HamDist:  0 Dist = 0
+Pat 14 : stable =  1	min:  54.0 mean:  154.22  most: 246.0 -- Stdev: 53.899 Rel:  0.349 Ratio:  0.271 Guess:  0.228  HamDist:  0 Dist = 0
+Pat 15 : stable =  1	min:  52.0 mean:  146.18  most: 300.0 -- Stdev: 59.740 Rel:  0.409 Ratio:  0.262 Guess:  0.152  HamDist:  0 Dist = 0
+Pat 16 : stable =  1	min:  44.0 mean:  147.66  most: 296.0 -- Stdev: 58.961 Rel:  0.399 Ratio:  0.229 Guess:  0.164  HamDist:  0 Dist = 0
+Pat 17 : stable =  1	min:  50.0 mean:  155.06  most: 258.0 -- Stdev: 52.508 Rel:  0.339 Ratio:  0.287 Guess:  0.243  HamDist:  0 Dist = 0
+Pat 18 : stable =  1	min:  50.0 mean:  155.90  most: 300.0 -- Stdev: 62.110 Rel:  0.398 Ratio:  0.224 Guess:  0.165  HamDist:  0 Dist = 0
+Pat 19 : stable =  1	min:  60.0 mean:  167.26  most: 256.0 -- Stdev: 50.178 Rel:  0.300 Ratio:  0.327 Guess:  0.299  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   0:> min:   58.0  mean:  157.46  most:  286.0 -- Stdev  53.127 Rel:  0.337 Ratio:  0.300 Guess  0.244  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   1:> min:   54.0  mean:  157.50  most:  288.0 -- Stdev  55.126 Rel:  0.350 Ratio:  0.261 Guess  0.227  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   2:> min:   38.0  mean:  134.38  most:  250.0 -- Stdev  52.098 Rel:  0.388 Ratio:  0.262 Guess  0.178  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   3:> min:   54.0  mean:  152.34  most:  340.0 -- Stdev  63.523 Rel:  0.417 Ratio:  0.236 Guess  0.142  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:   52.0  mean:  149.06  most:  250.0 -- Stdev  52.154 Rel:  0.350 Ratio:  0.292 Guess  0.227  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   52.0  mean:  148.78  most:  326.0 -- Stdev  58.511 Rel:  0.393 Ratio:  0.255 Guess  0.171  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   6:> min:   50.0  mean:  144.94  most:  286.0 -- Stdev  53.612 Rel:  0.370 Ratio:  0.246 Guess  0.201  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:   50.0  mean:  162.58  most:  268.0 -- Stdev  53.805 Rel:  0.331 Ratio:  0.271 Guess  0.253  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   8:> min:   42.0  mean:  138.62  most:  254.0 -- Stdev  50.310 Rel:  0.363 Ratio:  0.264 Guess  0.210  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   9:> min:   40.0  mean:  138.18  most:  260.0 -- Stdev  55.903 Rel:  0.405 Ratio:  0.246 Guess  0.157  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   48.0  mean:  154.10  most:  300.0 -- Stdev  56.125 Rel:  0.364 Ratio:  0.259 Guess  0.208  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  11:> min:   48.0  mean:  160.90  most:  250.0 -- Stdev  56.310 Rel:  0.350 Ratio:  0.246 Guess  0.227  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   44.0  mean:  140.82  most:  266.0 -- Stdev  57.331 Rel:  0.407 Ratio:  0.210 Guess  0.154  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   44.0  mean:  143.82  most:  268.0 -- Stdev  55.259 Rel:  0.384 Ratio:  0.242 Guess  0.182  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  14:> min:   54.0  mean:  154.22  most:  246.0 -- Stdev  53.899 Rel:  0.349 Ratio:  0.271 Guess  0.228  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:   52.0  mean:  146.18  most:  300.0 -- Stdev  59.740 Rel:  0.409 Ratio:  0.262 Guess  0.152  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  16:> min:   44.0  mean:  147.66  most:  296.0 -- Stdev  58.961 Rel:  0.399 Ratio:  0.229 Guess  0.164  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  17:> min:   50.0  mean:  155.06  most:  258.0 -- Stdev  52.508 Rel:  0.339 Ratio:  0.287 Guess  0.243  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  18:> min:   50.0  mean:  155.90  most:  300.0 -- Stdev  62.110 Rel:  0.398 Ratio:  0.224 Guess  0.165  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   60.0  mean:  167.26  most:  256.0 -- Stdev  50.178 Rel:  0.300 Ratio:  0.327 Guess  0.299  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  134.380  0.2096  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   20    20     0     0 :     0  (    0     2)       0   (    0     1)     0 :  0.050      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    20 (0.210 > 0.000) (0.417 < 10000.000) (   38 >     0) (  134 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 671
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  1	min:  48.0 mean:  156.24  most: 276.0 -- Stdev: 54.028 Rel:  0.346 Ratio:  0.279 Guess:  0.233  HamDist:  0 Dist = 0
+Pat  1 : stable =  1	min:  24.0 mean:  155.84  most: 322.0 -- Stdev: 63.612 Rel:  0.408 Ratio:  0.182 Guess:  0.153  HamDist:  0 Dist = 0
+Pat  2 : stable =  1	min:  24.0 mean:  133.68  most: 250.0 -- Stdev: 51.275 Rel:  0.384 Ratio:  0.268 Guess:  0.183  HamDist:  0 Dist = 0
+Pat  3 : stable =  1	min:  12.0 mean:  152.24  most: 324.0 -- Stdev: 65.817 Rel:  0.432 Ratio:  0.186 Guess:  0.125  HamDist:  0 Dist = 0
+Pat  4 : stable =  1	min:  52.0 mean:  147.68  most: 244.0 -- Stdev: 51.188 Rel:  0.347 Ratio:  0.279 Guess:  0.232  HamDist:  0 Dist = 0
+Pat  5 : stable =  1	min:  46.0 mean:  147.36  most: 320.0 -- Stdev: 58.748 Rel:  0.399 Ratio:  0.243 Guess:  0.164  HamDist:  0 Dist = 0
+Pat  6 : stable =  1	min:  44.0 mean:  143.68  most: 288.0 -- Stdev: 53.919 Rel:  0.375 Ratio:  0.240 Guess:  0.194  HamDist:  0 Dist = 0
+Pat  7 : stable =  1	min:  46.0 mean:  161.44  most: 282.0 -- Stdev: 52.905 Rel:  0.328 Ratio:  0.279 Guess:  0.258  HamDist:  0 Dist = 0
+Pat  8 : stable =  1	min:  36.0 mean:  137.44  most: 254.0 -- Stdev: 51.305 Rel:  0.373 Ratio:  0.238 Guess:  0.196  HamDist:  0 Dist = 0
+Pat  9 : stable =  1	min:  32.0 mean:  137.84  most: 262.0 -- Stdev: 57.807 Rel:  0.419 Ratio:  0.198 Guess:  0.140  HamDist:  0 Dist = 0
+Pat 10 : stable =  1	min:  52.0 mean:  152.72  most: 290.0 -- Stdev: 55.333 Rel:  0.362 Ratio:  0.271 Guess:  0.211  HamDist:  0 Dist = 0
+Pat 11 : stable =  1	min:  40.0 mean:  159.36  most: 252.0 -- Stdev: 56.455 Rel:  0.354 Ratio:  0.248 Guess:  0.221  HamDist:  0 Dist = 0
+Pat 12 : stable =  1	min:  36.0 mean:  140.24  most: 270.0 -- Stdev: 57.819 Rel:  0.412 Ratio:  0.204 Guess:  0.148  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  46.0 mean:  142.48  most: 268.0 -- Stdev: 55.170 Rel:  0.387 Ratio:  0.236 Guess:  0.179  HamDist:  0 Dist = 0
+Pat 14 : stable =  1	min:  34.0 mean:  152.72  most: 264.0 -- Stdev: 54.247 Rel:  0.355 Ratio:  0.260 Guess:  0.220  HamDist:  0 Dist = 0
+Pat 15 : stable =  1	min:  22.0 mean:  142.88  most: 338.0 -- Stdev: 65.148 Rel:  0.456 Ratio:  0.171 Guess:  0.098  HamDist:  0 Dist = 0
+Pat 16 : stable =  1	min:  18.0 mean:  145.92  most: 338.0 -- Stdev: 64.596 Rel:  0.443 Ratio:  0.149 Guess:  0.113  HamDist:  0 Dist = 0
+Pat 17 : stable =  1	min:   8.0 mean:  153.36  most: 296.0 -- Stdev: 61.254 Rel:  0.399 Ratio:  0.161 Guess:  0.164  HamDist:  0 Dist = 0
+Pat 18 : stable =  1	min:  26.0 mean:  154.88  most: 284.0 -- Stdev: 62.564 Rel:  0.404 Ratio:  0.193 Guess:  0.158  HamDist:  0 Dist = 0
+Pat 19 : stable =  1	min:  52.0 mean:  166.16  most: 260.0 -- Stdev: 54.235 Rel:  0.326 Ratio:  0.305 Guess:  0.260  HamDist:  0 Dist = 0
+Pat 20 : stable =  1	min:  38.0 mean:  137.44  most: 232.0 -- Stdev: 59.368 Rel:  0.432 Ratio:  0.226 Guess:  0.125  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   0:> min:   48.0  mean:  156.24  most:  276.0 -- Stdev  54.028 Rel:  0.346 Ratio:  0.279 Guess  0.233  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   1:> min:   24.0  mean:  155.84  most:  322.0 -- Stdev  63.612 Rel:  0.408 Ratio:  0.182 Guess  0.153  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   2:> min:   24.0  mean:  133.68  most:  250.0 -- Stdev  51.275 Rel:  0.384 Ratio:  0.268 Guess  0.183  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   3:> min:   12.0  mean:  152.24  most:  324.0 -- Stdev  65.817 Rel:  0.432 Ratio:  0.186 Guess  0.125  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:   52.0  mean:  147.68  most:  244.0 -- Stdev  51.188 Rel:  0.347 Ratio:  0.279 Guess  0.232  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   46.0  mean:  147.36  most:  320.0 -- Stdev  58.748 Rel:  0.399 Ratio:  0.243 Guess  0.164  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   6:> min:   44.0  mean:  143.68  most:  288.0 -- Stdev  53.919 Rel:  0.375 Ratio:  0.240 Guess  0.194  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:   46.0  mean:  161.44  most:  282.0 -- Stdev  52.905 Rel:  0.328 Ratio:  0.279 Guess  0.258  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   8:> min:   36.0  mean:  137.44  most:  254.0 -- Stdev  51.305 Rel:  0.373 Ratio:  0.238 Guess  0.196  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   9:> min:   32.0  mean:  137.84  most:  262.0 -- Stdev  57.807 Rel:  0.419 Ratio:  0.198 Guess  0.140  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   52.0  mean:  152.72  most:  290.0 -- Stdev  55.333 Rel:  0.362 Ratio:  0.271 Guess  0.211  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  11:> min:   40.0  mean:  159.36  most:  252.0 -- Stdev  56.455 Rel:  0.354 Ratio:  0.248 Guess  0.221  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   36.0  mean:  140.24  most:  270.0 -- Stdev  57.819 Rel:  0.412 Ratio:  0.204 Guess  0.148  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   46.0  mean:  142.48  most:  268.0 -- Stdev  55.170 Rel:  0.387 Ratio:  0.236 Guess  0.179  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  14:> min:   34.0  mean:  152.72  most:  264.0 -- Stdev  54.247 Rel:  0.355 Ratio:  0.260 Guess  0.220  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:   22.0  mean:  142.88  most:  338.0 -- Stdev  65.148 Rel:  0.456 Ratio:  0.171 Guess  0.098  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  16:> min:   18.0  mean:  145.92  most:  338.0 -- Stdev  64.596 Rel:  0.443 Ratio:  0.149 Guess  0.113  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  17:> min:    8.0  mean:  153.36  most:  296.0 -- Stdev  61.254 Rel:  0.399 Ratio:  0.161 Guess  0.164  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  18:> min:   26.0  mean:  154.88  most:  284.0 -- Stdev  62.564 Rel:  0.404 Ratio:  0.193 Guess  0.158  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   52.0  mean:  166.16  most:  260.0 -- Stdev  54.235 Rel:  0.326 Ratio:  0.305 Guess  0.260  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  20:> min:   38.0  mean:  137.44  most:  232.0 -- Stdev  59.368 Rel:  0.432 Ratio:  0.226 Guess  0.125  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  133.680  0.1491  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   21    21     0     0 :     0  (    0     1)       0   (    0     0)     0 :  0.048      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    21 (0.149 > 0.000) (0.456 < 10000.000) (    8 >     0) (  134 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 752
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  1	min:  40.0 mean:  156.58  most: 272.0 -- Stdev: 54.803 Rel:  0.350 Ratio:  0.263 Guess:  0.227  HamDist:  0 Dist = 0
+Pat  1 : stable =  1	min:  28.0 mean:  154.14  most: 328.0 -- Stdev: 64.635 Rel:  0.419 Ratio:  0.171 Guess:  0.140  HamDist:  0 Dist = 0
+Pat  2 : stable =  1	min:  14.0 mean:  132.30  most: 256.0 -- Stdev: 51.415 Rel:  0.389 Ratio:  0.257 Guess:  0.177  HamDist:  0 Dist = 0
+Pat  3 : stable =  1	min:  14.0 mean:  150.66  most: 318.0 -- Stdev: 65.703 Rel:  0.436 Ratio:  0.187 Guess:  0.120  HamDist:  0 Dist = 0
+Pat  4 : stable =  1	min:  22.0 mean:  145.22  most: 270.0 -- Stdev: 55.808 Rel:  0.384 Ratio:  0.197 Guess:  0.182  HamDist:  0 Dist = 0
+Pat  5 : stable =  1	min:  24.0 mean:  145.02  most: 306.0 -- Stdev: 64.902 Rel:  0.448 Ratio:  0.180 Guess:  0.108  HamDist:  0 Dist = 0
+Pat  6 : stable =  1	min:  28.0 mean:  143.26  most: 310.0 -- Stdev: 58.209 Rel:  0.406 Ratio:  0.200 Guess:  0.155  HamDist:  0 Dist = 0
+Pat  7 : stable =  1	min:  40.0 mean:  159.86  most: 276.0 -- Stdev: 52.966 Rel:  0.331 Ratio:  0.274 Guess:  0.253  HamDist:  0 Dist = 0
+Pat  8 : stable =  1	min:  30.0 mean:  135.66  most: 248.0 -- Stdev: 52.649 Rel:  0.388 Ratio:  0.211 Guess:  0.177  HamDist:  0 Dist = 0
+Pat  9 : stable =  1	min:  26.0 mean:  136.10  most: 272.0 -- Stdev: 58.288 Rel:  0.428 Ratio:  0.183 Guess:  0.129  HamDist:  0 Dist = 0
+Pat 10 : stable =  1	min:  38.0 mean:  151.22  most: 290.0 -- Stdev: 56.626 Rel:  0.374 Ratio:  0.245 Guess:  0.195  HamDist:  0 Dist = 0
+Pat 11 : stable =  1	min:  18.0 mean:  157.54  most: 268.0 -- Stdev: 61.410 Rel:  0.390 Ratio:  0.208 Guess:  0.175  HamDist:  0 Dist = 0
+Pat 12 : stable =  1	min:  22.0 mean:  138.82  most: 284.0 -- Stdev: 59.708 Rel:  0.430 Ratio:  0.182 Guess:  0.127  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  44.0 mean:  140.86  most: 266.0 -- Stdev: 55.061 Rel:  0.391 Ratio:  0.231 Guess:  0.174  HamDist:  0 Dist = 0
+Pat 14 : stable =  1	min:   8.0 mean:  151.82  most: 282.0 -- Stdev: 57.703 Rel:  0.380 Ratio:  0.214 Guess:  0.188  HamDist:  0 Dist = 0
+Pat 15 : stable =  1	min:  10.0 mean:  141.46  most: 316.0 -- Stdev: 67.308 Rel:  0.476 Ratio:  0.129 Guess:  0.077  HamDist:  0 Dist = 0
+Pat 16 : stable =  1	min:  16.0 mean:  144.30  most: 336.0 -- Stdev: 64.595 Rel:  0.448 Ratio:  0.143 Guess:  0.108  HamDist:  0 Dist = 0
+Pat 17 : stable =  1	min:  10.0 mean:  151.70  most: 290.0 -- Stdev: 60.936 Rel:  0.402 Ratio:  0.162 Guess:  0.161  HamDist:  0 Dist = 0
+Pat 18 : stable =  1	min:  18.0 mean:  153.42  most: 286.0 -- Stdev: 63.194 Rel:  0.412 Ratio:  0.175 Guess:  0.148  HamDist:  0 Dist = 0
+Pat 19 : stable =  1	min:  52.0 mean:  164.46  most: 260.0 -- Stdev: 54.656 Rel:  0.332 Ratio:  0.291 Guess:  0.251  HamDist:  0 Dist = 0
+Pat 20 : stable =  1	min:  42.0 mean:  135.70  most: 240.0 -- Stdev: 59.283 Rel:  0.437 Ratio:  0.218 Guess:  0.120  HamDist:  0 Dist = 0
+Pat 21 : stable =  1	min:  38.0 mean:  144.54  most: 248.0 -- Stdev: 56.806 Rel:  0.393 Ratio:  0.207 Guess:  0.171  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   0:> min:   40.0  mean:  156.58  most:  272.0 -- Stdev  54.803 Rel:  0.350 Ratio:  0.263 Guess  0.227  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   1:> min:   28.0  mean:  154.14  most:  328.0 -- Stdev  64.635 Rel:  0.419 Ratio:  0.171 Guess  0.140  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   2:> min:   14.0  mean:  132.30  most:  256.0 -- Stdev  51.415 Rel:  0.389 Ratio:  0.257 Guess  0.177  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   3:> min:   14.0  mean:  150.66  most:  318.0 -- Stdev  65.703 Rel:  0.436 Ratio:  0.187 Guess  0.120  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:   22.0  mean:  145.22  most:  270.0 -- Stdev  55.808 Rel:  0.384 Ratio:  0.197 Guess  0.182  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   24.0  mean:  145.02  most:  306.0 -- Stdev  64.902 Rel:  0.448 Ratio:  0.180 Guess  0.108  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   6:> min:   28.0  mean:  143.26  most:  310.0 -- Stdev  58.209 Rel:  0.406 Ratio:  0.200 Guess  0.155  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:   40.0  mean:  159.86  most:  276.0 -- Stdev  52.966 Rel:  0.331 Ratio:  0.274 Guess  0.253  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   8:> min:   30.0  mean:  135.66  most:  248.0 -- Stdev  52.649 Rel:  0.388 Ratio:  0.211 Guess  0.177  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   9:> min:   26.0  mean:  136.10  most:  272.0 -- Stdev  58.288 Rel:  0.428 Ratio:  0.183 Guess  0.129  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   38.0  mean:  151.22  most:  290.0 -- Stdev  56.626 Rel:  0.374 Ratio:  0.245 Guess  0.195  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  11:> min:   18.0  mean:  157.54  most:  268.0 -- Stdev  61.410 Rel:  0.390 Ratio:  0.208 Guess  0.175  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   22.0  mean:  138.82  most:  284.0 -- Stdev  59.708 Rel:  0.430 Ratio:  0.182 Guess  0.127  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   44.0  mean:  140.86  most:  266.0 -- Stdev  55.061 Rel:  0.391 Ratio:  0.231 Guess  0.174  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  14:> min:    8.0  mean:  151.82  most:  282.0 -- Stdev  57.703 Rel:  0.380 Ratio:  0.214 Guess  0.188  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:   10.0  mean:  141.46  most:  316.0 -- Stdev  67.308 Rel:  0.476 Ratio:  0.129 Guess  0.077  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  16:> min:   16.0  mean:  144.30  most:  336.0 -- Stdev  64.595 Rel:  0.448 Ratio:  0.143 Guess  0.108  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  17:> min:   10.0  mean:  151.70  most:  290.0 -- Stdev  60.936 Rel:  0.402 Ratio:  0.162 Guess  0.161  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  18:> min:   18.0  mean:  153.42  most:  286.0 -- Stdev  63.194 Rel:  0.412 Ratio:  0.175 Guess  0.148  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   52.0  mean:  164.46  most:  260.0 -- Stdev  54.656 Rel:  0.332 Ratio:  0.291 Guess  0.251  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  20:> min:   42.0  mean:  135.70  most:  240.0 -- Stdev  59.283 Rel:  0.437 Ratio:  0.218 Guess  0.120  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  21:> min:   38.0  mean:  144.54  most:  248.0 -- Stdev  56.806 Rel:  0.393 Ratio:  0.207 Guess  0.171  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  132.300  0.1291  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   22    22     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    22 (0.129 > 0.000) (0.476 < 10000.000) (    8 >     0) (  132 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 618
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  1	min:  44.0 mean:  155.44  most: 262.0 -- Stdev: 53.919 Rel:  0.347 Ratio:  0.264 Guess:  0.231  HamDist:  0 Dist = 0
+Pat  1 : stable =  1	min:   2.0 mean:  152.64  most: 334.0 -- Stdev: 67.577 Rel:  0.443 Ratio:  0.144 Guess:  0.113  HamDist:  0 Dist = 0
+Pat  2 : stable =  1	min:  12.0 mean:  131.04  most: 254.0 -- Stdev: 51.358 Rel:  0.392 Ratio:  0.251 Guess:  0.173  HamDist:  0 Dist = 0
+Pat  3 : stable =  0	min:  -0.0 mean:  149.28  most: 304.0 -- Stdev: 65.722 Rel:  0.440 Ratio:  0.183 Guess:  0.116  HamDist:  1 Dist = 1
+Pat  4 : stable =  1	min:   4.0 mean:  143.12  most: 270.0 -- Stdev: 59.062 Rel:  0.413 Ratio:  0.161 Guess:  0.148  HamDist:  0 Dist = 0
+Pat  5 : stable =  1	min:  20.0 mean:  143.04  most: 316.0 -- Stdev: 68.275 Rel:  0.477 Ratio:  0.160 Guess:  0.076  HamDist:  0 Dist = 0
+Pat  6 : stable =  1	min:   8.0 mean:  143.20  most: 284.0 -- Stdev: 60.378 Rel:  0.422 Ratio:  0.184 Guess:  0.137  HamDist:  0 Dist = 0
+Pat  7 : stable =  1	min:  18.0 mean:  158.00  most: 260.0 -- Stdev: 54.780 Rel:  0.347 Ratio:  0.211 Guess:  0.231  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -28.0 mean:  134.96  most: 302.0 -- Stdev: 64.848 Rel:  0.480 Ratio:  0.089 Guess:  0.072  HamDist:  3 Dist = 3
+Pat  9 : stable =  0	min:  -4.0 mean:  135.36  most: 272.0 -- Stdev: 71.606 Rel:  0.529 Ratio:  0.079 Guess:  0.024  HamDist:  8 Dist = 8
+Pat 10 : stable =  1	min:  40.0 mean:  149.76  most: 290.0 -- Stdev: 56.573 Rel:  0.378 Ratio:  0.243 Guess:  0.191  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min:  -4.0 mean:  156.08  most: 268.0 -- Stdev: 65.062 Rel:  0.417 Ratio:  0.172 Guess:  0.143  HamDist:  1 Dist = 1
+Pat 12 : stable =  1	min:  24.0 mean:  137.52  most: 284.0 -- Stdev: 59.666 Rel:  0.434 Ratio:  0.174 Guess:  0.123  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  38.0 mean:  140.00  most: 272.0 -- Stdev: 55.485 Rel:  0.396 Ratio:  0.221 Guess:  0.167  HamDist:  0 Dist = 0
+Pat 14 : stable =  1	min:   8.0 mean:  151.36  most: 296.0 -- Stdev: 59.653 Rel:  0.394 Ratio:  0.179 Guess:  0.170  HamDist:  0 Dist = 0
+Pat 15 : stable =  1	min:  12.0 mean:  139.60  most: 316.0 -- Stdev: 69.753 Rel:  0.500 Ratio:  0.112 Guess:  0.053  HamDist:  0 Dist = 0
+Pat 16 : stable =  1	min:  12.0 mean:  143.28  most: 336.0 -- Stdev: 64.657 Rel:  0.451 Ratio:  0.135 Guess:  0.104  HamDist:  0 Dist = 0
+Pat 17 : stable =  0	min: -12.0 mean:  149.84  most: 292.0 -- Stdev: 64.362 Rel:  0.430 Ratio:  0.144 Guess:  0.128  HamDist:  1 Dist = 1
+Pat 18 : stable =  0	min:  -8.0 mean:  151.92  most: 292.0 -- Stdev: 67.637 Rel:  0.445 Ratio:  0.148 Guess:  0.110  HamDist:  1 Dist = 1
+Pat 19 : stable =  1	min:  32.0 mean:  163.04  most: 272.0 -- Stdev: 58.045 Rel:  0.356 Ratio:  0.242 Guess:  0.219  HamDist:  0 Dist = 0
+Pat 20 : stable =  1	min:   0.0 mean:  138.40  most: 268.0 -- Stdev: 67.150 Rel:  0.485 Ratio:  0.098 Guess:  0.068  HamDist:  0 Dist = 0
+Pat 21 : stable =  1	min:  26.0 mean:  142.16  most: 248.0 -- Stdev: 57.356 Rel:  0.403 Ratio:  0.190 Guess:  0.159  HamDist:  0 Dist = 0
+Pat 22 : stable =  1	min:  42.0 mean:  147.04  most: 236.0 -- Stdev: 57.361 Rel:  0.390 Ratio:  0.239 Guess:  0.175  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   0:> min:   44.0  mean:  155.44  most:  262.0 -- Stdev  53.919 Rel:  0.347 Ratio:  0.264 Guess  0.231  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   1:> min:    2.0  mean:  152.64  most:  334.0 -- Stdev  67.577 Rel:  0.443 Ratio:  0.144 Guess  0.113  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   2:> min:   12.0  mean:  131.04  most:  254.0 -- Stdev  51.358 Rel:  0.392 Ratio:  0.251 Guess  0.173  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:    4.0  mean:  143.12  most:  270.0 -- Stdev  59.062 Rel:  0.413 Ratio:  0.161 Guess  0.148  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   20.0  mean:  143.04  most:  316.0 -- Stdev  68.275 Rel:  0.477 Ratio:  0.160 Guess  0.076  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   6:> min:    8.0  mean:  143.20  most:  284.0 -- Stdev  60.378 Rel:  0.422 Ratio:  0.184 Guess  0.137  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:   18.0  mean:  158.00  most:  260.0 -- Stdev  54.780 Rel:  0.347 Ratio:  0.211 Guess  0.231  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   40.0  mean:  149.76  most:  290.0 -- Stdev  56.573 Rel:  0.378 Ratio:  0.243 Guess  0.191  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   24.0  mean:  137.52  most:  284.0 -- Stdev  59.666 Rel:  0.434 Ratio:  0.174 Guess  0.123  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   38.0  mean:  140.00  most:  272.0 -- Stdev  55.485 Rel:  0.396 Ratio:  0.221 Guess  0.167  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  14:> min:    8.0  mean:  151.36  most:  296.0 -- Stdev  59.653 Rel:  0.394 Ratio:  0.179 Guess  0.170  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:   12.0  mean:  139.60  most:  316.0 -- Stdev  69.753 Rel:  0.500 Ratio:  0.112 Guess  0.053  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  16:> min:   12.0  mean:  143.28  most:  336.0 -- Stdev  64.657 Rel:  0.451 Ratio:  0.135 Guess  0.104  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   32.0  mean:  163.04  most:  272.0 -- Stdev  58.045 Rel:  0.356 Ratio:  0.242 Guess  0.219  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  20:> min:    0.0  mean:  138.40  most:  268.0 -- Stdev  67.150 Rel:  0.485 Ratio:  0.098 Guess  0.068  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  21:> min:   26.0  mean:  142.16  most:  248.0 -- Stdev  57.356 Rel:  0.403 Ratio:  0.190 Guess  0.159  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  22:> min:   42.0  mean:  147.04  most:  236.0 -- Stdev  57.361 Rel:  0.390 Ratio:  0.239 Guess  0.175  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  131.040  0.0976  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   23    18     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    23 (0.098 > 0.000) (0.500 < 10000.000) (    0 >     0) (  131 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 694
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  1	min:  10.0 mean:  155.94  most: 320.0 -- Stdev: 65.957 Rel:  0.423 Ratio:  0.154 Guess:  0.136  HamDist:  0 Dist = 0
+Pat  1 : stable =  1	min:   2.0 mean:  151.74  most: 320.0 -- Stdev: 67.565 Rel:  0.445 Ratio:  0.140 Guess:  0.110  HamDist:  0 Dist = 0
+Pat  2 : stable =  1	min:  14.0 mean:  129.74  most: 254.0 -- Stdev: 51.149 Rel:  0.394 Ratio:  0.244 Guess:  0.170  HamDist:  0 Dist = 0
+Pat  3 : stable =  0	min: -10.0 mean:  147.86  most: 304.0 -- Stdev: 66.487 Rel:  0.450 Ratio:  0.160 Guess:  0.105  HamDist:  1 Dist = 1
+Pat  4 : stable =  0	min: -18.0 mean:  141.38  most: 288.0 -- Stdev: 60.342 Rel:  0.427 Ratio:  0.159 Guess:  0.131  HamDist:  3 Dist = 3
+Pat  5 : stable =  1	min:  34.0 mean:  141.18  most: 302.0 -- Stdev: 68.197 Rel:  0.483 Ratio:  0.170 Guess:  0.070  HamDist:  0 Dist = 0
+Pat  6 : stable =  1	min:   2.0 mean:  141.66  most: 278.0 -- Stdev: 61.358 Rel:  0.433 Ratio:  0.170 Guess:  0.124  HamDist:  0 Dist = 0
+Pat  7 : stable =  1	min:   0.0 mean:  156.66  most: 264.0 -- Stdev: 55.715 Rel:  0.356 Ratio:  0.212 Guess:  0.219  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -48.0 mean:  133.82  most: 308.0 -- Stdev: 69.986 Rel:  0.523 Ratio:  0.020 Guess:  0.030  HamDist: 31 Dist = 41
+Pat  9 : stable =  0	min: -22.0 mean:  133.70  most: 286.0 -- Stdev: 73.020 Rel:  0.546 Ratio:  0.034 Guess:  0.009  HamDist: 44 Dist = 58
+Pat 10 : stable =  1	min:  38.0 mean:  148.26  most: 290.0 -- Stdev: 56.645 Rel:  0.382 Ratio:  0.237 Guess:  0.185  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min: -46.0 mean:  152.58  most: 296.0 -- Stdev: 74.116 Rel:  0.486 Ratio:  0.042 Guess:  0.067  HamDist: 40 Dist = 42
+Pat 12 : stable =  1	min:  26.0 mean:  135.94  most: 284.0 -- Stdev: 59.711 Rel:  0.439 Ratio:  0.174 Guess:  0.117  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  34.0 mean:  138.62  most: 272.0 -- Stdev: 54.898 Rel:  0.396 Ratio:  0.222 Guess:  0.168  HamDist:  0 Dist = 0
+Pat 14 : stable =  0	min: -22.0 mean:  150.70  most: 306.0 -- Stdev: 65.545 Rel:  0.435 Ratio:  0.129 Guess:  0.122  HamDist:  5 Dist = 5
+Pat 15 : stable =  1	min:  12.0 mean:  137.86  most: 316.0 -- Stdev: 70.125 Rel:  0.509 Ratio:  0.104 Guess:  0.044  HamDist:  0 Dist = 0
+Pat 16 : stable =  1	min:   2.0 mean:  141.66  most: 346.0 -- Stdev: 65.112 Rel:  0.460 Ratio:  0.128 Guess:  0.094  HamDist:  0 Dist = 0
+Pat 17 : stable =  0	min: -14.0 mean:  148.34  most: 290.0 -- Stdev: 64.331 Rel:  0.434 Ratio:  0.140 Guess:  0.123  HamDist:  1 Dist = 1
+Pat 18 : stable =  0	min: -14.0 mean:  150.38  most: 280.0 -- Stdev: 67.119 Rel:  0.446 Ratio:  0.144 Guess:  0.109  HamDist:  2 Dist = 2
+Pat 19 : stable =  1	min:  34.0 mean:  161.42  most: 274.0 -- Stdev: 58.427 Rel:  0.362 Ratio:  0.237 Guess:  0.211  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -16.0 mean:  136.74  most: 282.0 -- Stdev: 68.970 Rel:  0.504 Ratio:  0.070 Guess:  0.048  HamDist: 46 Dist = 62
+Pat 21 : stable =  1	min:  12.0 mean:  139.82  most: 246.0 -- Stdev: 56.502 Rel:  0.404 Ratio:  0.182 Guess:  0.158  HamDist:  0 Dist = 0
+Pat 22 : stable =  1	min:  10.0 mean:  144.54  most: 246.0 -- Stdev: 59.102 Rel:  0.409 Ratio:  0.209 Guess:  0.152  HamDist:  0 Dist = 0
+Pat 23 : stable =  1	min:  36.0 mean:  145.22  most: 238.0 -- Stdev: 59.247 Rel:  0.408 Ratio:  0.223 Guess:  0.153  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   0:> min:   10.0  mean:  155.94  most:  320.0 -- Stdev  65.957 Rel:  0.423 Ratio:  0.154 Guess  0.136  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   1:> min:    2.0  mean:  151.74  most:  320.0 -- Stdev  67.565 Rel:  0.445 Ratio:  0.140 Guess  0.110  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   2:> min:   14.0  mean:  129.74  most:  254.0 -- Stdev  51.149 Rel:  0.394 Ratio:  0.244 Guess  0.170  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   34.0  mean:  141.18  most:  302.0 -- Stdev  68.197 Rel:  0.483 Ratio:  0.170 Guess  0.070  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   6:> min:    2.0  mean:  141.66  most:  278.0 -- Stdev  61.358 Rel:  0.433 Ratio:  0.170 Guess  0.124  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:    0.0  mean:  156.66  most:  264.0 -- Stdev  55.715 Rel:  0.356 Ratio:  0.212 Guess  0.219  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   38.0  mean:  148.26  most:  290.0 -- Stdev  56.645 Rel:  0.382 Ratio:  0.237 Guess  0.185  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   26.0  mean:  135.94  most:  284.0 -- Stdev  59.711 Rel:  0.439 Ratio:  0.174 Guess  0.117  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   34.0  mean:  138.62  most:  272.0 -- Stdev  54.898 Rel:  0.396 Ratio:  0.222 Guess  0.168  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:   12.0  mean:  137.86  most:  316.0 -- Stdev  70.125 Rel:  0.509 Ratio:  0.104 Guess  0.044  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  16:> min:    2.0  mean:  141.66  most:  346.0 -- Stdev  65.112 Rel:  0.460 Ratio:  0.128 Guess  0.094  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   34.0  mean:  161.42  most:  274.0 -- Stdev  58.427 Rel:  0.362 Ratio:  0.237 Guess  0.211  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  21:> min:   12.0  mean:  139.82  most:  246.0 -- Stdev  56.502 Rel:  0.404 Ratio:  0.182 Guess  0.158  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  22:> min:   10.0  mean:  144.54  most:  246.0 -- Stdev  59.102 Rel:  0.409 Ratio:  0.209 Guess  0.152  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   36.0  mean:  145.22  most:  238.0 -- Stdev  59.247 Rel:  0.408 Ratio:  0.223 Guess  0.153  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  129.740  0.1039  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   24    15     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    24 (0.104 > 0.000) (0.509 < 10000.000) (    0 >     0) (  130 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 700
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -16.0 mean:  153.72  most: 320.0 -- Stdev: 68.507 Rel:  0.446 Ratio:  0.153 Guess:  0.110  HamDist:  3 Dist = 3
+Pat  1 : stable =  1	min:   2.0 mean:  150.52  most: 320.0 -- Stdev: 69.536 Rel:  0.462 Ratio:  0.144 Guess:  0.092  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min:  -0.0 mean:  128.84  most: 264.0 -- Stdev: 53.062 Rel:  0.412 Ratio:  0.219 Guess:  0.149  HamDist:  1 Dist = 1
+Pat  3 : stable =  0	min: -12.0 mean:  146.36  most: 304.0 -- Stdev: 66.408 Rel:  0.454 Ratio:  0.156 Guess:  0.101  HamDist:  1 Dist = 1
+Pat  4 : stable =  1	min:   4.0 mean:  139.16  most: 288.0 -- Stdev: 63.926 Rel:  0.459 Ratio:  0.126 Guess:  0.095  HamDist:  0 Dist = 0
+Pat  5 : stable =  1	min:  30.0 mean:  139.56  most: 302.0 -- Stdev: 68.485 Rel:  0.491 Ratio:  0.166 Guess:  0.062  HamDist:  0 Dist = 0
+Pat  6 : stable =  0	min: -22.0 mean:  140.52  most: 276.0 -- Stdev: 64.955 Rel:  0.462 Ratio:  0.085 Guess:  0.092  HamDist:  3 Dist = 3
+Pat  7 : stable =  1	min:   0.0 mean:  154.92  most: 270.0 -- Stdev: 57.540 Rel:  0.371 Ratio:  0.210 Guess:  0.199  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -50.0 mean:  131.72  most: 308.0 -- Stdev: 72.598 Rel:  0.551 Ratio: -0.017 Guess:  0.004  HamDist: 42 Dist = 94
+Pat  9 : stable =  0	min: -56.0 mean:  132.52  most: 298.0 -- Stdev: 74.110 Rel:  0.559 Ratio:  0.013 Guess: -0.003  HamDist: 41 Dist = 55
+Pat 10 : stable =  1	min:  28.0 mean:  146.84  most: 280.0 -- Stdev: 56.960 Rel:  0.388 Ratio:  0.227 Guess:  0.178  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min: -32.0 mean:  151.24  most: 300.0 -- Stdev: 73.120 Rel:  0.483 Ratio:  0.031 Guess:  0.069  HamDist: 40 Dist = 50
+Pat 12 : stable =  1	min:  16.0 mean:  134.52  most: 290.0 -- Stdev: 60.639 Rel:  0.451 Ratio:  0.166 Guess:  0.104  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  32.0 mean:  137.72  most: 272.0 -- Stdev: 57.894 Rel:  0.420 Ratio:  0.182 Guess:  0.139  HamDist:  0 Dist = 0
+Pat 14 : stable =  0	min: -20.0 mean:  147.80  most: 306.0 -- Stdev: 66.289 Rel:  0.449 Ratio:  0.114 Guess:  0.107  HamDist:  2 Dist = 2
+Pat 15 : stable =  0	min: -12.0 mean:  136.12  most: 324.0 -- Stdev: 71.862 Rel:  0.528 Ratio:  0.086 Guess:  0.025  HamDist: 49 Dist = 73
+Pat 16 : stable =  0	min: -28.0 mean:  142.12  most: 346.0 -- Stdev: 70.392 Rel:  0.495 Ratio:  0.064 Guess:  0.057  HamDist:  8 Dist = 8
+Pat 17 : stable =  0	min: -48.0 mean:  145.88  most: 318.0 -- Stdev: 66.758 Rel:  0.458 Ratio:  0.135 Guess:  0.097  HamDist:  1 Dist = 1
+Pat 18 : stable =  0	min: -12.0 mean:  148.84  most: 280.0 -- Stdev: 66.939 Rel:  0.450 Ratio:  0.142 Guess:  0.105  HamDist:  2 Dist = 2
+Pat 19 : stable =  1	min:  34.0 mean:  160.04  most: 284.0 -- Stdev: 58.600 Rel:  0.366 Ratio:  0.229 Guess:  0.205  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -36.0 mean:  134.76  most: 328.0 -- Stdev: 78.563 Rel:  0.583 Ratio:  0.003 Guess: -0.024  HamDist: 24 Dist = 28
+Pat 21 : stable =  1	min:   8.0 mean:  138.68  most: 256.0 -- Stdev: 58.896 Rel:  0.425 Ratio:  0.163 Guess:  0.134  HamDist:  0 Dist = 0
+Pat 22 : stable =  1	min:  18.0 mean:  143.64  most: 256.0 -- Stdev: 58.690 Rel:  0.409 Ratio:  0.213 Guess:  0.152  HamDist:  0 Dist = 0
+Pat 23 : stable =  1	min:  34.0 mean:  143.48  most: 244.0 -- Stdev: 59.753 Rel:  0.416 Ratio:  0.209 Guess:  0.143  HamDist:  0 Dist = 0
+Pat 24 : stable =  1	min:  40.0 mean:  144.36  most: 250.0 -- Stdev: 64.694 Rel:  0.448 Ratio:  0.218 Guess:  0.107  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    2.0  mean:  150.52  most:  320.0 -- Stdev  69.536 Rel:  0.462 Ratio:  0.144 Guess  0.092  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:    4.0  mean:  139.16  most:  288.0 -- Stdev  63.926 Rel:  0.459 Ratio:  0.126 Guess  0.095  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   30.0  mean:  139.56  most:  302.0 -- Stdev  68.485 Rel:  0.491 Ratio:  0.166 Guess  0.062  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:    0.0  mean:  154.92  most:  270.0 -- Stdev  57.540 Rel:  0.371 Ratio:  0.210 Guess  0.199  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   28.0  mean:  146.84  most:  280.0 -- Stdev  56.960 Rel:  0.388 Ratio:  0.227 Guess  0.178  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   16.0  mean:  134.52  most:  290.0 -- Stdev  60.639 Rel:  0.451 Ratio:  0.166 Guess  0.104  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   32.0  mean:  137.72  most:  272.0 -- Stdev  57.894 Rel:  0.420 Ratio:  0.182 Guess  0.139  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:   34.0  mean:  160.04  most:  284.0 -- Stdev  58.600 Rel:  0.366 Ratio:  0.229 Guess  0.205  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  21:> min:    8.0  mean:  138.68  most:  256.0 -- Stdev  58.896 Rel:  0.425 Ratio:  0.163 Guess  0.134  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  22:> min:   18.0  mean:  143.64  most:  256.0 -- Stdev  58.690 Rel:  0.409 Ratio:  0.213 Guess  0.152  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   34.0  mean:  143.48  most:  244.0 -- Stdev  59.753 Rel:  0.416 Ratio:  0.209 Guess  0.143  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  24:> min:   40.0  mean:  144.36  most:  250.0 -- Stdev  64.694 Rel:  0.448 Ratio:  0.218 Guess  0.107  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  128.840  0.1259  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   25    13     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    25 (0.126 > 0.000) (0.491 < 10000.000) (    0 >     0) (  129 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 659
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min:  -6.0 mean:  152.98  most: 330.0 -- Stdev: 68.730 Rel:  0.449 Ratio:  0.135 Guess:  0.106  HamDist:  3 Dist = 3
+Pat  1 : stable =  1	min:   0.0 mean:  149.18  most: 318.0 -- Stdev: 69.513 Rel:  0.466 Ratio:  0.140 Guess:  0.088  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min:  -0.0 mean:  127.26  most: 264.0 -- Stdev: 52.269 Rel:  0.411 Ratio:  0.222 Guess:  0.150  HamDist:  1 Dist = 1
+Pat  3 : stable =  0	min: -26.0 mean:  145.62  most: 306.0 -- Stdev: 66.063 Rel:  0.454 Ratio:  0.151 Guess:  0.101  HamDist:  1 Dist = 1
+Pat  4 : stable =  0	min:  -2.0 mean:  137.62  most: 290.0 -- Stdev: 63.521 Rel:  0.462 Ratio:  0.120 Guess:  0.092  HamDist:  2 Dist = 2
+Pat  5 : stable =  1	min:  26.0 mean:  137.98  most: 308.0 -- Stdev: 70.455 Rel:  0.511 Ratio:  0.149 Guess:  0.042  HamDist:  0 Dist = 0
+Pat  6 : stable =  0	min: -30.0 mean:  138.70  most: 290.0 -- Stdev: 65.192 Rel:  0.470 Ratio:  0.087 Guess:  0.083  HamDist:  3 Dist = 7
+Pat  7 : stable =  1	min:   0.0 mean:  152.50  most: 292.0 -- Stdev: 63.816 Rel:  0.418 Ratio:  0.157 Guess:  0.141  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -50.0 mean:  130.22  most: 322.0 -- Stdev: 74.521 Rel:  0.572 Ratio: -0.031 Guess: -0.015  HamDist: 34 Dist = 56
+Pat  9 : stable =  0	min: -110.0 mean:  131.70  most: 284.0 -- Stdev: 84.768 Rel:  0.644 Ratio: -0.106 Guess: -0.073  HamDist: 37 Dist = 51
+Pat 10 : stable =  1	min:  22.0 mean:  145.46  most: 274.0 -- Stdev: 56.946 Rel:  0.391 Ratio:  0.227 Guess:  0.173  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min: -36.0 mean:  148.58  most: 318.0 -- Stdev: 75.742 Rel:  0.510 Ratio:  0.032 Guess:  0.043  HamDist: 10 Dist = 12
+Pat 12 : stable =  1	min:  16.0 mean:  132.98  most: 290.0 -- Stdev: 61.087 Rel:  0.459 Ratio:  0.160 Guess:  0.095  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:  22.0 mean:  136.78  most: 272.0 -- Stdev: 58.645 Rel:  0.429 Ratio:  0.165 Guess:  0.129  HamDist:  0 Dist = 0
+Pat 14 : stable =  0	min: -22.0 mean:  146.46  most: 306.0 -- Stdev: 66.203 Rel:  0.452 Ratio:  0.110 Guess:  0.103  HamDist:  4 Dist = 4
+Pat 15 : stable =  0	min: -12.0 mean:  134.74  most: 326.0 -- Stdev: 72.209 Rel:  0.536 Ratio:  0.079 Guess:  0.018  HamDist: 46 Dist = 108
+Pat 16 : stable =  0	min: -42.0 mean:  140.62  most: 346.0 -- Stdev: 71.025 Rel:  0.505 Ratio:  0.037 Guess:  0.048  HamDist: 10 Dist = 12
+Pat 17 : stable =  0	min: -90.0 mean:  142.98  most: 318.0 -- Stdev: 81.390 Rel:  0.569 Ratio: -0.010 Guess: -0.012  HamDist: 38 Dist = 46
+Pat 18 : stable =  0	min: -30.0 mean:  147.66  most: 294.0 -- Stdev: 69.276 Rel:  0.469 Ratio:  0.126 Guess:  0.084  HamDist:  1 Dist = 1
+Pat 19 : stable =  1	min:   8.0 mean:  158.94  most: 306.0 -- Stdev: 59.312 Rel:  0.373 Ratio:  0.217 Guess:  0.196  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -42.0 mean:  134.74  most: 314.0 -- Stdev: 78.820 Rel:  0.585 Ratio: -0.003 Guess: -0.026  HamDist: 44 Dist = 76
+Pat 21 : stable =  1	min:   8.0 mean:  137.34  most: 256.0 -- Stdev: 59.039 Rel:  0.430 Ratio:  0.157 Guess:  0.128  HamDist:  0 Dist = 0
+Pat 22 : stable =  1	min:  20.0 mean:  143.42  most: 246.0 -- Stdev: 58.837 Rel:  0.410 Ratio:  0.184 Guess:  0.150  HamDist:  0 Dist = 0
+Pat 23 : stable =  0	min:  -2.0 mean:  139.62  most: 278.0 -- Stdev: 62.931 Rel:  0.451 Ratio:  0.165 Guess:  0.104  HamDist: 19 Dist = 27
+Pat 24 : stable =  1	min:  42.0 mean:  143.06  most: 244.0 -- Stdev: 64.001 Rel:  0.447 Ratio:  0.216 Guess:  0.108  HamDist:  0 Dist = 0
+Pat 25 : stable =  1	min:  42.0 mean:  143.34  most: 250.0 -- Stdev: 60.779 Rel:  0.424 Ratio:  0.217 Guess:  0.134  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    0.0  mean:  149.18  most:  318.0 -- Stdev  69.513 Rel:  0.466 Ratio:  0.140 Guess  0.088  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   5:> min:   26.0  mean:  137.98  most:  308.0 -- Stdev  70.455 Rel:  0.511 Ratio:  0.149 Guess  0.042  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:    0.0  mean:  152.50  most:  292.0 -- Stdev  63.816 Rel:  0.418 Ratio:  0.157 Guess  0.141  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   22.0  mean:  145.46  most:  274.0 -- Stdev  56.946 Rel:  0.391 Ratio:  0.227 Guess  0.173  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   16.0  mean:  132.98  most:  290.0 -- Stdev  61.087 Rel:  0.459 Ratio:  0.160 Guess  0.095  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:   22.0  mean:  136.78  most:  272.0 -- Stdev  58.645 Rel:  0.429 Ratio:  0.165 Guess  0.129  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:    8.0  mean:  158.94  most:  306.0 -- Stdev  59.312 Rel:  0.373 Ratio:  0.217 Guess  0.196  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  21:> min:    8.0  mean:  137.34  most:  256.0 -- Stdev  59.039 Rel:  0.430 Ratio:  0.157 Guess  0.128  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  22:> min:   20.0  mean:  143.42  most:  246.0 -- Stdev  58.837 Rel:  0.410 Ratio:  0.184 Guess  0.150  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  24:> min:   42.0  mean:  143.06  most:  244.0 -- Stdev  64.001 Rel:  0.447 Ratio:  0.216 Guess  0.108  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  25:> min:   42.0  mean:  143.34  most:  250.0 -- Stdev  60.779 Rel:  0.424 Ratio:  0.217 Guess  0.134  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  127.260  0.1401  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   26    12     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    26 (0.140 > 0.000) (0.511 < 10000.000) (    0 >     0) (  127 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 697
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min:  -0.0 mean:  152.08  most: 320.0 -- Stdev: 69.365 Rel:  0.456 Ratio:  0.130 Guess:  0.098  HamDist:  3 Dist = 3
+Pat  1 : stable =  1	min:   0.0 mean:  147.92  most: 312.0 -- Stdev: 69.779 Rel:  0.472 Ratio:  0.127 Guess:  0.082  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min: -14.0 mean:  125.84  most: 250.0 -- Stdev: 53.419 Rel:  0.424 Ratio:  0.203 Guess:  0.134  HamDist:  1 Dist = 1
+Pat  3 : stable =  0	min: -76.0 mean:  141.92  most: 350.0 -- Stdev: 76.101 Rel:  0.536 Ratio:  0.027 Guess:  0.018  HamDist: 12 Dist = 16
+Pat  4 : stable =  1	min:   2.0 mean:  137.04  most: 312.0 -- Stdev: 65.619 Rel:  0.479 Ratio:  0.135 Guess:  0.074  HamDist:  0 Dist = 0
+Pat  5 : stable =  0	min:  -2.0 mean:  134.16  most: 308.0 -- Stdev: 75.999 Rel:  0.566 Ratio:  0.092 Guess: -0.010  HamDist: 43 Dist = 61
+Pat  6 : stable =  0	min: -28.0 mean:  137.44  most: 284.0 -- Stdev: 64.926 Rel:  0.472 Ratio:  0.090 Guess:  0.081  HamDist:  1 Dist = 3
+Pat  7 : stable =  1	min:   0.0 mean:  151.20  most: 292.0 -- Stdev: 63.830 Rel:  0.422 Ratio:  0.154 Guess:  0.136  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -48.0 mean:  127.92  most: 300.0 -- Stdev: 74.406 Rel:  0.582 Ratio: -0.032 Guess: -0.023  HamDist: 38 Dist = 80
+Pat  9 : stable =  0	min: -110.0 mean:  129.60  most: 298.0 -- Stdev: 86.514 Rel:  0.668 Ratio: -0.116 Guess: -0.092  HamDist: 38 Dist = 88
+Pat 10 : stable =  1	min:  22.0 mean:  144.32  most: 288.0 -- Stdev: 59.298 Rel:  0.411 Ratio:  0.192 Guess:  0.150  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min: -30.0 mean:  147.52  most: 324.0 -- Stdev: 74.428 Rel:  0.505 Ratio:  0.045 Guess:  0.048  HamDist: 41 Dist = 73
+Pat 12 : stable =  1	min:  30.0 mean:  131.84  most: 290.0 -- Stdev: 61.000 Rel:  0.463 Ratio:  0.154 Guess:  0.091  HamDist:  0 Dist = 0
+Pat 13 : stable =  1	min:   0.0 mean:  134.88  most: 290.0 -- Stdev: 62.066 Rel:  0.460 Ratio:  0.113 Guess:  0.094  HamDist:  0 Dist = 0
+Pat 14 : stable =  0	min: -26.0 mean:  144.88  most: 306.0 -- Stdev: 64.874 Rel:  0.448 Ratio:  0.109 Guess:  0.107  HamDist:  1 Dist = 1
+Pat 15 : stable =  1	min:   6.0 mean:  134.64  most: 336.0 -- Stdev: 73.047 Rel:  0.543 Ratio:  0.088 Guess:  0.012  HamDist:  0 Dist = 0
+Pat 16 : stable =  0	min: -72.0 mean:  139.60  most: 346.0 -- Stdev: 75.206 Rel:  0.539 Ratio:  0.012 Guess:  0.015  HamDist: 21 Dist = 25
+Pat 17 : stable =  0	min: -90.0 mean:  141.68  most: 318.0 -- Stdev: 81.249 Rel:  0.573 Ratio: -0.013 Guess: -0.016  HamDist: 47 Dist = 89
+Pat 18 : stable =  0	min: -20.0 mean:  146.48  most: 294.0 -- Stdev: 69.774 Rel:  0.476 Ratio:  0.125 Guess:  0.077  HamDist:  1 Dist = 1
+Pat 19 : stable =  1	min:   8.0 mean:  157.60  most: 308.0 -- Stdev: 59.639 Rel:  0.378 Ratio:  0.206 Guess:  0.190  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -20.0 mean:  133.20  most: 314.0 -- Stdev: 77.815 Rel:  0.584 Ratio:  0.034 Guess: -0.025  HamDist: 37 Dist = 53
+Pat 21 : stable =  0	min:  -2.0 mean:  136.88  most: 240.0 -- Stdev: 57.978 Rel:  0.424 Ratio:  0.158 Guess:  0.135  HamDist: 36 Dist = 58
+Pat 22 : stable =  0	min: -18.0 mean:  142.48  most: 280.0 -- Stdev: 67.408 Rel:  0.473 Ratio:  0.129 Guess:  0.080  HamDist:  5 Dist = 5
+Pat 23 : stable =  1	min:   4.0 mean:  139.20  most: 284.0 -- Stdev: 63.502 Rel:  0.456 Ratio:  0.153 Guess:  0.098  HamDist:  0 Dist = 0
+Pat 24 : stable =  1	min:  22.0 mean:  140.08  most: 260.0 -- Stdev: 64.410 Rel:  0.460 Ratio:  0.198 Guess:  0.094  HamDist:  0 Dist = 0
+Pat 25 : stable =  1	min:  28.0 mean:  141.68  most: 250.0 -- Stdev: 61.069 Rel:  0.431 Ratio:  0.193 Guess:  0.126  HamDist:  0 Dist = 0
+Pat 26 : stable =  1	min:  42.0 mean:  134.00  most: 234.0 -- Stdev: 57.067 Rel:  0.426 Ratio:  0.221 Guess:  0.132  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    0.0  mean:  147.92  most:  312.0 -- Stdev  69.779 Rel:  0.472 Ratio:  0.127 Guess  0.082  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:    2.0  mean:  137.04  most:  312.0 -- Stdev  65.619 Rel:  0.479 Ratio:  0.135 Guess  0.074  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:    0.0  mean:  151.20  most:  292.0 -- Stdev  63.830 Rel:  0.422 Ratio:  0.154 Guess  0.136  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   22.0  mean:  144.32  most:  288.0 -- Stdev  59.298 Rel:  0.411 Ratio:  0.192 Guess  0.150  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   30.0  mean:  131.84  most:  290.0 -- Stdev  61.000 Rel:  0.463 Ratio:  0.154 Guess  0.091  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  13:> min:    0.0  mean:  134.88  most:  290.0 -- Stdev  62.066 Rel:  0.460 Ratio:  0.113 Guess  0.094  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  15:> min:    6.0  mean:  134.64  most:  336.0 -- Stdev  73.047 Rel:  0.543 Ratio:  0.088 Guess  0.012  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:    8.0  mean:  157.60  most:  308.0 -- Stdev  59.639 Rel:  0.378 Ratio:  0.206 Guess  0.190  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:    4.0  mean:  139.20  most:  284.0 -- Stdev  63.502 Rel:  0.456 Ratio:  0.153 Guess  0.098  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  24:> min:   22.0  mean:  140.08  most:  260.0 -- Stdev  64.410 Rel:  0.460 Ratio:  0.198 Guess  0.094  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  25:> min:   28.0  mean:  141.68  most:  250.0 -- Stdev  61.069 Rel:  0.431 Ratio:  0.193 Guess  0.126  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  26:> min:   42.0  mean:  134.00  most:  234.0 -- Stdev  57.067 Rel:  0.426 Ratio:  0.221 Guess  0.132  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  131.840  0.0880  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   27    13     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    27 (0.088 > 0.000) (0.543 < 10000.000) (    0 >     0) (  132 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 739
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -34.0 mean:  150.06  most: 350.0 -- Stdev: 72.402 Rel:  0.482 Ratio:  0.090 Guess:  0.070  HamDist: 22 Dist = 32
+Pat  1 : stable =  1	min:   8.0 mean:  146.34  most: 322.0 -- Stdev: 70.824 Rel:  0.484 Ratio:  0.118 Guess:  0.069  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min: -44.0 mean:  125.54  most: 250.0 -- Stdev: 59.339 Rel:  0.473 Ratio:  0.109 Guess:  0.081  HamDist:  2 Dist = 2
+Pat  3 : stable =  0	min: -78.0 mean:  140.22  most: 348.0 -- Stdev: 76.122 Rel:  0.543 Ratio:  0.021 Guess:  0.012  HamDist: 47 Dist = 137
+Pat  4 : stable =  1	min:   2.0 mean:  135.50  most: 324.0 -- Stdev: 68.100 Rel:  0.503 Ratio:  0.108 Guess:  0.050  HamDist:  0 Dist = 0
+Pat  5 : stable =  0	min: -16.0 mean:  132.58  most: 308.0 -- Stdev: 76.741 Rel:  0.579 Ratio:  0.082 Guess: -0.021  HamDist: 46 Dist = 152
+Pat  6 : stable =  0	min: -28.0 mean:  135.78  most: 286.0 -- Stdev: 65.310 Rel:  0.481 Ratio:  0.084 Guess:  0.072  HamDist:  3 Dist = 3
+Pat  7 : stable =  1	min:   2.0 mean:  149.66  most: 274.0 -- Stdev: 63.765 Rel:  0.426 Ratio:  0.146 Guess:  0.132  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -54.0 mean:  126.10  most: 294.0 -- Stdev: 74.691 Rel:  0.592 Ratio: -0.042 Guess: -0.032  HamDist: 49 Dist = 145
+Pat  9 : stable =  0	min: -110.0 mean:  128.14  most: 304.0 -- Stdev: 86.592 Rel:  0.676 Ratio: -0.123 Guess: -0.098  HamDist: 39 Dist = 51
+Pat 10 : stable =  1	min:  28.0 mean:  141.90  most: 278.0 -- Stdev: 60.641 Rel:  0.427 Ratio:  0.166 Guess:  0.130  HamDist:  0 Dist = 0
+Pat 11 : stable =  0	min: -48.0 mean:  145.02  most: 324.0 -- Stdev: 74.859 Rel:  0.516 Ratio:  0.020 Guess:  0.037  HamDist: 29 Dist = 39
+Pat 12 : stable =  1	min:  22.0 mean:  130.06  most: 296.0 -- Stdev: 61.067 Rel:  0.470 Ratio:  0.143 Guess:  0.084  HamDist:  0 Dist = 0
+Pat 13 : stable =  0	min: -12.0 mean:  135.14  most: 316.0 -- Stdev: 70.503 Rel:  0.522 Ratio:  0.062 Guess:  0.031  HamDist: 43 Dist = 89
+Pat 14 : stable =  0	min: -32.0 mean:  143.30  most: 300.0 -- Stdev: 65.109 Rel:  0.454 Ratio:  0.096 Guess:  0.100  HamDist:  2 Dist = 2
+Pat 15 : stable =  0	min:  -4.0 mean:  132.86  most: 348.0 -- Stdev: 73.351 Rel:  0.552 Ratio:  0.081 Guess:  0.003  HamDist: 40 Dist = 150
+Pat 16 : stable =  0	min: -78.0 mean:  137.86  most: 346.0 -- Stdev: 75.473 Rel:  0.547 Ratio:  0.003 Guess:  0.007  HamDist: 17 Dist = 17
+Pat 17 : stable =  0	min: -68.0 mean:  140.70  most: 340.0 -- Stdev: 83.329 Rel:  0.592 Ratio: -0.030 Guess: -0.032  HamDist: 38 Dist = 120
+Pat 18 : stable =  0	min: -34.0 mean:  144.90  most: 304.0 -- Stdev: 72.389 Rel:  0.500 Ratio:  0.091 Guess:  0.053  HamDist:  2 Dist = 2
+Pat 19 : stable =  1	min:   4.0 mean:  155.78  most: 318.0 -- Stdev: 60.414 Rel:  0.388 Ratio:  0.209 Guess:  0.178  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -38.0 mean:  131.66  most: 314.0 -- Stdev: 80.211 Rel:  0.609 Ratio: -0.012 Guess: -0.046  HamDist: 44 Dist = 84
+Pat 21 : stable =  0	min:  -0.0 mean:  135.22  most: 242.0 -- Stdev: 57.659 Rel:  0.426 Ratio:  0.154 Guess:  0.132  HamDist: 35 Dist = 93
+Pat 22 : stable =  0	min: -32.0 mean:  142.18  most: 298.0 -- Stdev: 69.023 Rel:  0.485 Ratio:  0.104 Guess:  0.067  HamDist: 49 Dist = 137
+Pat 23 : stable =  1	min:  10.0 mean:  137.10  most: 290.0 -- Stdev: 62.940 Rel:  0.459 Ratio:  0.162 Guess:  0.095  HamDist:  0 Dist = 0
+Pat 24 : stable =  1	min:   4.0 mean:  138.22  most: 260.0 -- Stdev: 63.980 Rel:  0.463 Ratio:  0.148 Guess:  0.091  HamDist:  0 Dist = 0
+Pat 25 : stable =  1	min:   4.0 mean:  139.38  most: 236.0 -- Stdev: 58.886 Rel:  0.422 Ratio:  0.210 Guess:  0.136  HamDist:  0 Dist = 0
+Pat 26 : stable =  1	min:  32.0 mean:  132.22  most: 238.0 -- Stdev: 59.201 Rel:  0.448 Ratio:  0.188 Guess:  0.107  HamDist:  0 Dist = 0
+Pat 27 : stable =  1	min:  44.0 mean:  147.26  most: 240.0 -- Stdev: 56.142 Rel:  0.381 Ratio:  0.236 Guess:  0.186  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    8.0  mean:  146.34  most:  322.0 -- Stdev  70.824 Rel:  0.484 Ratio:  0.118 Guess  0.069  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   4:> min:    2.0  mean:  135.50  most:  324.0 -- Stdev  68.100 Rel:  0.503 Ratio:  0.108 Guess  0.050  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:    2.0  mean:  149.66  most:  274.0 -- Stdev  63.765 Rel:  0.426 Ratio:  0.146 Guess  0.132  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  10:> min:   28.0  mean:  141.90  most:  278.0 -- Stdev  60.641 Rel:  0.427 Ratio:  0.166 Guess  0.130  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   22.0  mean:  130.06  most:  296.0 -- Stdev  61.067 Rel:  0.470 Ratio:  0.143 Guess  0.084  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:    4.0  mean:  155.78  most:  318.0 -- Stdev  60.414 Rel:  0.388 Ratio:  0.209 Guess  0.178  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   10.0  mean:  137.10  most:  290.0 -- Stdev  62.940 Rel:  0.459 Ratio:  0.162 Guess  0.095  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  24:> min:    4.0  mean:  138.22  most:  260.0 -- Stdev  63.980 Rel:  0.463 Ratio:  0.148 Guess  0.091  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  25:> min:    4.0  mean:  139.38  most:  236.0 -- Stdev  58.886 Rel:  0.422 Ratio:  0.210 Guess  0.136  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  26:> min:   32.0  mean:  132.22  most:  238.0 -- Stdev  59.201 Rel:  0.448 Ratio:  0.188 Guess  0.107  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:   44.0  mean:  147.26  most:  240.0 -- Stdev  56.142 Rel:  0.381 Ratio:  0.236 Guess  0.186  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  130.060  0.1082  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   28    12     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    28 (0.108 > 0.000) (0.503 < 10000.000) (   -0 >     0) (  130 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 746
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -56.0 mean:  148.78  most: 368.0 -- Stdev: 75.349 Rel:  0.506 Ratio:  0.070 Guess:  0.046  HamDist: 49 Dist = 69
+Pat  1 : stable =  1	min:   8.0 mean:  144.66  most: 320.0 -- Stdev: 70.706 Rel:  0.489 Ratio:  0.114 Guess:  0.064  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min: -70.0 mean:  123.38  most: 272.0 -- Stdev: 63.409 Rel:  0.514 Ratio:  0.030 Guess:  0.039  HamDist:  9 Dist = 9
+Pat  3 : stable =  0	min: -54.0 mean:  140.30  most: 348.0 -- Stdev: 75.886 Rel:  0.541 Ratio: -0.027 Guess:  0.013  HamDist: 15 Dist = 17
+Pat  4 : stable =  0	min: -28.0 mean:  133.82  most: 320.0 -- Stdev: 71.475 Rel:  0.534 Ratio:  0.055 Guess:  0.020  HamDist: 46 Dist = 116
+Pat  5 : stable =  0	min: -18.0 mean:  130.90  most: 308.0 -- Stdev: 76.901 Rel:  0.587 Ratio:  0.075 Guess: -0.028  HamDist: 35 Dist = 65
+Pat  6 : stable =  0	min: -74.0 mean:  134.10  most: 304.0 -- Stdev: 70.822 Rel:  0.528 Ratio:  0.032 Guess:  0.025  HamDist: 44 Dist = 56
+Pat  7 : stable =  1	min:  12.0 mean:  147.26  most: 264.0 -- Stdev: 64.168 Rel:  0.436 Ratio:  0.146 Guess:  0.121  HamDist:  0 Dist = 0
+Pat  8 : stable =  0	min: -56.0 mean:  124.42  most: 292.0 -- Stdev: 74.811 Rel:  0.601 Ratio: -0.050 Guess: -0.040  HamDist: 48 Dist = 86
+Pat  9 : stable =  0	min: -110.0 mean:  126.38  most: 306.0 -- Stdev: 86.366 Rel:  0.683 Ratio: -0.135 Guess: -0.103  HamDist: 39 Dist = 51
+Pat 10 : stable =  0	min:  -2.0 mean:  140.22  most: 276.0 -- Stdev: 64.433 Rel:  0.460 Ratio:  0.129 Guess:  0.095  HamDist:  5 Dist = 5
+Pat 11 : stable =  0	min: -54.0 mean:  143.26  most: 326.0 -- Stdev: 75.034 Rel:  0.524 Ratio:  0.008 Guess:  0.029  HamDist: 44 Dist = 86
+Pat 12 : stable =  1	min:  22.0 mean:  128.38  most: 306.0 -- Stdev: 61.274 Rel:  0.477 Ratio:  0.155 Guess:  0.076  HamDist:  0 Dist = 0
+Pat 13 : stable =  0	min: -12.0 mean:  133.46  most: 316.0 -- Stdev: 70.685 Rel:  0.530 Ratio:  0.055 Guess:  0.024  HamDist: 49 Dist = 63
+Pat 14 : stable =  0	min: -32.0 mean:  141.62  most: 298.0 -- Stdev: 65.562 Rel:  0.463 Ratio:  0.090 Guess:  0.091  HamDist:  5 Dist = 5
+Pat 15 : stable =  0	min: -16.0 mean:  131.18  most: 318.0 -- Stdev: 72.833 Rel:  0.555 Ratio:  0.086 Guess:  0.000  HamDist:  2 Dist = 2
+Pat 16 : stable =  0	min: -104.0 mean:  135.22  most: 332.0 -- Stdev: 79.147 Rel:  0.585 Ratio: -0.035 Guess: -0.026  HamDist: 19 Dist = 19
+Pat 17 : stable =  0	min: -72.0 mean:  139.02  most: 318.0 -- Stdev: 84.378 Rel:  0.607 Ratio: -0.070 Guess: -0.044  HamDist: 44 Dist = 70
+Pat 18 : stable =  0	min: -60.0 mean:  144.18  most: 326.0 -- Stdev: 74.759 Rel:  0.519 Ratio:  0.037 Guess:  0.034  HamDist: 22 Dist = 36
+Pat 19 : stable =  1	min:   8.0 mean:  154.10  most: 324.0 -- Stdev: 60.929 Rel:  0.395 Ratio:  0.207 Guess:  0.168  HamDist:  0 Dist = 0
+Pat 20 : stable =  0	min: -44.0 mean:  129.90  most: 316.0 -- Stdev: 80.573 Rel:  0.620 Ratio: -0.020 Guess: -0.055  HamDist: 43 Dist = 93
+Pat 21 : stable =  0	min: -16.0 mean:  133.54  most: 250.0 -- Stdev: 60.479 Rel:  0.453 Ratio:  0.140 Guess:  0.102  HamDist:  1 Dist = 1
+Pat 22 : stable =  0	min: -50.0 mean:  140.18  most: 286.0 -- Stdev: 71.013 Rel:  0.507 Ratio:  0.070 Guess:  0.046  HamDist: 28 Dist = 38
+Pat 23 : stable =  1	min:  20.0 mean:  135.18  most: 276.0 -- Stdev: 64.080 Rel:  0.474 Ratio:  0.151 Guess:  0.079  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -12.0 mean:  137.66  most: 280.0 -- Stdev: 67.064 Rel:  0.487 Ratio:  0.120 Guess:  0.066  HamDist: 45 Dist = 157
+Pat 25 : stable =  1	min:  10.0 mean:  137.70  most: 232.0 -- Stdev: 58.257 Rel:  0.423 Ratio:  0.205 Guess:  0.135  HamDist:  0 Dist = 0
+Pat 26 : stable =  1	min:  10.0 mean:  128.54  most: 252.0 -- Stdev: 61.594 Rel:  0.479 Ratio:  0.143 Guess:  0.074  HamDist:  0 Dist = 0
+Pat 27 : stable =  1	min:  28.0 mean:  145.18  most: 258.0 -- Stdev: 56.593 Rel:  0.390 Ratio:  0.222 Guess:  0.175  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  46.0 mean:  152.66  most: 250.0 -- Stdev: 54.072 Rel:  0.354 Ratio:  0.273 Guess:  0.221  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    8.0  mean:  144.66  most:  320.0 -- Stdev  70.706 Rel:  0.489 Ratio:  0.114 Guess  0.064  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat   7:> min:   12.0  mean:  147.26  most:  264.0 -- Stdev  64.168 Rel:  0.436 Ratio:  0.146 Guess  0.121  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   22.0  mean:  128.38  most:  306.0 -- Stdev  61.274 Rel:  0.477 Ratio:  0.155 Guess  0.076  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  19:> min:    8.0  mean:  154.10  most:  324.0 -- Stdev  60.929 Rel:  0.395 Ratio:  0.207 Guess  0.168  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   20.0  mean:  135.18  most:  276.0 -- Stdev  64.080 Rel:  0.474 Ratio:  0.151 Guess  0.079  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  25:> min:   10.0  mean:  137.70  most:  232.0 -- Stdev  58.257 Rel:  0.423 Ratio:  0.205 Guess  0.135  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  26:> min:   10.0  mean:  128.54  most:  252.0 -- Stdev  61.594 Rel:  0.479 Ratio:  0.143 Guess  0.074  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:   28.0  mean:  145.18  most:  258.0 -- Stdev  56.593 Rel:  0.390 Ratio:  0.222 Guess  0.175  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   46.0  mean:  152.66  most:  250.0 -- Stdev  54.072 Rel:  0.354 Ratio:  0.273 Guess  0.221  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  128.380  0.1142  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   29     9     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    29 (0.114 > 0.000) (0.489 < 10000.000) (    8 >     0) (  128 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 729
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -50.0 mean:  146.92  most: 358.0 -- Stdev: 74.841 Rel:  0.509 Ratio:  0.063 Guess:  0.043  HamDist: 18 Dist = 24
+Pat  1 : stable =  1	min:   4.0 mean:  143.24  most: 326.0 -- Stdev: 71.104 Rel:  0.496 Ratio:  0.087 Guess:  0.056  HamDist:  0 Dist = 0
+Pat  2 : stable =  0	min: -76.0 mean:  121.80  most: 272.0 -- Stdev: 63.394 Rel:  0.520 Ratio:  0.019 Guess:  0.033  HamDist: 11 Dist = 11
+Pat  3 : stable =  0	min: -54.0 mean:  138.52  most: 348.0 -- Stdev: 75.618 Rel:  0.546 Ratio: -0.040 Guess:  0.009  HamDist: 45 Dist = 73
+Pat  4 : stable =  0	min: -48.0 mean:  132.12  most: 310.0 -- Stdev: 72.343 Rel:  0.548 Ratio:  0.033 Guess:  0.007  HamDist: 21 Dist = 25
+Pat  5 : stable =  0	min: -16.0 mean:  129.24  most: 302.0 -- Stdev: 76.955 Rel:  0.595 Ratio:  0.067 Guess: -0.035  HamDist: 50 Dist = 140
+Pat  6 : stable =  0	min: -56.0 mean:  131.08  most: 308.0 -- Stdev: 74.953 Rel:  0.572 Ratio: -0.011 Guess: -0.014  HamDist: 48 Dist = 58
+Pat  7 : stable =  0	min: -14.0 mean:  145.88  most: 282.0 -- Stdev: 67.381 Rel:  0.462 Ratio:  0.113 Guess:  0.092  HamDist:  7 Dist = 9
+Pat  8 : stable =  0	min: -62.0 mean:  123.24  most: 294.0 -- Stdev: 75.078 Rel:  0.609 Ratio: -0.051 Guess: -0.046  HamDist: 45 Dist = 159
+Pat  9 : stable =  0	min: -136.0 mean:  125.00  most: 312.0 -- Stdev: 84.838 Rel:  0.679 Ratio: -0.168 Guess: -0.100  HamDist: 33 Dist = 55
+Pat 10 : stable =  0	min:  -4.0 mean:  138.60  most: 274.0 -- Stdev: 64.386 Rel:  0.465 Ratio:  0.123 Guess:  0.089  HamDist:  5 Dist = 5
+Pat 11 : stable =  0	min: -54.0 mean:  143.32  most: 348.0 -- Stdev: 79.308 Rel:  0.553 Ratio: -0.042 Guess:  0.002  HamDist: 22 Dist = 30
+Pat 12 : stable =  1	min:  20.0 mean:  126.76  most: 304.0 -- Stdev: 61.247 Rel:  0.483 Ratio:  0.150 Guess:  0.070  HamDist:  0 Dist = 0
+Pat 13 : stable =  0	min: -18.0 mean:  131.64  most: 316.0 -- Stdev: 72.096 Rel:  0.548 Ratio:  0.017 Guess:  0.007  HamDist: 40 Dist = 52
+Pat 14 : stable =  0	min: -54.0 mean:  139.80  most: 316.0 -- Stdev: 66.703 Rel:  0.477 Ratio:  0.082 Guess:  0.076  HamDist:  3 Dist = 3
+Pat 15 : stable =  0	min: -32.0 mean:  130.52  most: 348.0 -- Stdev: 78.195 Rel:  0.599 Ratio:  0.017 Guess: -0.038  HamDist: 42 Dist = 94
+Pat 16 : stable =  0	min: -118.0 mean:  133.24  most: 332.0 -- Stdev: 78.551 Rel:  0.590 Ratio: -0.034 Guess: -0.030  HamDist: 25 Dist = 25
+Pat 17 : stable =  0	min: -84.0 mean:  137.08  most: 336.0 -- Stdev: 88.955 Rel:  0.649 Ratio: -0.106 Guess: -0.078  HamDist: 36 Dist = 52
+Pat 18 : stable =  0	min: -88.0 mean:  142.92  most: 336.0 -- Stdev: 75.467 Rel:  0.528 Ratio:  0.024 Guess:  0.025  HamDist:  7 Dist = 7
+Pat 19 : stable =  0	min: -12.0 mean:  152.68  most: 302.0 -- Stdev: 62.732 Rel:  0.411 Ratio:  0.157 Guess:  0.150  HamDist:  1 Dist = 1
+Pat 20 : stable =  0	min: -50.0 mean:  128.60  most: 326.0 -- Stdev: 82.210 Rel:  0.639 Ratio: -0.050 Guess: -0.070  HamDist: 40 Dist = 168
+Pat 21 : stable =  0	min: -30.0 mean:  132.04  most: 260.0 -- Stdev: 63.661 Rel:  0.482 Ratio:  0.113 Guess:  0.071  HamDist:  1 Dist = 1
+Pat 22 : stable =  0	min: -50.0 mean:  138.68  most: 288.0 -- Stdev: 71.334 Rel:  0.514 Ratio:  0.065 Guess:  0.038  HamDist: 36 Dist = 68
+Pat 23 : stable =  1	min:  20.0 mean:  133.56  most: 274.0 -- Stdev: 64.009 Rel:  0.479 Ratio:  0.147 Guess:  0.074  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -12.0 mean:  136.04  most: 278.0 -- Stdev: 66.979 Rel:  0.492 Ratio:  0.115 Guess:  0.060  HamDist: 43 Dist = 57
+Pat 25 : stable =  0	min: -20.0 mean:  134.68  most: 252.0 -- Stdev: 64.017 Rel:  0.475 Ratio:  0.117 Guess:  0.078  HamDist: 43 Dist = 65
+Pat 26 : stable =  1	min:  12.0 mean:  127.32  most: 260.0 -- Stdev: 61.262 Rel:  0.481 Ratio:  0.145 Guess:  0.072  HamDist:  0 Dist = 0
+Pat 27 : stable =  1	min:   4.0 mean:  145.80  most: 284.0 -- Stdev: 56.460 Rel:  0.387 Ratio:  0.212 Guess:  0.179  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  42.0 mean:  151.00  most: 244.0 -- Stdev: 54.710 Rel:  0.362 Ratio:  0.259 Guess:  0.211  HamDist:  0 Dist = 0
+Pat 29 : stable =  1	min:  48.0 mean:  152.04  most: 252.0 -- Stdev: 56.432 Rel:  0.371 Ratio:  0.237 Guess:  0.199  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat   1:> min:    4.0  mean:  143.24  most:  326.0 -- Stdev  71.104 Rel:  0.496 Ratio:  0.087 Guess  0.056  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  12:> min:   20.0  mean:  126.76  most:  304.0 -- Stdev  61.247 Rel:  0.483 Ratio:  0.150 Guess  0.070  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   20.0  mean:  133.56  most:  274.0 -- Stdev  64.009 Rel:  0.479 Ratio:  0.147 Guess  0.074  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  26:> min:   12.0  mean:  127.32  most:  260.0 -- Stdev  61.262 Rel:  0.481 Ratio:  0.145 Guess  0.072  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:    4.0  mean:  145.80  most:  284.0 -- Stdev  56.460 Rel:  0.387 Ratio:  0.212 Guess  0.179  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   42.0  mean:  151.00  most:  244.0 -- Stdev  54.710 Rel:  0.362 Ratio:  0.259 Guess  0.211  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  29:> min:   48.0  mean:  152.04  most:  252.0 -- Stdev  56.432 Rel:  0.371 Ratio:  0.237 Guess  0.199  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  126.760  0.0865  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   30     7     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    30 (0.087 > 0.000) (0.496 < 10000.000) (    4 >     0) (  127 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 719
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -76.0 mean:  145.50  most: 358.0 -- Stdev: 76.161 Rel:  0.523 Ratio:  0.023 Guess:  0.030  HamDist:  5 Dist = 5
+Pat  1 : stable =  0	min:  -2.0 mean:  141.30  most: 326.0 -- Stdev: 72.133 Rel:  0.510 Ratio:  0.075 Guess:  0.042  HamDist: 44 Dist = 72
+Pat  2 : stable =  0	min: -82.0 mean:  120.02  most: 274.0 -- Stdev: 64.335 Rel:  0.536 Ratio:  0.000 Guess:  0.018  HamDist: 26 Dist = 36
+Pat  3 : stable =  0	min: -54.0 mean:  136.86  most: 346.0 -- Stdev: 75.523 Rel:  0.552 Ratio: -0.046 Guess:  0.003  HamDist: 41 Dist = 63
+Pat  4 : stable =  0	min: -42.0 mean:  130.54  most: 316.0 -- Stdev: 71.926 Rel:  0.551 Ratio:  0.035 Guess:  0.004  HamDist: 41 Dist = 93
+Pat  5 : stable =  0	min: -14.0 mean:  127.54  most: 304.0 -- Stdev: 77.211 Rel:  0.605 Ratio:  0.055 Guess: -0.043  HamDist: 46 Dist = 66
+Pat  6 : stable =  0	min: -56.0 mean:  129.22  most: 308.0 -- Stdev: 74.594 Rel:  0.577 Ratio: -0.011 Guess: -0.019  HamDist: 46 Dist = 138
+Pat  7 : stable =  0	min:  -8.0 mean:  143.98  most: 288.0 -- Stdev: 67.426 Rel:  0.468 Ratio:  0.113 Guess:  0.085  HamDist:  7 Dist = 7
+Pat  8 : stable =  0	min: -70.0 mean:  119.78  most: 328.0 -- Stdev: 78.522 Rel:  0.656 Ratio: -0.094 Guess: -0.083  HamDist: 38 Dist = 76
+Pat  9 : stable =  0	min: -136.0 mean:  123.34  most: 310.0 -- Stdev: 84.983 Rel:  0.689 Ratio: -0.177 Guess: -0.107  HamDist: 19 Dist = 27
+Pat 10 : stable =  0	min:  -4.0 mean:  137.26  most: 274.0 -- Stdev: 68.744 Rel:  0.501 Ratio:  0.091 Guess:  0.052  HamDist:  5 Dist = 5
+Pat 11 : stable =  0	min: -48.0 mean:  141.74  most: 354.0 -- Stdev: 79.141 Rel:  0.558 Ratio: -0.053 Guess: -0.003  HamDist: 22 Dist = 54
+Pat 12 : stable =  1	min:  24.0 mean:  125.18  most: 310.0 -- Stdev: 61.663 Rel:  0.493 Ratio:  0.141 Guess:  0.060  HamDist:  0 Dist = 0
+Pat 13 : stable =  0	min: -40.0 mean:  130.58  most: 334.0 -- Stdev: 74.503 Rel:  0.571 Ratio:  0.016 Guess: -0.013  HamDist: 46 Dist = 90
+Pat 14 : stable =  0	min: -34.0 mean:  138.02  most: 326.0 -- Stdev: 67.158 Rel:  0.487 Ratio:  0.096 Guess:  0.066  HamDist:  3 Dist = 3
+Pat 15 : stable =  0	min: -32.0 mean:  130.46  most: 378.0 -- Stdev: 81.978 Rel:  0.628 Ratio:  0.002 Guess: -0.062  HamDist: 47 Dist = 71
+Pat 16 : stable =  0	min: -140.0 mean:  132.18  most: 350.0 -- Stdev: 76.936 Rel:  0.582 Ratio: -0.018 Guess: -0.023  HamDist: 40 Dist = 60
+Pat 17 : stable =  0	min: -118.0 mean:  135.10  most: 322.0 -- Stdev: 91.442 Rel:  0.677 Ratio: -0.124 Guess: -0.098  HamDist: 39 Dist = 57
+Pat 18 : stable =  0	min: -62.0 mean:  140.98  most: 362.0 -- Stdev: 80.619 Rel:  0.572 Ratio: -0.012 Guess: -0.014  HamDist:  8 Dist = 12
+Pat 19 : stable =  0	min: -26.0 mean:  150.18  most: 302.0 -- Stdev: 64.485 Rel:  0.429 Ratio:  0.144 Guess:  0.128  HamDist:  1 Dist = 1
+Pat 20 : stable =  0	min: -134.0 mean:  127.34  most: 354.0 -- Stdev: 84.187 Rel:  0.661 Ratio: -0.075 Guess: -0.087  HamDist: 34 Dist = 46
+Pat 21 : stable =  0	min: -44.0 mean:  130.26  most: 260.0 -- Stdev: 64.066 Rel:  0.492 Ratio:  0.092 Guess:  0.061  HamDist: 46 Dist = 76
+Pat 22 : stable =  0	min: -64.0 mean:  137.38  most: 290.0 -- Stdev: 71.920 Rel:  0.524 Ratio:  0.050 Guess:  0.030  HamDist: 37 Dist = 107
+Pat 23 : stable =  1	min:  20.0 mean:  131.98  most: 274.0 -- Stdev: 63.634 Rel:  0.482 Ratio:  0.148 Guess:  0.071  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -12.0 mean:  134.38  most: 276.0 -- Stdev: 67.015 Rel:  0.499 Ratio:  0.109 Guess:  0.054  HamDist: 50 Dist = 108
+Pat 25 : stable =  0	min: -18.0 mean:  132.98  most: 254.0 -- Stdev: 64.475 Rel:  0.485 Ratio:  0.111 Guess:  0.068  HamDist: 32 Dist = 52
+Pat 26 : stable =  0	min:  -6.0 mean:  124.94  most: 260.0 -- Stdev: 63.505 Rel:  0.508 Ratio:  0.114 Guess:  0.044  HamDist:  2 Dist = 2
+Pat 27 : stable =  1	min:   4.0 mean:  143.66  most: 294.0 -- Stdev: 55.597 Rel:  0.387 Ratio:  0.208 Guess:  0.179  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  26.0 mean:  148.74  most: 258.0 -- Stdev: 58.790 Rel:  0.395 Ratio:  0.234 Guess:  0.169  HamDist:  0 Dist = 0
+Pat 29 : stable =  1	min:  18.0 mean:  150.54  most: 266.0 -- Stdev: 58.981 Rel:  0.392 Ratio:  0.192 Guess:  0.173  HamDist:  0 Dist = 0
+Pat 30 : stable =  1	min:  42.0 mean:  145.58  most: 242.0 -- Stdev: 56.763 Rel:  0.390 Ratio:  0.237 Guess:  0.175  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat  12:> min:   24.0  mean:  125.18  most:  310.0 -- Stdev  61.663 Rel:  0.493 Ratio:  0.141 Guess  0.060  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  23:> min:   20.0  mean:  131.98  most:  274.0 -- Stdev  63.634 Rel:  0.482 Ratio:  0.148 Guess  0.071  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:    4.0  mean:  143.66  most:  294.0 -- Stdev  55.597 Rel:  0.387 Ratio:  0.208 Guess  0.179  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   26.0  mean:  148.74  most:  258.0 -- Stdev  58.790 Rel:  0.395 Ratio:  0.234 Guess  0.169  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  29:> min:   18.0  mean:  150.54  most:  266.0 -- Stdev  58.981 Rel:  0.392 Ratio:  0.192 Guess  0.173  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  30:> min:   42.0  mean:  145.58  most:  242.0 -- Stdev  56.763 Rel:  0.390 Ratio:  0.237 Guess  0.175  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  125.180  0.1413  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   31     6     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    31 (0.141 > 0.000) (0.493 < 10000.000) (    4 >     0) (  125 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 678
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -76.0 mean:  145.16  most: 336.0 -- Stdev: 77.598 Rel:  0.535 Ratio:  0.001 Guess:  0.019  HamDist:  5 Dist = 5
+Pat  1 : stable =  0	min:  -8.0 mean:  140.12  most: 340.0 -- Stdev: 73.489 Rel:  0.524 Ratio:  0.053 Guess:  0.029  HamDist: 44 Dist = 134
+Pat  2 : stable =  0	min: -92.0 mean:  118.44  most: 264.0 -- Stdev: 65.108 Rel:  0.550 Ratio: -0.001 Guess:  0.005  HamDist: 24 Dist = 30
+Pat  3 : stable =  0	min: -54.0 mean:  136.52  most: 324.0 -- Stdev: 76.907 Rel:  0.563 Ratio: -0.041 Guess: -0.007  HamDist: 18 Dist = 42
+Pat  4 : stable =  0	min: -42.0 mean:  129.40  most: 324.0 -- Stdev: 75.545 Rel:  0.584 Ratio: -0.008 Guess: -0.025  HamDist: 38 Dist = 64
+Pat  5 : stable =  0	min: -14.0 mean:  125.48  most: 326.0 -- Stdev: 80.883 Rel:  0.645 Ratio:  0.015 Guess: -0.074  HamDist: 43 Dist = 105
+Pat  6 : stable =  0	min: -64.0 mean:  127.96  most: 298.0 -- Stdev: 75.060 Rel:  0.587 Ratio: -0.014 Guess: -0.027  HamDist: 38 Dist = 86
+Pat  7 : stable =  0	min: -14.0 mean:  143.96  most: 330.0 -- Stdev: 72.984 Rel:  0.507 Ratio:  0.063 Guess:  0.046  HamDist:  8 Dist = 10
+Pat  8 : stable =  0	min: -72.0 mean:  118.44  most: 326.0 -- Stdev: 78.449 Rel:  0.662 Ratio: -0.101 Guess: -0.088  HamDist: 37 Dist = 177
+Pat  9 : stable =  0	min: -110.0 mean:  123.56  most: 314.0 -- Stdev: 89.111 Rel:  0.721 Ratio: -0.145 Guess: -0.130  HamDist: 27 Dist = 51
+Pat 10 : stable =  0	min: -18.0 mean:  136.04  most: 284.0 -- Stdev: 70.354 Rel:  0.517 Ratio:  0.067 Guess:  0.036  HamDist: 41 Dist = 125
+Pat 11 : stable =  0	min: -62.0 mean:  140.52  most: 340.0 -- Stdev: 80.295 Rel:  0.571 Ratio: -0.069 Guess: -0.014  HamDist: 28 Dist = 36
+Pat 12 : stable =  0	min:  -6.0 mean:  124.12  most: 310.0 -- Stdev: 65.700 Rel:  0.529 Ratio:  0.063 Guess:  0.024  HamDist: 38 Dist = 120
+Pat 13 : stable =  0	min: -40.0 mean:  129.24  most: 332.0 -- Stdev: 74.503 Rel:  0.576 Ratio:  0.012 Guess: -0.018  HamDist: 42 Dist = 134
+Pat 14 : stable =  0	min: -68.0 mean:  136.36  most: 356.0 -- Stdev: 71.509 Rel:  0.524 Ratio:  0.061 Guess:  0.029  HamDist:  4 Dist = 4
+Pat 15 : stable =  0	min: -54.0 mean:  128.52  most: 356.0 -- Stdev: 83.058 Rel:  0.646 Ratio: -0.035 Guess: -0.075  HamDist: 41 Dist = 63
+Pat 16 : stable =  0	min: -140.0 mean:  130.44  most: 350.0 -- Stdev: 81.035 Rel:  0.621 Ratio: -0.007 Guess: -0.056  HamDist: 36 Dist = 38
+Pat 17 : stable =  0	min: -80.0 mean:  135.96  most: 326.0 -- Stdev: 88.460 Rel:  0.651 Ratio: -0.080 Guess: -0.079  HamDist: 31 Dist = 39
+Pat 18 : stable =  0	min: -62.0 mean:  139.64  most: 360.0 -- Stdev: 80.477 Rel:  0.576 Ratio: -0.016 Guess: -0.018  HamDist: 49 Dist = 193
+Pat 19 : stable =  0	min: -44.0 mean:  148.68  most: 316.0 -- Stdev: 66.836 Rel:  0.450 Ratio:  0.126 Guess:  0.105  HamDist:  2 Dist = 2
+Pat 20 : stable =  0	min: -148.0 mean:  126.12  most: 354.0 -- Stdev: 84.053 Rel:  0.666 Ratio: -0.084 Guess: -0.091  HamDist: 44 Dist = 72
+Pat 21 : stable =  0	min: -44.0 mean:  129.00  most: 266.0 -- Stdev: 62.797 Rel:  0.487 Ratio:  0.091 Guess:  0.066  HamDist: 37 Dist = 41
+Pat 22 : stable =  0	min: -64.0 mean:  136.20  most: 290.0 -- Stdev: 74.760 Rel:  0.549 Ratio:  0.016 Guess:  0.006  HamDist: 34 Dist = 46
+Pat 23 : stable =  1	min:  20.0 mean:  130.52  most: 276.0 -- Stdev: 63.791 Rel:  0.489 Ratio:  0.144 Guess:  0.064  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -14.0 mean:  132.44  most: 276.0 -- Stdev: 68.076 Rel:  0.514 Ratio:  0.092 Guess:  0.039  HamDist: 43 Dist = 155
+Pat 25 : stable =  0	min: -28.0 mean:  127.48  most: 278.0 -- Stdev: 67.218 Rel:  0.527 Ratio:  0.045 Guess:  0.026  HamDist: 40 Dist = 244
+Pat 26 : stable =  1	min:   2.0 mean:  123.72  most: 260.0 -- Stdev: 63.861 Rel:  0.516 Ratio:  0.102 Guess:  0.037  HamDist:  0 Dist = 0
+Pat 27 : stable =  1	min:  14.0 mean:  141.48  most: 286.0 -- Stdev: 56.001 Rel:  0.396 Ratio:  0.202 Guess:  0.168  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  28.0 mean:  147.88  most: 258.0 -- Stdev: 59.166 Rel:  0.400 Ratio:  0.224 Guess:  0.163  HamDist:  0 Dist = 0
+Pat 29 : stable =  0	min:  -4.0 mean:  147.40  most: 248.0 -- Stdev: 61.612 Rel:  0.418 Ratio:  0.172 Guess:  0.141  HamDist:  1 Dist = 1
+Pat 30 : stable =  1	min:   2.0 mean:  143.80  most: 284.0 -- Stdev: 62.946 Rel:  0.438 Ratio:  0.175 Guess:  0.119  HamDist:  0 Dist = 0
+Pat 31 : stable =  1	min:  46.0 mean:  142.84  most: 244.0 -- Stdev: 56.703 Rel:  0.397 Ratio:  0.229 Guess:  0.166  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat  23:> min:   20.0  mean:  130.52  most:  276.0 -- Stdev  63.791 Rel:  0.489 Ratio:  0.144 Guess  0.064  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  26:> min:    2.0  mean:  123.72  most:  260.0 -- Stdev  63.861 Rel:  0.516 Ratio:  0.102 Guess  0.037  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:   14.0  mean:  141.48  most:  286.0 -- Stdev  56.001 Rel:  0.396 Ratio:  0.202 Guess  0.168  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   28.0  mean:  147.88  most:  258.0 -- Stdev  59.166 Rel:  0.400 Ratio:  0.224 Guess  0.163  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  30:> min:    2.0  mean:  143.80  most:  284.0 -- Stdev  62.946 Rel:  0.438 Ratio:  0.175 Guess  0.119  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  31:> min:   46.0  mean:  142.84  most:  244.0 -- Stdev  56.703 Rel:  0.397 Ratio:  0.229 Guess  0.166  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  123.720  0.1019  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   32     6     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    32 (0.102 > 0.000) (0.516 < 10000.000) (    2 >     0) (  124 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 761
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -86.0 mean:  143.70  most: 342.0 -- Stdev: 78.543 Rel:  0.547 Ratio: -0.014 Guess:  0.008  HamDist: 35 Dist = 49
+Pat  1 : stable =  0	min: -14.0 mean:  139.42  most: 320.0 -- Stdev: 74.806 Rel:  0.537 Ratio:  0.011 Guess:  0.017  HamDist: 36 Dist = 252
+Pat  2 : stable =  0	min: -130.0 mean:  117.82  most: 298.0 -- Stdev: 68.508 Rel:  0.581 Ratio: -0.032 Guess: -0.023  HamDist: 45 Dist = 137
+Pat  3 : stable =  0	min: -54.0 mean:  134.10  most: 346.0 -- Stdev: 77.639 Rel:  0.579 Ratio: -0.020 Guess: -0.021  HamDist: 42 Dist = 90
+Pat  4 : stable =  0	min: -60.0 mean:  127.86  most: 306.0 -- Stdev: 73.523 Rel:  0.575 Ratio: -0.015 Guess: -0.017  HamDist: 49 Dist = 121
+Pat  5 : stable =  0	min: -28.0 mean:  123.18  most: 344.0 -- Stdev: 82.933 Rel:  0.673 Ratio: -0.002 Guess: -0.096  HamDist: 45 Dist = 123
+Pat  6 : stable =  0	min: -46.0 mean:  128.06  most: 316.0 -- Stdev: 74.753 Rel:  0.584 Ratio: -0.002 Guess: -0.025  HamDist: 44 Dist = 54
+Pat  7 : stable =  0	min: -24.0 mean:  142.34  most: 320.0 -- Stdev: 74.139 Rel:  0.521 Ratio:  0.041 Guess:  0.032  HamDist: 44 Dist = 112
+Pat  8 : stable =  0	min: -94.0 mean:  116.14  most: 304.0 -- Stdev: 78.520 Rel:  0.676 Ratio: -0.148 Guess: -0.098  HamDist: 47 Dist = 75
+Pat  9 : stable =  0	min: -128.0 mean:  123.30  most: 342.0 -- Stdev: 87.580 Rel:  0.710 Ratio: -0.149 Guess: -0.122  HamDist: 49 Dist = 123
+Pat 10 : stable =  0	min: -20.0 mean:  134.34  most: 282.0 -- Stdev: 70.299 Rel:  0.523 Ratio:  0.061 Guess:  0.030  HamDist: 48 Dist = 86
+Pat 11 : stable =  0	min: -54.0 mean:  137.70  most: 322.0 -- Stdev: 80.904 Rel:  0.588 Ratio: -0.092 Guess: -0.028  HamDist: 46 Dist = 166
+Pat 12 : stable =  0	min: -24.0 mean:  122.90  most: 310.0 -- Stdev: 66.423 Rel:  0.540 Ratio:  0.064 Guess:  0.014  HamDist:  4 Dist = 4
+Pat 13 : stable =  0	min: -54.0 mean:  127.66  most: 318.0 -- Stdev: 74.523 Rel:  0.584 Ratio:  0.001 Guess: -0.025  HamDist: 49 Dist = 61
+Pat 14 : stable =  0	min: -82.0 mean:  134.78  most: 342.0 -- Stdev: 72.633 Rel:  0.539 Ratio:  0.035 Guess:  0.015  HamDist:  3 Dist = 5
+Pat 15 : stable =  0	min: -64.0 mean:  126.42  most: 346.0 -- Stdev: 84.036 Rel:  0.665 Ratio: -0.053 Guess: -0.089  HamDist: 50 Dist = 122
+Pat 16 : stable =  0	min: -98.0 mean:  130.06  most: 392.0 -- Stdev: 83.246 Rel:  0.640 Ratio: -0.035 Guess: -0.071  HamDist: 49 Dist = 171
+Pat 17 : stable =  0	min: -80.0 mean:  134.34  most: 316.0 -- Stdev: 87.708 Rel:  0.653 Ratio: -0.084 Guess: -0.081  HamDist: 45 Dist = 75
+Pat 18 : stable =  0	min: -60.0 mean:  138.14  most: 360.0 -- Stdev: 84.252 Rel:  0.610 Ratio: -0.069 Guess: -0.047  HamDist: 26 Dist = 38
+Pat 19 : stable =  0	min: -58.0 mean:  147.34  most: 326.0 -- Stdev: 68.186 Rel:  0.463 Ratio:  0.104 Guess:  0.091  HamDist:  1 Dist = 3
+Pat 20 : stable =  0	min: -148.0 mean:  124.66  most: 344.0 -- Stdev: 83.851 Rel:  0.673 Ratio: -0.092 Guess: -0.095  HamDist: 28 Dist = 110
+Pat 21 : stable =  0	min: -42.0 mean:  127.50  most: 260.0 -- Stdev: 62.769 Rel:  0.492 Ratio:  0.090 Guess:  0.060  HamDist: 37 Dist = 43
+Pat 22 : stable =  0	min: -54.0 mean:  134.14  most: 300.0 -- Stdev: 75.472 Rel:  0.563 Ratio:  0.004 Guess: -0.006  HamDist: 27 Dist = 47
+Pat 23 : stable =  1	min:  12.0 mean:  129.94  most: 290.0 -- Stdev: 66.943 Rel:  0.515 Ratio:  0.120 Guess:  0.038  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -24.0 mean:  131.62  most: 282.0 -- Stdev: 68.684 Rel:  0.522 Ratio:  0.088 Guess:  0.031  HamDist: 42 Dist = 88
+Pat 25 : stable =  0	min: -42.0 mean:  126.62  most: 288.0 -- Stdev: 68.609 Rel:  0.542 Ratio:  0.026 Guess:  0.012  HamDist: 41 Dist = 225
+Pat 26 : stable =  0	min: -16.0 mean:  120.26  most: 274.0 -- Stdev: 66.086 Rel:  0.550 Ratio:  0.082 Guess:  0.005  HamDist: 50 Dist = 318
+Pat 27 : stable =  1	min:  12.0 mean:  139.78  most: 284.0 -- Stdev: 56.032 Rel:  0.401 Ratio:  0.195 Guess:  0.162  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  38.0 mean:  146.54  most: 268.0 -- Stdev: 59.173 Rel:  0.404 Ratio:  0.227 Guess:  0.158  HamDist:  0 Dist = 0
+Pat 29 : stable =  1	min:   4.0 mean:  144.90  most: 260.0 -- Stdev: 64.019 Rel:  0.442 Ratio:  0.133 Guess:  0.114  HamDist:  0 Dist = 0
+Pat 30 : stable =  1	min:   0.0 mean:  142.10  most: 280.0 -- Stdev: 62.716 Rel:  0.441 Ratio:  0.170 Guess:  0.115  HamDist:  0 Dist = 0
+Pat 31 : stable =  1	min:  38.0 mean:  140.86  most: 242.0 -- Stdev: 56.905 Rel:  0.404 Ratio:  0.215 Guess:  0.158  HamDist:  0 Dist = 0
+Pat 32 : stable =  1	min:  50.0 mean:  149.22  most: 248.0 -- Stdev: 57.733 Rel:  0.387 Ratio:  0.250 Guess:  0.179  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat  23:> min:   12.0  mean:  129.94  most:  290.0 -- Stdev  66.943 Rel:  0.515 Ratio:  0.120 Guess  0.038  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:   12.0  mean:  139.78  most:  284.0 -- Stdev  56.032 Rel:  0.401 Ratio:  0.195 Guess  0.162  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   38.0  mean:  146.54  most:  268.0 -- Stdev  59.173 Rel:  0.404 Ratio:  0.227 Guess  0.158  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  29:> min:    4.0  mean:  144.90  most:  260.0 -- Stdev  64.019 Rel:  0.442 Ratio:  0.133 Guess  0.114  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  30:> min:    0.0  mean:  142.10  most:  280.0 -- Stdev  62.716 Rel:  0.441 Ratio:  0.170 Guess  0.115  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  31:> min:   38.0  mean:  140.86  most:  242.0 -- Stdev  56.905 Rel:  0.404 Ratio:  0.215 Guess  0.158  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  32:> min:   50.0  mean:  149.22  most:  248.0 -- Stdev  57.733 Rel:  0.387 Ratio:  0.250 Guess  0.179  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  129.940  0.1205  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   33     7     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    33 (0.120 > 0.000) (0.515 < 10000.000) (    0 >     0) (  130 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 698
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -86.0 mean:  142.14  most: 330.0 -- Stdev: 78.296 Rel:  0.551 Ratio: -0.019 Guess:  0.004  HamDist: 17 Dist = 17
+Pat  1 : stable =  0	min: -32.0 mean:  138.66  most: 332.0 -- Stdev: 75.056 Rel:  0.541 Ratio: -0.002 Guess:  0.013  HamDist: 34 Dist = 54
+Pat  2 : stable =  0	min: -132.0 mean:  116.42  most: 298.0 -- Stdev: 68.572 Rel:  0.589 Ratio: -0.039 Guess: -0.029  HamDist: 49 Dist = 177
+Pat  3 : stable =  0	min: -36.0 mean:  132.70  most: 324.0 -- Stdev: 76.883 Rel:  0.579 Ratio: -0.011 Guess: -0.021  HamDist: 49 Dist = 139
+Pat  4 : stable =  0	min: -40.0 mean:  128.70  most: 322.0 -- Stdev: 73.466 Rel:  0.571 Ratio:  0.017 Guess: -0.014  HamDist: 46 Dist = 100
+Pat  5 : stable =  0	min: -68.0 mean:  122.74  most: 360.0 -- Stdev: 89.079 Rel:  0.726 Ratio: -0.095 Guess: -0.133  HamDist: 42 Dist = 126
+Pat  6 : stable =  0	min: -46.0 mean:  126.66  most: 314.0 -- Stdev: 74.785 Rel:  0.590 Ratio: -0.007 Guess: -0.030  HamDist: 36 Dist = 44
+Pat  7 : stable =  0	min: -30.0 mean:  141.10  most: 320.0 -- Stdev: 74.756 Rel:  0.530 Ratio:  0.034 Guess:  0.024  HamDist: 48 Dist = 150
+Pat  8 : stable =  0	min: -136.0 mean:  113.94  most: 304.0 -- Stdev: 86.287 Rel:  0.757 Ratio: -0.213 Guess: -0.154  HamDist: 46 Dist = 160
+Pat  9 : stable =  0	min: -118.0 mean:  121.66  most: 342.0 -- Stdev: 88.233 Rel:  0.725 Ratio: -0.158 Guess: -0.132  HamDist: 38 Dist = 90
+Pat 10 : stable =  0	min: -34.0 mean:  132.94  most: 292.0 -- Stdev: 70.515 Rel:  0.530 Ratio:  0.051 Guess:  0.023  HamDist: 47 Dist = 129
+Pat 11 : stable =  0	min: -76.0 mean:  136.70  most: 340.0 -- Stdev: 80.964 Rel:  0.592 Ratio: -0.088 Guess: -0.032  HamDist: 30 Dist = 56
+Pat 12 : stable =  0	min: -30.0 mean:  121.42  most: 310.0 -- Stdev: 66.844 Rel:  0.551 Ratio:  0.050 Guess:  0.005  HamDist:  5 Dist = 5
+Pat 13 : stable =  0	min: -56.0 mean:  126.26  most: 316.0 -- Stdev: 74.556 Rel:  0.590 Ratio: -0.005 Guess: -0.030  HamDist: 40 Dist = 122
+Pat 14 : stable =  0	min: -68.0 mean:  134.66  most: 342.0 -- Stdev: 73.382 Rel:  0.545 Ratio:  0.044 Guess:  0.010  HamDist:  3 Dist = 7
+Pat 15 : stable =  0	min: -76.0 mean:  125.74  most: 332.0 -- Stdev: 85.046 Rel:  0.676 Ratio: -0.081 Guess: -0.098  HamDist: 49 Dist = 73
+Pat 16 : stable =  0	min: -98.0 mean:  130.58  most: 366.0 -- Stdev: 82.024 Rel:  0.628 Ratio: -0.051 Guess: -0.061  HamDist: 50 Dist = 102
+Pat 17 : stable =  0	min: -86.0 mean:  132.86  most: 318.0 -- Stdev: 87.871 Rel:  0.661 Ratio: -0.087 Guess: -0.087  HamDist: 37 Dist = 65
+Pat 18 : stable =  0	min: -78.0 mean:  136.10  most: 328.0 -- Stdev: 86.674 Rel:  0.637 Ratio: -0.046 Guess: -0.068  HamDist: 26 Dist = 38
+Pat 19 : stable =  0	min: -28.0 mean:  145.30  most: 292.0 -- Stdev: 68.906 Rel:  0.474 Ratio:  0.082 Guess:  0.079  HamDist: 10 Dist = 12
+Pat 20 : stable =  0	min: -130.0 mean:  123.66  most: 326.0 -- Stdev: 83.659 Rel:  0.677 Ratio: -0.098 Guess: -0.098  HamDist: 49 Dist = 71
+Pat 21 : stable =  0	min: -42.0 mean:  125.46  most: 250.0 -- Stdev: 63.228 Rel:  0.504 Ratio:  0.085 Guess:  0.049  HamDist: 29 Dist = 37
+Pat 22 : stable =  0	min: -54.0 mean:  134.66  most: 288.0 -- Stdev: 73.067 Rel:  0.543 Ratio:  0.022 Guess:  0.012  HamDist: 46 Dist = 92
+Pat 23 : stable =  1	min:   8.0 mean:  128.54  most: 292.0 -- Stdev: 66.907 Rel:  0.521 Ratio:  0.113 Guess:  0.033  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -24.0 mean:  129.98  most: 282.0 -- Stdev: 68.690 Rel:  0.528 Ratio:  0.079 Guess:  0.025  HamDist: 35 Dist = 173
+Pat 25 : stable =  0	min: -42.0 mean:  125.70  most: 294.0 -- Stdev: 69.289 Rel:  0.551 Ratio:  0.017 Guess:  0.004  HamDist: 28 Dist = 52
+Pat 26 : stable =  0	min: -46.0 mean:  120.54  most: 268.0 -- Stdev: 66.522 Rel:  0.552 Ratio:  0.035 Guess:  0.003  HamDist: 34 Dist = 90
+Pat 27 : stable =  1	min:  14.0 mean:  138.38  most: 286.0 -- Stdev: 55.779 Rel:  0.403 Ratio:  0.193 Guess:  0.159  HamDist:  0 Dist = 0
+Pat 28 : stable =  1	min:  32.0 mean:  144.82  most: 268.0 -- Stdev: 59.439 Rel:  0.410 Ratio:  0.214 Guess:  0.150  HamDist:  0 Dist = 0
+Pat 29 : stable =  1	min:   4.0 mean:  142.62  most: 294.0 -- Stdev: 71.152 Rel:  0.499 Ratio:  0.099 Guess:  0.054  HamDist:  0 Dist = 0
+Pat 30 : stable =  0	min: -14.0 mean:  140.46  most: 290.0 -- Stdev: 64.255 Rel:  0.457 Ratio:  0.143 Guess:  0.097  HamDist:  2 Dist = 2
+Pat 31 : stable =  1	min:  44.0 mean:  139.46  most: 244.0 -- Stdev: 53.445 Rel:  0.383 Ratio:  0.248 Guess:  0.184  HamDist:  0 Dist = 0
+Pat 32 : stable =  1	min:   4.0 mean:  146.70  most: 274.0 -- Stdev: 62.569 Rel:  0.427 Ratio:  0.159 Guess:  0.131  HamDist:  0 Dist = 0
+Pat 33 : stable =  1	min:  36.0 mean:  134.50  most: 234.0 -- Stdev: 54.340 Rel:  0.404 Ratio:  0.230 Guess:  0.158  HamDist:  0 Dist = 0
+The number cycling is =    0  the number of stable states not saved is    0
+ patterns 
+Learnt   Pat  23:> min:    8.0  mean:  128.54  most:  292.0 -- Stdev  66.907 Rel:  0.521 Ratio:  0.113 Guess  0.033  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  27:> min:   14.0  mean:  138.38  most:  286.0 -- Stdev  55.779 Rel:  0.403 Ratio:  0.193 Guess  0.159  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  28:> min:   32.0  mean:  144.82  most:  268.0 -- Stdev  59.439 Rel:  0.410 Ratio:  0.214 Guess  0.150  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  29:> min:    4.0  mean:  142.62  most:  294.0 -- Stdev  71.152 Rel:  0.499 Ratio:  0.099 Guess  0.054  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  31:> min:   44.0  mean:  139.46  most:  244.0 -- Stdev  53.445 Rel:  0.383 Ratio:  0.248 Guess  0.184  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  32:> min:    4.0  mean:  146.70  most:  274.0 -- Stdev  62.569 Rel:  0.427 Ratio:  0.159 Guess  0.131  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+Learnt   Pat  33:> min:   36.0  mean:  134.50  most:  234.0 -- Stdev  54.340 Rel:  0.404 Ratio:  0.230 Guess  0.158  Freq:    0  CycAvg:  -1.#IO - NearP   0 HamDist:   0 InitCh: -1.$ 
+---------------
+
+          Freq:  Mean:   Ratio:  Basin:
+Spurious     0    0.000  0.0000  1.0000 maximums independant
+Learnt       0  128.540  0.0989  0.0000 minimums independant
+     MisClassified 
+     Pats , Stb , Fnd , Spr :  -Rt  , 1.0 Rt (s,p) , -StdVar , 0.3 StdVar LeastSt: DisAgr , Mean ,  Num | %Learn  %Cycling 
+num:   34     7     0     0 :     0  (    0     0)       0   (    0     0)     0 :  0.000      0      0 |  -1.$  -1.$ 
+             Ratio          StdVar          Least Stable    Mean 
+vals :    34 (0.099 > 0.000) (0.521 < 10000.000) (    4 >     0) (  129 >     0) 
+Delta: 
+:      0.001	:    0.000	:avg weight  0.000  epoch: 703
+
+Training Complete
+Testing the Learnt Patterns
+Pat  0 : stable =  0	min: -80.0 mean:  140.68  most: 320.0 -- Stdev: 78.104 Rel:  0.555 Ratio: -0.027 Guess:  0.000  HamDist: 17 Dist = 17
+Pat  1 : stable =  0	min: -32.0 mean:  136.68  most: 332.0 -- Stdev: 78.150 Rel:  0.572 Ratio: -0.021 Guess: -0.014  HamDist: 45 Dist = 197
+Pat  2 : stable =  0	min: -90.0 mean:  118.12  most: 298.0 -- Stdev: 75.946 Rel:  0.643 Ratio: -0.085 Guess: -0.073  HamDist: 33 Dist = 51
+Pat  3 : stable =  0	min: -46.0 mean:  131.08  most: 316.0 -- Stdev: 77.789 Rel:  0.593 Ratio: -0.032 Guess: -0.033  HamDist: 49 Dist = 119
+Pat  4 : stable =  0	min: -66.0 mean:  128.04  most: 344.0 -- Stdev: 78.477 Rel:  0.613 Ratio: -0.031 Guess: -0.049  HamDist: 45 Dist = 95
+Pat  5 : stable =  0	min: -68.0 mean:  121.96  most: 338.0 -- Stdev: 88.619 Rel:  0.727 Ratio: -0.109 Guess: -0.133  HamDist: 36 Dist = 54
+Pat  6 : stable =  0	min: -46.0 mean:  125.16  most: 310.0 -- Stdev: 75.105 Rel:  0.600 Ratio: -0.012 Guess: -0.039  HamDist: 49 Dist = 65
+Pat  7 : stable =  0	min: -40.0 mean:  139.64  most: 320.0 -- Stdev: 76.035 Rel:  0.545 Ratio:  0.015 Guess:  0.010  HamDist: 21 Dist = 37
+Pat  8 : stable =  0	min: -154.0 mean:  112.28  most: 304.0 -- Stdev: 91.205 Rel:  0.812 Ratio: -0.248 Guess: -0.188  HamDist: 48 Dist = 68
+Pat  9 : stable =  0	min: -118.0 mean:  122.28  most: 310.0 -- Stdev: 86.097 Rel:  0.704 Ratio: -0.148 Guess: -0.118  HamDist: 44 Dist = 130
+Pat 10 : stable =  0	min: -84.0 mean:  132.04  most: 322.0 -- Stdev: 83.780 Rel:  0.635 Ratio: -0.071 Guess: -0.066  HamDist: 35 Dist = 43
+Pat 11 : stable =  0	min: -94.0 mean:  135.80  most: 354.0 -- Stdev: 84.857 Rel:  0.625 Ratio: -0.107 Guess: -0.059  HamDist: 46 Dist = 286
+Pat 12 : stable =  0	min: -32.0 mean:  120.04  most: 308.0 -- Stdev: 66.747 Rel:  0.556 Ratio:  0.046 Guess: -0.000  HamDist: 48 Dist = 112
+Pat 13 : stable =  0	min: -78.0 mean:  124.68  most: 294.0 -- Stdev: 78.645 Rel:  0.631 Ratio: -0.040 Guess: -0.063  HamDist: 45 Dist = 163
+Pat 14 : stable =  0	min: -90.0 mean:  134.68  most: 320.0 -- Stdev: 76.950 Rel:  0.571 Ratio:  0.007 Guess: -0.014  HamDist: 26 Dist = 42
+Pat 15 : stable =  0	min: -102.0 mean:  123.64  most: 354.0 -- Stdev: 87.593 Rel:  0.708 Ratio: -0.121 Guess: -0.121  HamDist: 44 Dist = 90
+Pat 16 : stable =  0	min: -96.0 mean:  129.00  most: 366.0 -- Stdev: 81.501 Rel:  0.632 Ratio: -0.055 Guess: -0.064  HamDist: 36 Dist = 232
+Pat 17 : stable =  0	min: -72.0 mean:  131.00  most: 332.0 -- Stdev: 90.635 Rel:  0.692 Ratio: -0.092 Guess: -0.109  HamDist: 31 Dist = 65
+Pat 18 : stable =  0	min: -108.0 mean:  134.44  most: 328.0 -- Stdev: 91.970 Rel:  0.684 Ratio: -0.106 Guess: -0.104  HamDist: 43 Dist = 47
+Pat 19 : stable =  0	min: -24.0 mean:  143.56  most: 278.0 -- Stdev: 69.295 Rel:  0.483 Ratio:  0.076 Guess:  0.070  HamDist:  5 Dist = 5
+Pat 20 : stable =  0	min: -92.0 mean:  125.08  most: 364.0 -- Stdev: 90.443 Rel:  0.723 Ratio: -0.098 Guess: -0.131  HamDist: 26 Dist = 32
+Pat 21 : stable =  0	min: -40.0 mean:  124.04  most: 252.0 -- Stdev: 63.221 Rel:  0.510 Ratio:  0.084 Guess:  0.043  HamDist: 40 Dist = 48
+Pat 22 : stable =  0	min: -44.0 mean:  133.64  most: 298.0 -- Stdev: 74.217 Rel:  0.555 Ratio:  0.005 Guess:  0.000  HamDist: 29 Dist = 165
+Pat 23 : stable =  1	min:  12.0 mean:  127.08  most: 298.0 -- Stdev: 66.968 Rel:  0.527 Ratio:  0.110 Guess:  0.026  HamDist:  0 Dist = 0
+Pat 24 : stable =  0	min: -66.0 mean:  130.60  most: 320.0 -- Stdev: 79.492 Rel:  0.609 Ratio: -0.035 Guess: -0.046  HamDist: 14 Dist = 28
+Pat 25 : stable =  0	min: -40.0 mean:  124.76  most: 296.0 -- Stdev: 69.785 Rel:  0.559 Ratio:  0.015 Guess: -0.003  HamDist: 26 Dist = 48
+Pat 26 : stable =  0	min: -86.0 mean:  121.16  most: 292.0 -- Stdev: 69.308 Rel:  0.572 Ratio: -0.026 Guess: -0.015  HamDist: 32 Dist = 70
+Pat 27 : stable =  1	min:  24.0 mean:  136.84  most: 268.0 -- Stdev: 55.612 Rel:  0.406 Ratio:  0.185 Guess:  0.155  HamDist:  0 Dist = 0
+Pat 28 : stable =  0	min: -14.0 mean:  143.88  most: 278.0 -- Stdev: 66.449 Rel:  0.462 Ratio:  0.069 Guess:  0.092  HamDist:  8 Dist = 14
+Pat 29 : stable =  0	min:  -4.0 mean:  141.48  most: 292.0 -- Stdev: 76.117 Rel:  0.538 Ratio:  0.063 Guess:  0.016  HamDist:  3 Dist = 3
+Pat 30 : stable =  0	min: -24.0 mean:  138.68  most: 280.0 -- Stdev: 64.959 Rel:  0.468 Ratio:  0.119 Guess:  0.085  HamDist:  2 Dist = 2
+Pat 31 : stable =  1	min:  12.0 mean:  141.32  most: 272.0 -- Stdev: 63.931 Rel:  0.452 Ratio:  0.134 Guess:  0.102  HamDist:  0 Dist = 0
+Pat 32 : stable =  1	min:   4.0 mean:  145.24  most: 274.0 -- Stdev: 63.139 Rel:  0.435 Ratio:  0.153 Guess:  0.122  HamDist:  0 Dist = 0
+Pat 33 : stable =  1	min:  36.0 mean:  132.92  most: 230.0 -- Stdev: 54.729 Rel:  0.412 Ratio:  0.220 Guess:  0.149  HamDist:  0 Dist = 0
+Pat 34 : stable =  1	min:  44.0 mean:  158.28  most: 276.0 -- Stdev: 57.840 Rel:  0.365 Ratio:  0.234 Guess:  0.206  HamDist:  0 Dist = 0

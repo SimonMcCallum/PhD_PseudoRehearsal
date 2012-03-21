@@ -1,0 +1,147 @@
+numTrials			1 //default
+learningConst    		1 //default
+momentum                	0.5 //default
+maxLearntPatts          	20 //default
+patternsFromFile		no //default
+patternFilename			letters.txt //default
+# the file containing patterns
+
+trainingEpochs          	5000 //default
+        
+learningType          		HEBBIAN //default
+#options HEBBIA or DELTA or PSEUDODELTA or UNLEARNING
+			
+numCheck          		1000 //default
+maxSpuriousPatts		1000 //default
+
+maxPseudoPatts			1000 //default   
+#maximum number of patterns to store as Pseudo patterns
+maxSamplesForPseudoPatts	1000 //default   
+maxUnlearningPatts              50 //default
+maxSamplesForUnlearningPatts    1000 //default
+#How many sample to try to get the appropriate number of pseudo items
+#maximum number of patterns to store as Pseudo patterns
+#How many sample to try to get the appropriate number of pseudo items 
+
+unlearningCutoffHigh           	1  //default
+#To do normal unlearning make the high and low the same;
+unlearningCutoffLow           	1 //default
+unlearningCycleSize         	1000 //default
+unlearningConst                 0.01 //default
+unlearningType  		unlearningStandard //default
+#options unlearningStandard or unlearningSpuriousRatio or unlearningSpuriousMean or unlearningSpuriousOnly
+unlearningSuperHeated		FALSE //default
+
+unlearningConst             	0.002 //default
+uniqueUnlearningPatts          	FALSE //default
+#This prevents the pseudo items from being repeated.  
+
+pseudoRehearsalCutoff       	0.333 //default
+# /*this is the cut off that prevents spurious states from being included as pseudo items.
+# 0.0 for this values means no cutoff at all.*/
+
+useMaxLowestLearntvsCutoff      0 //default
+# evaluate the lowest ratio while learning and 
+# max with cut off num. 
+
+errorCriteria          		0.001 //default
+
+errorTail          		0.99 //default
+
+errorCalcType         		DELTAERROR //default
+#options SIGMOIDERROR or DELTAERROR 
+#the type of error.
+
+
+initialNumberPatts        	5 //default
+step          			1 //default
+numLearntPatts          	1*maxLearntPatts  //default
+
+hebbianNoiseLevel               0.0 //default
+# This is the noise when training the network with hebbian learning
+hebbianCycles          		1 //default
+# Number of cycles to learn the set of patterns with hebbian learning
+
+
+uniquePseudoPatts             TRUE //default
+#This prevents the pseudo items from being repeated.  
+removeLearntFromPseudoPatts   FALSE //default
+#true if you  want pure spurious patterns as the pseudo items.
+    
+adjustLearningForPobability    	FALSE //default
+# this is the (Si - a)(Sj - a) rather than (Si)(Sj)
+
+noiseOnInput          		yes //default
+# The noise for delta learning.  By input I mean that we disturb the 
+# unit input.  Thus units close to their decision surface
+# will be affected by noise while units already strongly set will 
+# not increase their learning*/
+noiseOnOutput          		FALSE //default
+#not implemented yet
+
+gaussianNoiseType          	ABSOLUTE //default
+#options ABSOLUTE or RELATIVE
+gaussianRelativeRange          	0.1 //default
+# noise for delta learning as related to mean weight 0.5 half the mean weight
+gaussianAbsoluteRange          	0.25*N //default
+    
+
+
+noiseHetroAssociative          no //default
+# Okay here is the deal with hetro noise.  It disrupts the "hetroNoiseLevel" level of units in the pattern.  
+# It gives the network a single relaxation
+# checks the relaxed state against the desired.  Ie did the network in one step get to the desired output.
+# This did give a warning in the result when the network had 3 units that had 0 input.  
+# This is bad for the ratio measure.  It also looks strange.  
+# The reason for this is that the network, when given a small number of patterns, with asymmetric weight
+# connections can have some units that will have 0 input and so have zero output.  
+# If the unit is zero in all the patterns
+# then it will have no errors.  This can be fixed in many ways.  
+# One add noise on the unit input
+# make the weights symmetric
+# add enough patterns so that a unit is on in at least one pattern.
+
+hetroNoiseLevel          	0 //default
+
+noiseHebbianNegative          	FALSE //default
+
+#-----------------------------------------------
+
+generateProbOn          	0.5 //default
+# This is the proability of a unit being on in the generated patterns
+generateActivationExactLevel    FALSE //default
+# this force the units to be apriori correlated as there
+
+#is a exact number of units that are ON
+
+reorderUnitsinPatts          	1 //default
+
+calcSpuriousBasins		1 //default
+calcLearntBasins		1 //default
+calcInitialChanges		0 //default
+
+saveStabilityProfilePattern		2 // -1 default
+# -1 means do not save any profile
+
+displayTestedPatterns			off //default
+
+displayLearntPattUnits         		off //default
+displayLearntPattInput         		off //default
+displayLearntPattNetInput          	off //default
+displayLearntPattSummary           	on //default
+
+displaySpuriousPattUnits         	off //default
+displaySpuriousPattInput         	off //default
+displaySpuriousPattNetInput         	off //default
+displaySpuriousPattSummary          	on //default
+
+displayPseudoPattUnits			on //default
+displayPseudoPattInput			off //default
+displayPseudoPattNetInput		off //default
+displayPseudoPattSummary		on //default
+
+displaySpuriousPatts          		on //default
+displaySpuriousPatternDetails       	off //default
+
+
+  

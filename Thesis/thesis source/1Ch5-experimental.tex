@@ -1,0 +1,444 @@
+%! iTeXMac(project):thesis.pTexMac
+%! iTeXMac(input):thesis.tex 
+\chapter{Discriminating between Learnt and Spurious Patterns}
+\label{chap:distinguish}
+
+One of the unwelcome features of Hopfield networks is the large number of stable spurious patterns.  In a moderately loaded network there are thousands of spurious patterns for every stable learnt pattern.  Random probes of the network will always relax to a stable pattern, but there is no indication as to whether the pattern was learnt or not.  The ability to determine the stable pattern's type would allow the network to return not only the stable pattern found, but also an estimate of whether the pattern had been learnt. 
+
+The pseudorehearsal algorithm presented in Chapter~\ref{chap:SolutionsCF} rehearses all the patterns that are found by probing.  With the ability to distinguish learnt patterns from spurious patterns, rehearsal could be focused on preserving just the learnt patterns.  For this discrimination to be feasible the network should not have access to the real learnt patterns, but instead must calculate the familiarity of a pattern from information available within the network.  This chapter will explore various methods for determining familiarity in Hopfield networks, and Chapter~\ref{chap:Enhancing} will investigate how this knowledge can be applied to improving the solutions to catastrophic forgetting.  
+
+\section{Defining Familiarity}
+
+The task of discriminating between learnt (familiar) and spurious (novel) patterns is called ``recognition'', familiarity detection, novelty detection, or pattern discrimination.  Familiarity detector networks are designed to give an indication as to whether a pattern has previously been presented to the network (For a recent review of this area see \citet{Markou2003}).  The general process is to present a pattern to the network and have a single output node, where the activation of the output node indicates the familiarity of the pattern.  In the human brain this function seems to be centred in the perirhinal cortex~\citep{Bogacz2001} which is located immediately prior to the hippocampus in the processing stream from sensation to action.
+
+The phenomenon of \dejavu\ has lead to a great deal of research in the area of familiarity discrimination for memory systems.  Humans only occasionally experience the sensation of being familiar with something that they have never seen before.  FMRI and lesion studies indicate that the perirhinal cortex~\citep{Brown1998,Squire2004} in the human brain participates in detecting familiar objects and faces.  The existence of an obvious neurological response to familiar items suggests that it is at least possible to perform this type of discrimination in biological systems.
+
+Any form of binary detection has four possible combinations of presentation and identification.  These are true positives, true negatives, false positives and false negatives.  In the popular language of memory false positives are called ``\dejavu'', and false negatives ``forgetting''.  To analyse the performance of a detector these four values are converted into four ratios,  Positive Predictive Value (PPV), Negative Predictive Value (NPV), True Positive Rate (TPR) and True Negative Rate (TNR)~\footnote{TPR and TNR are also referred to as the Sensitivity and Specificity of the detector.}. Table~\ref{tab:FamDetection} shows the relationship between these measures.  The importance of a particular ratio depends on the particular task. For example, in the field of medicine it is very important to decrease the number of false negatives, where a potentially fatal illness is falsely ruled out by a diagnostic test.  In this situation a low false negative rate is the primary concern.  When comparing different situations it is important to decide the weighting of these ratios.
+
+\begin{table}[tbp]
+\center
+\begin{footnotesize}
+\begin{tabular}{cl}
+&\hspace{4cm}{Presentation} \\
+\rotatebox{90}{\parbox{1.5cm}{Response}}&
+	\begin{tabular}{c|cc|c}
+		&Familiar&Novel\\
+		\hline
+		Familiar&True Positive&False Positive	&Positive Predictive Value\\
+						&	(TP)				&  (FP)			  	&	(PPV) = TP/(TP+FP)\\
+		Novel		&False Negative&True Negative	&Negative Predictive Value\\
+						& (FN)				&	(TN) 					&	(NPV) = TN/(TN+FN)\\
+						\hline
+						&True Positive Ratio 	&	True Negative Ratio &\\
+						&(TPR) = TP/(TP+FN)		  & (TNR) = TN /(TN+FP) &\\ 
+	\end{tabular}
+\end{tabular}
+\end{footnotesize}
+\caption{Relationship between the various performance measures of a detector system.}
+\label{tab:FamDetection}
+\end{table}
+
+For the pattern based memory stored in Hopfield networks, the PPV measures the probability that a pattern identified as learnt (familiar) is actually part of the learnt pattern set. PPV is computed by dividing the number of accurately remembered patterns by the sum of all positive responses (TP/TP+FP).  This is the rate at which patterns identified as learnt are actually learnt patterns, i.e.\ the percentage of memory that is not \dejavu. NPV is the ratio of true negatives to all negative responses, i.e.\ actual novel patterns in relation to all patterns classified as novel.  The TPR measures the probability that a pattern will be recognized as learnt given that it has actually been presented earlier, and a high TNR indicates that if a pattern is novel, it will successfully be identified as such. 
+
+A high PPV of over 99\% is considered to be a very good result.  In a Hopfield network this would mean that out of 100 probes of the network which were classified as learnt, only one of these would be spurious. The way in which the probes are generated influences how reliable this ratio is.  If the 100 probes are generated as copies of learnt patterns, then they are not really a random selection of input but a set selected for a particular attribute.  This is \term{selection bias}, and it limits the claims that can be made based on the predictive values.
+
+\n{The task of differentiating the two types of stable states is more difficult than differentiating stable states as opposed to unstable states.  It is very easy to determine if a state is stable, and if stability detection was the requirement it would be easy to generate a metric for that task.  Unfortunately, many of the features of any stable state become very similar over time.}
+
+We will use PPV and NPV in terms of our particular problem domain of distinguishing stable spurious patterns from the stable learnt patterns in a Hopfield network. We review a number of the suggested mechanisms for distinguishing learnt from spurious patterns, and discuss their performance on this particularly difficult task.
+
+\n{ this has been claimed but I think it is wrong ``When they require perfect recognition the systems described equate to normal associative memory systems\citep{Bogacz2001}.''  }
+
+\section{Familiarity in Hopfield Networks}
+\label{sec:existingSolutionsFamiliarity}
+
+In Hopfield networks there are two types of familiarity discrimination, distinguishing learnt patterns from any other pattern, and stable learnt patterns from other stable patterns (spurious patterns).  As we are interested in the network as a content addressable memory in this thesis, we are interested in the second type of discrimination.  In a Hopfield network only a very small percentage of all the possible patterns are stable.  Unfortunately as the network learns the majority of these stable patterns are spurious rather than learnt patterns.  Thus the task is to distinguish a small number of positive examples from a very large number of negative possibilities.
+
+\subsection{Pattern Energy}
+One of the first methods used to detect spurious patterns in Hopfield networks was to measure the energy\footnote{See Section~\ref{sec:energy} for a discussion of the energy of the network.}
+of the network given an input pattern. Equation~\eqref{eq:EnergyFamiliarity} shows the energy value $\energy{p}$ of a pattern $p$
+\begin{equation}
+ \energy{p} = - \sum_{j=1}^{N} (\unitInput{j}{p} * \unitActivation{j}{p})
+ \label{eq:EnergyFamiliarity}
+\end{equation}
+This measure follows directly from the requirement that stable patterns have low energy.  Both Hebbian learning and delta learning lower the energy of learnt patterns in an attempt to make them stable.  Hebbian learning lowers the energy of each unit in the network by \(-(N-1)\), and thus the total energy by \(-(N-1)*N\).  The Lyapunov function (see Section \ref{sec:Dynamics}) of monotonically decreasing energy requires that all stable states have low energy.  For random patterns that have not been allowed to relax, the energy is close to zero as there are equal numbers of units with negative and positive energy.
+
+It is possible to distinguish learnt patterns from spurious patterns using the total energy, as shown by \citet{Bogacz01a} and \citet{Crook02}. Figure~\ref{fig:PEmeasure} shows that the learnt patterns have energy that is clearly lower than the spurious patterns.  The graphs in this chapter mostly come from randomly selected single runs of the network.  This was done to show the individual variation within an example rather than averages, which can be misleading.  Later graphs which are averaged, indicate the number of repetitions used. In Figure~\ref{fig:PEmeasure} with a small number of patterns stored, the noise created by crosstalk in the patterns has not significantly degraded the total energy of the learnt patterns.  The difference between the total energy of learnt and spurious patterns allows the use of a threshold value (labelled ``Novelty Value'' in the figure) as a simple novelty check. As there are no learnt patterns above this threshold, and no spurious patterns below it, all of the performance measures are perfect. PPV = 100\%, NPV = 100\%, Sensitivity = 100\% and Selectivity = 100\%.
+
+\n{if I get a chance put some more of these in an appendix to show other randomly selected runs perhaps with the average}
+
+
+\begin{figure}[tbp]
+\center
+\small
+	\input{Figures/Hebbian/PEmeasure}
+	\caption{The energy of stable learnt and spurious patterns in an \hopnet{100,\pm}{} Hopfield network, trained with Hebbian learning.  Five patterns have been stored and all are stable.  Novelty value of $-92$.  There are 93 spurious patterns found with 2000 probes (Randomly selected single run). }
+	\label{fig:PEmeasure}
+\end{figure}
+
+Unfortunately this method fails when more patterns are learnt.  Figure~\ref{fig:PEmeasureOverload} shows the total energy of the stable patterns in a network with 14 patterns stored ($0.14N$). The total energy of most of the spurious patterns is now lower\footnote{Low energy indicates a stable state, and so large negative numbers are less than small negative numbers, indicating a pattern is more stable} than the learnt patterns.  There is no way to place a threshold that clearly distinguishes stable learnt patterns from stable spurious patterns.  In this situation it is not possible to select a threshold that maintains both a high PPV and NPV.  These low energy spurious states render this measure ineffective for moderate to heavily loaded networks.  
+
+\begin{figure}[tbp]
+	\center
+	\small
+		\input{Figures/Hebbian/PEmeasureOverloaded}
+	\caption{The energy of learnt and spurious patterns in an \hopnet{100,\pm}{} Hopfield network, trained with Hebbian learning.  Fourteen patterns have been learnt but only twelve remain stable.  ``*Learnt'' are learnt patterns that are unstable. There are 70 spurious patterns found with 2000 probes (Randomly selected single run).}
+	\label{fig:PEmeasureOverload}
+\end{figure}
+
+\remove{
+\begin{table}[tbp]
+\begin{center}
+	\input{Figures/Hebbian/PEmeasureOverloadedTable}
+\end{center}
+	\caption{The predictive value of mean energy in a network learnt to capacity in Figure~\ref{fig:PEmeasureOverload}.  These numbers are generated using 2000 probes with a threshold of 58, i.e.\ the line on the graph in Figure~\ref{fig:PEmeasureOverload}.}
+	\label{fig:PEmeasureOverloadTable}
+\end{table}
+}
+
+\citet{Bogacz2001} claims that the pattern energy can still have a good PPV if you consider the space of all possible patterns, not just stable patterns.  This statement is not in keeping with the standard definition of PPV. For the PPV to be valid, it must be calculated between samples using the same selection basis.  The samples must come from either the whole pattern space or consistently from a selected group of patterns. When selecting patterns to check from the \(2^N\) dimensional space, the positive and negative examples of patterns must be found using the \emph{same} selection mechanism.  The chance of randomly selecting one of the learnt patterns without relaxation is $L:2^{N}$ (for an \hopnet{64}{} with $P=5$ patterns stored this is  \(5: 18\ 446\ 744\ 073\ 709\ 551\ 616\)).  This means that when probing the space the learnt patterns are extremely unlikely to be encountered, giving a PPV of $\approx0$.  As this measure also misclassifies any stable pattern as a learnt pattern the real PPV is extremely low.
+
+However, \citeauthor{Bogacz2001} does use the total energy to distinguish learnt patterns from randomly selected, un--relaxed patterns.  He compares the total energy for learnt patterns, which may or may not be stable, against a threshold.  Learnt patterns have a lower energy than almost all randomly selected un--relaxed patterns, and so can be classified as familiar.  There are millions of spurious patterns that would be misclassified, but as a ratio of all the possible patterns the spurious patterns that are misclassified is quite low.  The patterns that this simple energy measure misclassifies are exactly those which are \emph{stable} spurious patterns.  The positive predictive value is high when comparing between the learnt subgroup and all possible patterns, but low when the sample space is restricted to just stable patterns. Thus the total energy does not help with the current task of distinguishing stable learnt patterns from stable spurious patterns.
+
+\n{
+
+\subsection{Number Unstable}
+
+The method presented by \citet{xx} \n{google this little fucker} uses the number of units that are unstable in the first stage of relaxation as a differentiating feature.  This measure relies on the basin of attraction for a learnt pattern extending uniformly in all $N$ dimensions.  Thus when a probe is initialised to a pattern that is within the basin of attraction of a learnt pattern many units will change simultaneously.  This is caused by the units having their energy changes pointing toward the learnt pattern.  If a probe wanders around the pattern space before settling on a stable pattern, the pattern found is less likely to have a uniform basin of attraction and so is more likely to be a spurious pattern. 
+
+There is a correlation between the number of units that alter their state early in relaxation and the type of the pattern found.  However the standard deviation of this measure makes it of little use for distinguishing individual patterns as it also misclassifies the spurious patterns with large basins of attraction.  These spurious states may not have uniform basins of attraction, but they are large enough so that when using this measure, such large spurious patterns are classified as learnt patterns.
+
+need to include some numbers to show it does not work - if I don't have time I will just lose the sub section :-), it is getting to that time in the thesis }
+
+\subsection{Relaxation Time}
+\citet{Hopfield82} proposed that the rate at which units change during relaxation could be used to identify spurious states.  The underlying assumption was that the basins of attraction of learnt patterns are more fully formed than spurious patterns, and that a network that relaxes to a spurious state will do so down a long wandering path, while patterns that relax to a learnt pattern will do so quickly from within the basin of attraction.
+
+Following this suggestion \citet{Chengxiang2000} proposed a measure based on the length of the relaxation cycle required to reach a stable pattern.  As the spurious patterns generally have smaller basins of attraction than learnt patterns, (see Section~\ref{sec:BasinSizeTest})  the network state tends to ``wander around'' for longer before settling in one of the spurious states.  This is true for a space that is sparsely populated with stable states, most of which are stored patterns.
+
+As the network becomes heavily loaded and spurious patterns become common, the ability to distinguish based on the length of the path breaks down.  The basin sizes for the learnt patterns decrease in size and the length of time taken for a probe to find these smaller basins becomes indistinguishable from the length of the paths to find spurious patterns.
+
+In our simulations, the length of the path from the initial random pattern to the final stable state is not correlated with either spurious or learnt patterns.  Figure~\ref{fig:RTmeasure} shows the average path length for random probes relaxing to spurious and learnt patterns during the serial learning task.
+
+\begin{figure}[p]
+	\small
+	\center
+	\input{Figures/Hebbian/RTmeasure5}
+	\vspace{1cm}\\
+	\input{Figures/Hebbian/RTmeasure14}
+	\caption{The relaxation time for stable learnt and spurious patterns in an \hopnet{100,\pm}{} Hopfield network, trained with Hebbian learning.  Five patterns with all stable (top) and fourteen patterns where only twelve were found during relaxation (bottom). First 100 spurious patterns found with 2000 probes (Randomly selected single run).}
+	\label{fig:RTmeasure}
+\end{figure}
+
+When a Hopfield network is overloaded, one of the mechanisms to restore the stability of the learnt patterns is to apply unlearning.  The relaxation time to patterns changes after the application of unlearning.  
+\citet{Horas2002} show that it is possible to distinguish between learnt patterns and spurious patterns after unlearning.  The network they are working with has asymmetric connections and stores patterns in cycles rather than just stable states.  The system is only demonstrated for the static case where all patterns are learnt in one phase and unlearning is then applied before testing.  For this implementation, the learnt patterns relax faster than the spurious patterns.  This form of testing does not use random probing, but initialisation to a pattern that is close to the learnt patterns. \citeauthor{Horas2002} do not discuss whether this decrease may be caused by an increase in the number of spurious patterns close to learnt patterns, but they do use a fairly broad definition of successful retrieval, using an overlap $\overlap$ = 0.9.  Thus, if 90\% of the units are the same as a learnt pattern,  then the current stable pattern is considered to be an accurate recovery of the original pattern.  Our results for the distance traveled during relaxation do not provide a clear distinction between the types of stable patterns.  This may be due to the differences in the way the patterns are stored, or that \citet{Horas2002} use limit cycles rather than static stable states.  A limit cycle occurs when the network cycles between a small set of states.  Although there is no single stable pattern, the cycle repeats indefinitely and so can be considered stable.
+
+
+\citet{OReilly1998} use the distance that a probe moves as an estimate of whether the probe was a learnt pattern or a ``lure'', a probe that has some real world similarity to the learnt items.  The specific measure used is the number of units that alter their activation state between presentation and relaxation.  If a learnt pattern is still stable then none of the units will alter state during relaxation.  \citeauthor{OReilly1998} use patterns with a low coding ratio, which results in the pattern with no units active becoming a large spurious attractor. Almost all of the lure states will relax to the inactive pattern.  This is yet another example where different samples are used when comparing results.  The ``lures'' are not stable spurious patterns, but instead patterns generated by the researchers.  The distinction between learnt patterns and most other unstable patterns can be found by simply measuring the energy of the pattern.  Although this approach works well for lightly loaded networks, when the task is to differentiate known learnt patterns from artificially generated patterns, it is not sufficient for the current task as we require the differentiation of stable spurious patterns from stable learnt patterns. These are again exactly the patterns that this discrimination method misclassifies.
+
+\subsection{Basin of Attraction Size}
+\label{sec:BasinSizeTest}
+
+One of the most complex and involved measures of a stable pattern in a Hopfield network is the size of its basin of attraction.  As discussed in Section~\ref{sec:Stable}, a basin of attraction is difficult, if not impossible, to calculate analytically from the weight matrix of the network.  Without an analytical basis the only methods left involve sampling the network or using an estimate.  By sampling the network with thousands of probes a percentage of pattern space that relaxes to each pattern can be found. The estimate of basin size used in this thesis, as described in Section~\ref{sec:BasinSize}, gives reasonable results while the basin is of reasonable size and relatively uniform.
+
+The principle behind using the basin of attraction size as a differentiator is that learnt patterns should have larger basins of attraction than the spurious patterns.  This is obviously true of lightly loaded networks without correlated patterns, where the learnt patterns are the large, stable attractors.  Figure~\ref{fig:BasinSize} shows the size of the basins of attraction (as found by sampling, and given by estimate) for learnt patterns and spurious patterns in an \hopnet{100,\pm}{} network with Hebbian learning.  In the lightly loaded network the basin size is an effective metric, but once the network is heavily loaded the basin of attraction size misclassifies many of the patterns. Although basin of attraction size is important as a measure of performance, it is not a good differentiator.  
+
+\begin{figure}[p]
+	\small
+	\center
+	\input{Figures/Hebbian/BasinSize5}
+	\vspace{1cm}
+	\\
+	\input{Figures/Hebbian/BasinSize14}
+	\caption{Basin size of stable patterns in an \hopnet{100,\pm}{}, both sampled and estimated. Hebbian learning of five patterns learnt (top) and fourteen patterns learnt (bottom) where only thirteen were stable. Spurious patterns are the first 100 patterns found with 2000 probes (Randomly selected single run). }
+	\label{fig:BasinSize}
+\end{figure}
+
+This measure cannot be used with some of the learning systems described in Chapter~\ref{chap:SolutionsCF}, such as the unlearning suggested by \citet{vanHemmen1997}, as the learnt patterns have virtually no basins of attraction.  
+
+\dn{ add if time
+Basin size with weight decay
+\begin{figure}[tbp]
+	\small
+	\center
+	\input{Figures/Hebbian/BasinSize14}
+	\caption{Basin size of last stable patterns in an \hopnet{100,\pm}{} network, both sampled and estimated, learnt using Hebbian learning.}
+	\label{fig:BasinSizeWD}
+\end{figure}
+
+}
+
+
+\subsection{Activation Saturation}
+
+\remove{Randell O'Reily stuff that He talked about with the cross over at the middle}
+
+For a pattern to be stable the input to each unit must be positively correlated with its output.  A unit that has a high positive input and a positive output could be considered to have saturated its activation, as its output would still be positive with a lower, but still positive, input.  The same is true for an inactive unit with a large negative input.  The saturation is analogous to how far a unit is from the decision surface (described in Section~\ref{sec:deltaLearning}). We can visualise the saturation profile of the units by sorting them on the summed input. The top graph in Figure~\ref{fig:SaturationProfile} compares the saturation profile of the five learnt patterns versus the first ten spurious patterns found in an \hopnet{100,\pm}{} network with Hebbian learning. The key observation is the difference in the way in which the profiles cross the zero axis.  The stable patterns have a sharp transition, while spurious patterns have a smoother slope. It is this observation that suggests it might be possible to use the activation saturation as a means to differentiate the learnt and spurious patterns. 
+
+To turn the visual step into a metric for comparison we need to create a single number that represents the significance of the step.  The step is the transition from negative activation to positive activation, and so the logical choice is to take the minimum positive input and subtract the minimum negative input.  This gives a clear distinction in lightly loaded networks, like most other metrics, but unfortunately the distinction degrades as the number of learnt patterns increases.  The bottom graph in Figure~\ref{fig:SaturationProfile} shows the stable learnt patterns in an \hopnet{100\pm}{} network with 14 learnt patterns versus the first 10 spurious patterns found.  The saturation transition from negative to positive of some of the patterns has become similar to the spurious patterns. Figure~\ref{fig:SaturationProfileOverloadComp} shows the transition as the ``Step Size'' for both the learnt patterns and the spurious patterns in an \hopnet{100\pm}{} network.  In the lightly loaded network the distinction is clear, however, as the network becomes heavily loaded the distinction becomes less clear. 
+
+\begin{figure}[p]
+\small
+\center
+	\scalebox{1.0}{\input{Figures/Hebbian/ActivationSaturation5}}
+	\\
+	\scalebox{1.0}{\input{Figures/Hebbian/ActivationSaturation14}}
+	\caption{The saturation profile for the five learnt patterns (top) and the seven stable patterns out of fourteen learnt patterns (bottom) with Hebbian learning in an \hopnet{100,\pm}{} network.  The spurious patterns for both are the first ten spurious patterns found with 2000 probes. The unit numbers on the x--axis refer to the rank order, based on input value of the units in the individually sorted patterns.}
+	\label{fig:SaturationProfile}
+\end{figure}
+
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Hebbian/ActivationSaturationComp5}
+	\vspace{1cm}\\
+	\input{Figures/Hebbian/ActivationSaturationComp14}
+	\caption{The size of the transition from negative input to positive input (step size) for learnt and spurious patterns, with 5 patterns learnt (top) and 14 patterns learnt (bottom).}
+	\label{fig:SaturationProfileOverloadComp}
+\end{figure}
+
+The performance of this measure with delta learning is better than with Hebbian learning, both with only a few patterns learnt and as the number increases.  This measure works well with delta learning if noise has been applied to the learning. The two types of noise that we have investigated as additions to delta learning are input noise and heteroassociative noise.  These are described in Section~\ref{sec:deltaLearning}. 
+
+Both of these types of noise force the units away from the decision surface creating the sharp transition seen in Figure~\ref{fig:SaturationProfileDelta}. Spurious patterns do not have any pressure on units close to the decision surface and so the transition is much smoother.
+
+
+\begin{figure}[p]
+\small
+\center
+	\input{Figures/Delta/ActSatInput5}
+	\vspace{1cm}\\
+	\input{Figures/Delta/ActSatHetero5}
+\caption{The saturation profile for the five most recently learnt and the first five spurious patterns in an \hopnet{100,\pm}{} network with delta learning and different types of noise.  Input noise (\noiseConst{i} = $5$) (top); Heteroassociative noise (\noiseConst{h} = 5\%)(bottom).}
+	\label{fig:SaturationProfileDelta}
+\end{figure}
+
+
+The saturation profile of a pattern is able to differentiate patterns very effectively when the network is lightly loaded.  However, as the number of stored patterns increases, the least stable units in the learnt patterns move closer and closer to the decision surface.  The step size requires that the least stable active unit and the least stable inactive unit are far from the decision surface.  As can be seen in Figure~\ref{fig:SaturationProfileDelta} there is a second visible distinction between the spurious and learnt pattern.  The very low input and high input units in spurious patterns are much further from the decision surface that the equivalent units in the learnt patterns. 
+
+Units which are active with a high positive input have very low energy.  Likewise units that are inactive with a large negative input also have very low energy.  If we change from viewing the units by the total input, and instead order the units by their energy, the very low energy units are grouped together.  This changes the y--axis of subsequent  graphs from ``input'' to ``energy'' of the units.  When viewing the energy of units, the position on the y--axis is equivalent to the distance from the decision surface, with negative energy indicating units with more stability.  We will call this type of graph an ``energy profile''.
+
+\section{Energy Profile}
+
+The energy profile of a pattern is the profile created from the energy of each unit sorted by the magnitude of the energy.  Figure~\ref{fig:HebbianEnergyLearning} shows the energy profile of four patterns after each of four Hebbian learning iterations. The total energy of the pattern is the sum of the individual units.  For a pattern to be stable, all of the units have to have a negative energy\footnote{In our 2004 paper \citep{Robins2004} we used positive correlations between input and output for individual unit values and negative energy for patterns.  For individual units the positive correlation between the input and the output is equivalent to the negative of the energy.  For consistency we now only refer to energy with reference to the contribution it makes to the stability of the pattern.  Thus, individual units that are stable are now referred to as having negative energy, rather than positive correlation between input and output.}.  The energy profile of an unstable pattern has units on the positive side of the y--axis.  
+
+Learning a pattern can be visualised as lowering each unit's energy until every unit in the pattern has a negative energy. For Hebbian learning with a learning constant \learningConst=0.5 the alteration changes the energy of each unit by $-(N-1)$ (remember that the connections between unit $i$ and $j$ are updated both by unit $i$ and $j$, so the addition to each connection is $0.5*2$).  This can be seen in Figure~\ref{fig:HebbianEnergyLearning} as the profiles move from being centred on zero to $-(N-1)$. After two patterns are learnt, ``Pat 1'' and ``Pat 2'' have identical energy profiles. This is always the case with Hebbian learning. As additional patterns are learnt, the crosstalk between patterns causes the slope of the energy profile to increase. This gives us an insight into the problem of catastrophic overloading and correlation when using Hebbian learning.  If the highest energy unit has an energy greater than \(N\) before applying Hebbian learning to the pattern, the network will not learn the new pattern, as that unit's energy will not fall below 0 (the requirement for stability).  It is at this point that catastrophic forgetting becomes a significant problem for Hebbian learning. 
+
+\begin{figure}[tb]
+	\scalebox{0.60}{\input{Figures/Hebbian/PEmeasure0}}
+	\scalebox{0.60}{\input{Figures/Hebbian/PEmeasure1}}
+	\\
+	\scalebox{0.60}{\input{Figures/Hebbian/PEmeasure2}}
+	\scalebox{0.60}{\input{Figures/Hebbian/PEmeasure3}}
+	\caption{The energy profile of four patterns in an \hopnet{100,\pm}{} Hopfield network as the patterns are learnt in succession. }
+	\label{fig:HebbianEnergyLearning}
+\end{figure}
+
+The act of creating a stable pattern results in an energy profile that is very different to the profiles of spurious patterns which arise from the crosstalk and correlations of the learnt patterns.  In Hebbian learning the learnt patterns are moved uniformly leaving the slope the same while decreasing the total energy.  
+
+While the network is lightly loaded the energy profile of the spurious patterns is very different to the profile of the learnt patterns.  Figure~\ref{fig:EnergyProfileNoWeightDecay5} shows the profiles of learnt and spurious patterns after four patterns have been learnt with Hebbian learning.  Note that both the position and slope of the learnt patterns is different to the position and slope of the spurious patterns.  The total energy is lower for the learnt patterns\footnote{This is consistent with the ability to use total energy to differentiate patterns in a lightly loaded network.} and they have a flatter profile than the spurious patterns.  The most significant indicator of the difference in slope is at the beginning and end of the profile.  The lowest energy units in a learnt pattern are higher than the spurious patterns and the highest energy (least stable) units are lower. 
+
+\begin{figure}[tbp]
+\center
+\small
+	\input{Figures/Hebbian/EnergyProfileNoWeightDecay5}
+	\caption{Energy profile of the first five learnt patterns and the first five spurious patterns found with probing. Hebbian learning applied to five patterns in an \hopnet{100,\pm}{} network.}
+	\label{fig:EnergyProfileNoWeightDecay5}
+\end{figure}
+
+Although the total energy can no longer be used to differentiate patterns in a heavily loaded network, there is still a large difference in the profiles of the stable learnt patterns and spurious patterns.  Figure~\ref{fig:EnergyProfileNoWeightDecay14} shows the profiles of the stable patterns with fourteen patterns learnt.  There are now spurious patterns with total energies lower than the most stable of the learnt patterns, but the slopes of the profiles are still different.
+
+\begin{figure}[tbp]
+\center
+\small
+	\input{Figures/Hebbian/EnergyProfileNoWeightDecay14}
+	\caption{Energy profile of the first five learnt patterns and the first five spurious patterns found with probing. Hebbian learning applied to fourteen patterns in an \hopnet{100,\pm}{} network.}
+	\label{fig:EnergyProfileNoWeightDecay14}
+\end{figure}
+
+
+
+Changing the learning procedure changes the energy profiles of the learnt patterns. For example, the inclusion of weight decay decreases the magnitude of the energy of every unit before each new pattern is learnt.  This moves the units in the energy profile closer to 0.  As long as the energy of an individual unit is not greater than $N$, Hebbian learning's adjustment of $-N-1$  will be large enough to learn the new pattern.   Figure~\ref{fig:EnergyWeightDecay} shows the energy profile of the last five patterns learnt using Hebbian learning with weight decay of $\weightDecay = 0.1$.  This graph shows the profiles of patterns after the presentation of 50 patterns\footnote{50 patterns are used to ensure that the network has passed the initial learning phase where the number of stable patterns peaks and then drops back to a sustainable level.}.  The most recently learnt pattern has the lowest energy as it has not experienced any weight decay.  The older learnt patterns have units that are closer to 0, and patterns older than the immediate $0.06N$ are lost as the crosstalk from learning new patterns moves some of the units to the positive side of 0 on the y--axis (decision surface).  Once any unit has positive energy in a pattern, that pattern becomes unstable.  
+
+\begin{figure}[tbp]
+\center
+\small
+	\input{Figures/Hebbian/EnergyProfWeightDecay50}
+	\caption{Energy profile of the last five patterns learnt in an \hopnet{100,\pm}{} using Hebbian learning and weight decay of $\weightDecay = 0.1$ after 50 patterns have been learnt.}
+	\label{fig:EnergyWeightDecay}
+\end{figure}
+
+The profiles of patterns that have been learnt with delta learning also have this distinctive shallow slope.  Figure~\ref{fig:DeltaEnergyLearning} shows the learning of 4 patterns after various numbers of epochs.  After just a single epoch, about 50\% of units have recieved a learning update of \learningConst = 0.1.  As the weights are updated in both directions (as this is a 100 unit network), the energy of the updated units averages about -20.  After a second epoch, a further 25\% of the units have been updated.  At the top end of the graph a few units have recieved a second learning update as the Gaussian noise will very occasionally force already learnt units to update.  By the $50^{th}$ epoch the energy profile has flattened out significantly.  All patterns become stable between approximately 5 and 10 epochs, but delta learning continues to alter the connections that are affected by noise. Units that already have a large input are far less likely to be affected by noise, and as a result the learnt patterns have a flatter energy profile.
+
+\begin{figure}[p]
+	\center
+	\small
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta1}}
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta5}}
+	\\
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta2}}
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta10}}
+	\\
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta3}}
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta20}}
+	\\
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta4}}
+	\scalebox{0.54}{\input{Figures/Delta/PEmeasureDelta50}}
+	\caption{The energy profile of four learnt patterns in an \hopnet{100,\pm}{} network as the patterns are learnt using delta learning \learningConst =0.1 with input noise \noiseConst{i}=0.5. The ``Spur'' is the first spurious pattern found by random probing.  The epochs are listed in columns with energy profiles shown for 1, 2, 3, 4, 5, 10, 20, and 50 epochs.}
+	\label{fig:DeltaEnergyLearning}
+\end{figure}
+
+
+Spurious patterns created during delta learning tend to have some units which are very close to the decision surface and some which are very far away.  This observation can be explained by the spurious patterns having some units which are the correlations between learnt patterns,  while other units are the uncorrelated activation across multiple learnt patterns.  
+
+In the next section we present the energy ratio measure, which compares the most stable and least stable units.  This value can be used to differentiate patterns without having to perform extensive global calculation or massive probing of the network.  
+
+\subsection{Energy Ratio}
+
+The \term{energy ratio} is a measure we presented in \citet{Robins2004}, and is based on the \term{energy profile} of a stable pattern.  It is similar to the saturation step metric above, but it takes into consideration both the low and the high end of the profile. It calculates a combination of the slope and magnitude of the energy profile.  We define a pattern's energy ratio to be:
+\begin{equation}
+\ratio = \frac{\sum_{i=1}^{k}{\unitEnergy{i}{}}}{\sum_{j=N-k}^{N}{\unitEnergy{j}{}}}
+\end{equation}
+where the units have been sorted by their energy, $k$ is the number of units contributing to the measure, and \unitEnergy{i}{} is the energy of unit $i$. The flatter the energy profile of a pattern, the closer the energy ratio measure is to 1.0.
+ 
+Figure~\ref{fig:energyProfileSimple} shows the energy profile and energy ratio of a learnt patterns and the first spurious pattern found when probing the network. The $k$ units contributing to the ratio are shown with points.  The ratio for the spurious pattern is less than one third of the learnt pattern.
+
+\begin{figure}
+\center
+\small
+	\input{Figures/Hebbian/EnergyProfile-RatioNoWeightDecay}
+	\caption{Energy profile and energy ratio for a learnt pattern and a spurious pattern  in an \hopnet{100\pm}{} with five patterns learnt using Hebbian learning. Energy ratio with $k=10$.}
+	\label{fig:energyProfileSimple}
+\end{figure}
+
+
+This metric can be seen as an estimate of the combination of standard deviation and mean, similar to the coefficient of variance, but done without calculating the sum of squares or averaging over the whole network.  The energy ratio can be seen as:
+\begin{equation}
+\ratio \approx \frac{\mean-(2 * \stddev)}{\mean+(2 * \stddev)}  
+\end{equation}
+where $\mean$ is the mean energy for the network in the current configuration, $\stddev$ is the standard deviation, and $\ratio$ is the ratio measure defined above.  The standard deviation measures how uniform the energies are, while the mean is equivalent to the total energy of a pattern.  Once a pattern is stable, lowering the energy of the pattern lowers the mean and therefore increases the ratio, as $(a/b) < (a+c/b+c)$ where $c$ is the increase, $a$ is the sum of the least stable units and $b$ is the sum of the most stable units.  Delta learning also increases the ratio as it primarily makes changes to units which are part of $a$ ($(a+c)/b < a/b$).  When there are a large number of unstable units in a pattern the energy ratio of the pattern becomes negative.  This is caused by the unstable units having a positive energy and the stable units having negative energy, resulting in a negative value for the division $a/b$. Unstable patterns usually have a negative ratio, while most stable spurious patterns have ratios that are near zero.  It is possible for an unstable pattern to have a positive ratio, if the sum of the energy of the unstable units in $a$ is less than the stable units in $a$.  The ratio will be low but not necessarily negative.  This effect can be seen in Figure~\ref{fig:HebbEROverload} where some of the learnt patterns are unstable, but still have a positive ratio.  These patterns only have one or two units unstable out of the $k$=10 units used to calculate $a$. 
+
+
+\subsection{Hebbian Learning and Energy Ratio}
+Hebbian learning uniformly lowers the energy of the units in the learnt patterns. This does not change the standard deviation of the energy profile, but does change the mean and total energy.  Thus the learnt patterns have a standard deviation similar to a randomly selected pattern before relaxation, which is different to a stable spurious pattern.  Learnt patterns also have a low mean energy and, when combined with the low standard deviation, this gives a high energy ratio.
+
+As the number of learnt patterns presented increases, the network overloads and the learnt patterns become unstable.  However, the ratio measure still performs reasonably well with only a few patterns being misclassified. Figure~\ref{fig:HebbEROverload} shows the energy ratios for learnt and spurious patterns after learning either five patterns (top) or fourteen patterns (bottom).  The energy ratio of the learnt patterns in a lightly loaded network are much higher than the energy ratio of the spurious patterns.  In the heavily loaded network with $0.14N$ patterns learnt, five of the patterns have become unstable, while the rest retain a comparatively high energy ratio.  In this example there is also a spurious pattern that has an energy ratio similar to the learnt patterns.  Ideally the threshold for a lightly loaded network would be higher than for the heavily loaded network.  A threshold of $0.4$ would classify all the patterns correctly in the lightly loaded network while a threshold of $0.2$  would classify all the learnt patterns correctly and misclassify only one spurious pattern when the network is heavily loaded.
+
+\begin{figure}
+\center
+\small
+	\input{Figures/Hebbian/ERmeasure5}
+	\vspace{1cm}\\
+	\input{Figures/Hebbian/ERmeasure14}
+	\caption{The energy ratio of all the learnt patterns and up to the first 100 spurious patterns in an \hopnet{100,\pm}{} network after five patterns (top) and fourteen patterns (bottom). ``Learnt*'' are the unstable learnt patterns. This data is from the same simulation as the data in Figure~\ref{fig:EnergyProfileNoWeightDecay14}.}
+	\label{fig:HebbEROverload}
+\end{figure}
+
+The quality of a differentiator needs to be assessed using the analytical tools described in Table~\ref{tab:FamDetection}. The top graph in Figure~\ref{fig:ERpatterns0-14} shows the PPV, NPV, TPR, and TNR for the simple energy ratio threshold of $0.2$.  The positive predictive value (how likely a pattern is to be a learnt pattern if the ratio measure defines it as learnt) drops to just over 50\% with four patterns learnt.  This is because a threshold of $0.2$ is much lower than the ratios of the learnt patterns, and about half of the spurious patterns (TNR of 40\%) make it above this value so are classified as learnt patterns.  The TPR represents the percentage of learnt patterns that are actually being classified as learnt patterns.  This falls off quite rapidly as the network becomes increasingly overloaded.
+
+Using other values for the energy ratio threshold changes the four analytical metrics above.  The second graph in Figure~\ref{fig:ERpatterns0-14} shows the results with a threshold of $0.25$.  Note that both the PPV and TNR are higher, as would be expected by making the threshold higher, while the TPR falls off faster given the more restrictive requirement of having a ratio above $0.25$.
+
+\begin{figure}[p]
+\center
+\small
+	\input{Figures/Hebbian/ER0.2measure0-14}
+	\vspace{1cm}\\
+	\input{Figures/Hebbian/ER0.25measure0-14}
+	\caption{The positive predictive value (PPV), negative predictive value (NPV), true negative rate (TNR), and true positive rate (TPR) for an energy threshold of $0.2$ (top) and  $0.25$ (bottom) in an \hopnet{100,\pm}{} with Hebbian learning from one pattern learnt to 25 patterns (100 repetitions).  Vertical lines represent the points used for graphs in Figure~\ref{fig:HebbEROverload}.}
+	\label{fig:ERpatterns0-14}
+\end{figure}
+
+
+The energy ratio measure works well with Hebbian learning.  If the number of patterns that have been learnt is known, the threshold can be set to maximally distinguish between learnt and spurious patterns.  However, Hebbian learning is not the algorithm  best suited to the energy ratio measure.  Delta learning with its explicit alteration of units that are close to decision surface, creates patterns with much cleaner energy ratios.
+
+
+
+\subsection{Delta Learning and Energy Ratio}
+
+Delta learning only lowers the energy of units that generate an error (a delta).  By only altering these units, delta learning generates very flat energy profiles which have low standard deviation. However, without noise the patterns are only just stable and so the energy ratio is still quite low.  Figure~\ref{fig:deltaNoNoiseEP} shows the energy profile of patterns that have been learnt without any form of noise applied.  Note that a number of the units are very close to the decision surface (0 on the y--axis).  Perhaps the most striking feature is the step in the middle of the energy profiles.  This is a result of the units on the right of the step receiving an update from delta learning, while units on the left are stable merely from the cross talk of the other patterns.
+
+\begin{figure}[tbp]
+	\center
+	\small
+		\input{Figures/Delta/EnergyProfdeltaNoNoise}
+	\caption{Energy profile of five patterns learnt with delta learning with a learning constant of 0.1 and no noise.}
+	\label{fig:deltaNoNoiseEP}
+\end{figure}
+
+
+There are two types of noise that we have applied to the delta learning process.  These are described in Section~\ref{sec:deltaLearning}.  The two different noise types have different effects on the energy profiles and the energy ratio, but both still create learnt patterns with high ratios and spurious patterns with low ratios. 
+
+Figure~\ref{fig:EPDeltaInput50} shows the energy profile of the stable learnt patterns after 50 patterns have been learnt in succession, using delta learning with a learning constant of $\learningConstant = 0.1$ and input noise applied with an sigma of $\noiseConst{i} = N$. Only the most recently learnt patterns are still stable but they still have the characteristic shallow slope of learnt patterns.  The energy ratio for the learnt patterns is very different to the spurious patterns as shown in Figure~\ref{fig:ERInputmeasure30}.  With 30 patterns learnt, only the most recently learnt patterns are stable.  Any threshold between $0.14$ and $0.18$ would correctly assess every stable pattern in this particular instance.    
+
+
+\begin{figure}[tbp]
+	\center
+	\small
+		\input{Figures/Delta/EPDeltaInput50}
+	\caption{Energy profile of the last five patterns learnt and five spurious patterns with input noise and delta learning.  Noise level with absolute range of sigma = $N$, learning constant $\learningConstant =0.1$  on the unit inputs, error criterion 0.001.}
+	\label{fig:EPDeltaInput50}
+\end{figure} 
+
+\begin{figure}[tb]
+\center
+\small
+	\input{Figures/Delta/ERInputmeasure30}
+	\caption{The energy ratio of the stable learnt patterns and up to the first 100 spurious patterns in an \hopnet{100,\pm}{} Hopfield network after 30 patterns have been learnt with delta learning ($\learningConstant =0.1$ , input noise $\noiseConst{i}=N$, 2000 probes).}
+	\label{fig:ERInputmeasure30}
+\end{figure}
+
+Changing the energy ratio threshold to the best possible value for each run would improve the results, but is unrealistic. Ideally we would be able to use a set value that works without knowing how many patterns have been learnt. Figure~\ref{fig:ERInputmeasure0-49} shows the quality measures for energy ratio thresholds of $0.2$ and $0.25$.  Both of these values perform reasonably well once a few patterns have been learnt.  They also demonstrate the trade--off between misclassifying the learnt patterns with a high threshold and allowing too many spurious patterns into the learnt classification with a lower threshold.  The PPV is about $98-99\%$ with a threshold of $0.2$ and nearly $100\%$ with the more restrictive $0.25$.  The TPR, the percentage of stable learnt patterns that are correctly identified, is around $84\%$ with $0.2$ and drops to about $70\%$ for $0.25$.
+
+\begin{figure}[p]
+ \center
+ \small
+	\input{Figures/Delta/ER0.2Inputmeasure0-49.tex}
+  \vspace{1cm}\\
+	\input{Figures/Delta/ER0.25Inputmeasure0-49.tex}
+	\caption{The PPV, NPV , TNR and TPR for an energy threshold of $0.2$ (top) and $0.25$ (bottom) in an \hopnet{100,\pm}{} with delta learning (\learningConstant =0.1) and input noise of $0.5$ (100 repetitions). The vertical line represents the point used for Figure~\ref{fig:ERInputmeasure30}.}
+	\label{fig:ERInputmeasure0-49}
+\end{figure}
+
+Heteroassociative noise is not directly focused on changing units which are close to the decision surface.  Instead it alters the activation of some of the units in the network after the desired pattern has been set.  Therefore it is actively building the basin of attraction of a pattern by forcing patterns close to the learnt pattern to relax to this desired pattern. Figure~\ref{fig:EPDeltaHetero50} shows the equivalent set of energy profiles as Figure~\ref{fig:EPDeltaInput50}, but with heteroassociative noise applied. In this example, $5\%$ of the units in the learnt patterns had their output changed in each epoch. Only a few of the patterns are stable, but again they exhibit the shallow slope and a relatively high ratio.  
+
+\begin{figure}[tbp]
+	\small
+	\center
+		\input{Figures/Delta/EPDeltaHetero50}
+	\caption{Energy profile of the last five patterns learnt and five spurious patterns with heteroassociative noise $\noiseConst{h}=5\%$ delta learning, learning constant $\learningConstant =0.1$, error criterion 0.001, and  epoch limit = 500.}
+	\label{fig:EPDeltaHetero50}
+\end{figure} 
+
+Heteroassociative noise increases the size of the basin of attraction and in doing so also improves the energy ratio measure.  Figure~\ref{fig:ERHeteromeasure30} shows the energy ratio for the stable learnt and spurious patterns after 30 patterns have been learnt. Figure~\ref{fig:ERHeteromeasure0-49} shows the quality measures for energy ratio thresholds of $0.2$ and $0.25$.  The energy ratio measure is still performing well with this type of learning.    
+
+\begin{figure}[tbp]
+\center
+\small
+	\input{Figures/Delta/ERHeteromeasure30}
+	\caption{The energy ratio of the stable learnt patterns and up to the first 100 spurious patterns in an \hopnet{100,\pm}{} Hopfield network after 30 patterns have been learnt with delta learning ($\learningConstant =0.1$, heteroassociative noise $\noiseConst{h}=5\%$, 2000 probes).}
+	\label{fig:ERHeteromeasure30}
+\end{figure}
+
+\begin{figure}[p]
+ \center
+ \small
+	\input{Figures/Delta/ER0.2Heteromeasure0-49.tex}
+  \vspace{1cm}\\
+	\input{Figures/Delta/ER0.25Heteromeasure0-49.tex}
+	\caption{The PPV, NPV , TNR and TPR for an energy threshold of $0.2$ (top) and $0.25$ (bottom) in an \hopnet{100,\pm}{} with delta learning (\learningConstant =0.1) and heteroassociative noise \noiseConst{h} = $5\%$ (100 repetitions).}
+	\label{fig:ERHeteromeasure0-49}
+\end{figure}
+
+The energy ratio measure works well with both Hebbian learning and delta learning with two different types of noise.  A threshold value of $0.2$ performs well if the percentage of learnt patterns identified is important, while a threshold of $0.25$ can be used when it is important to avoid misclassifying the spurious patterns.  
+
+\section{Discussion}
+
+There have been many attempts to improve the quality of the results generated by Hopfield networks.  Given that spurious patterns seem to be endemic to the Hopfield type networks, much of the effort has gone into either decreasing the number of spurious patterns or differentiating the learnt patterns from the spurious patterns.  Most of the measures perform well when the network is lightly loaded, but begin to fail as the network becomes heavily loaded.  
+
+When the task is simply to differentiate a learnt pattern from an unstable randomly generated pattern, there are a number of useful metrics, including total energy and number of units altering state.  In this case the learnt pattern does not even need to be stable, it must merely have enough of an imprint of the changes made during learning to differentiate it from the majority of random patterns.  \citet{Bogacz2001} uses the total energy of unstable learnt patterns to generate a familiarity discrimination model of the perirhinal cortex.
+
+The task that we are interested in is the classification of the stable patterns.  The two best metrics appear to be the saturation step size and the metric we propose, energy ratio.  The saturation step size is similar to the energy ratio but it only uses the units that are close to the activation threshold.  This is equivalent to the high energy area of the energy profile of a stable pattern.  In randomly distributed patterns, the units involved in the step calculation are included in the energy ratio measure (they are the numerator ($a$) of the ratio $a/b$).  The energy ratio also incorporates the difference between the extremely low energy units in learnt versus spurious patterns.  Spurious patterns have some units which have very low energy.  This helps to classify spurious patterns which the step misclassifies.
+
+The energy ratio measure gives us the ability to adjust the responsiveness of the system between forgetfulness and fantasy.  A high threshold will label more of the learnt patterns as spurious, and thus will be forgetful, but will very rarely misclassify spurious patterns as learnt patterns, and so avoids the fantasy of \dejavu.  A low threshold will identify the learnt patterns but will also misclassify a larger number of spurious patterns.  The results above for $0.2$ and $0.25$ give an indication that somewhere around these values is a reasonable threshold for creating a differentiator with high positive predictive value.
+
+The energy ratio measure is a very useful metric for assessing whether a pattern is a learnt pattern.  It works with both Hebbian learning and delta learning with various types of noise.  This metric can be added to the response of a Hopfield network and it will improve the quality of the response by including an estimation of how likely the pattern is to be a spurious or learnt pattern.
+
+In Chapter~\ref{chap:Enhancing} we will use the energy ratio to augment the system level solutions of unlearning and pseudorehearsal presented in Chapter~\ref{chap:SolutionsCF}.  The intention of the unlearning procedure was to remove the spurious patterns leaving the learnt patterns, as the only stable patterns in the network.  The energy ratio measure gives us a way of ensuring that this is the case. Pseudorehearsal is trying to reinforce the learnt patterns, but in doing so it also reinforces stable spurious patterns.  The energy ratio measure can be used to selectively reinforce only those patterns that appear to be learnt patterns.  The effectiveness of the energy ratio measure will be shown by an improvement in the performance of the Hopfield network, both in terms of the number of patterns and the size of their basins of attraction.
