@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="header files">
+      <UniqueIdentifier>{3591fffd-a0eb-4a32-b16c-bb499838f8a2}</UniqueIdentifier>
+      <Extensions>.h</Extensions>
+    </Filter>
+    <Filter Include="source files">
+      <UniqueIdentifier>{f603e6b6-ebce-47df-9150-b3bf86e0caa9}</UniqueIdentifier>
+      <Extensions>.c</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="allocation.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="display.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="general.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="learning.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="net.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="param.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="patternFileIO.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="pseudolearning.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="random.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="sampling.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="training.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="trial.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="unlearning.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="allocation.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="annescode.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="display.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="general.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="learning.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="net.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="param.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="patternFileIO.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="pseudolearning.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="random.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="sampling.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="training.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="unlearning.c">
+      <Filter>source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

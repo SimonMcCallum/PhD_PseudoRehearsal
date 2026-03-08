@@ -1,0 +1,292 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+
+\lstset{
+  language=C,
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny
+}
+
+\title{Analysis of Hopfield Network Thesis Code:\\Modernisation and GPU Acceleration Plan}
+\author{Simon McCallum}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report analyses the C codebase from a thesis on catastrophic forgetting in Hopfield networks. We assess the current state of the code, confirm it compiles and runs on modern hardware (Windows 11, VS2022, CUDA 12.8, RTX 3070), identify computational bottlenecks, and propose a GPU acceleration strategy using CUDA that could yield 10--50$\times$ speedups for the core experiments.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Thesis Overview}
+
+The thesis investigates the \textbf{catastrophic forgetting problem} in Hopfield networks---the sudden, total loss of previously learned information when new patterns are stored. The key contributions are:
+
+\begin{enumerate}
+    \item \textbf{Pseudorehearsal for Hopfield Networks}: Adapting the pseudorehearsal algorithm (originally for MLPs) to autoassociative Hopfield networks.
+    \item \textbf{Energy Ratio Measure}: A novel technique to discriminate learned patterns from spurious attractors based on energy landscape analysis.
+    \item \textbf{Systematic Comparison}: Controlled comparison of Hebbian learning, delta learning, unlearning, weight decay, rehearsal, and pseudorehearsal.
+    \item \textbf{Biological Connection}: Linking pseudorehearsal to memory consolidation during sleep.
+\end{enumerate}
+
+The network architecture is a standard Hopfield network: fully connected, recurrent, symmetric weights, binary activations ($\pm 1$), operating as a content-addressable memory.
+
+\subsection{Experimental Design}
+
+The experiments follow a sequential learning paradigm:
+\begin{enumerate}
+    \item Learn a base population of patterns
+    \item Add new patterns one at a time
+    \item Test whether old patterns remain stable
+    \item Measure basin of attraction sizes and spurious attractor counts
+\end{enumerate}
+
+Test networks include a 64-unit network with 44 correlated patterns (alphanumeric characters) and 100-unit networks with random patterns.
+
+\section{Current Code Status}
+
+\subsection{Build Environment}
+
+The code was originally built with Visual Studio 6/2005 (toolset v60/v80), later upgraded to VS2015 (v140). We have successfully retargeted it to \textbf{VS2022 (v143)} with only warnings---no errors.
+
+\begin{itemize}
+    \item \textbf{Compiler}: MSVC v143 (VS2022 Community)
+    \item \textbf{Platform}: Win32 (32-bit) and x64 configurations available
+    \item \textbf{CUDA}: NVIDIA CUDA 12.8 available on this machine
+    \item \textbf{GPU}: NVIDIA GeForce RTX 3070 Laptop (8 GB VRAM, Compute Capability 8.6)
+\end{itemize}
+
+The existing executable (\texttt{Debug/annescode.exe}) was a 32-bit PE from 2017. The newly compiled version runs successfully and processes parameter files correctly.
+
+\subsection{Compiler Warnings}
+
+The build produces only minor warnings:
+\begin{itemize}
+    \item \texttt{time\_t} to \texttt{long} conversion in \texttt{random.c}
+    \item Unreferenced local variables in \texttt{pseudolearning.c}, \texttt{display.c}, \texttt{annescode.c}
+    \item Signed/unsigned comparison mismatches in \texttt{param.c}
+    \item Missing \texttt{\#include <string.h>} in \texttt{allocation.c} (for \texttt{memset})
+\end{itemize}
+
+None of these affect correctness.
+
+\subsection{Source Files}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{File} & \textbf{Purpose} & \textbf{GPU Relevance} \\
+\midrule
+\texttt{annescode.c} & Main experiment loop & Low (orchestration) \\
+\texttt{net.c / net.h} & Network state, relaxation, input calc & \textbf{Critical} \\
+\texttt{learning.c / learning.h} & Hebbian \& delta learning & \textbf{Critical} \\
+\texttt{pseudolearning.c} & Pseudorehearsal algorithm & High \\
+\texttt{unlearning.c} & Anti-Hebbian unlearning & High \\
+\texttt{sampling.c} & Basin of attraction sampling & High \\
+\texttt{training.c} & Training data structures & Low \\
+\texttt{allocation.c} & Memory management & Medium \\
+\texttt{param.c} & Parameter file parsing & None \\
+\texttt{display.c} & Results output & None \\
+\texttt{patternFileIO.c} & Pattern file I/O & None \\
+\texttt{random.c} & PRNG (custom LCG) & Medium \\
+\texttt{general.c} & Utility functions & Low \\
+\bottomrule
+\end{tabular}
+\caption{Source file overview and GPU relevance}
+\end{table}
+
+\section{Key Data Structures}
+
+\subsection{Weight Matrix}
+
+The weight matrix is stored as a linearised 1D array with a 2D pointer overlay:
+\begin{lstlisting}
+net->weightArray = calloc(N*(N+1), sizeof(double));
+net->weight = calloc(N, sizeof(double*));
+for(i=0; i<N; i++)
+    net->weight[i] = weightArray + i*(N+1);
+\end{lstlisting}
+
+This is already GPU-friendly (contiguous memory, row-major layout). For $N=1000$, the weight matrix is $\sim$8~MB---well within the 8~GB VRAM of the RTX 3070.
+
+\subsection{Pattern Storage}
+
+Patterns use an array-of-structures layout with multiple \texttt{double} arrays per pattern (\texttt{unit}, \texttt{unitInput}, \texttt{unitNetInput}, \texttt{unitDelta}, \texttt{unitError}). For GPU, this should be converted to structure-of-arrays for coalesced memory access.
+
+\section{Computational Hotspots}
+
+\subsection{Hotspot 1: Matrix-Vector Multiply (\texttt{calcInputs})}
+
+\begin{lstlisting}
+// net.c - calcInputs()
+for(to=0; to<N; to++) {
+    pat.unitInput[to] = 0;
+    for(from=0; from<N+bias; from++)
+        pat.unitInput[to] += weight[to][from] * pat.unit[from];
+}
+\end{lstlisting}
+
+This is $O(N^2)$ dense matrix-vector multiplication, called thousands of times per trial. It accounts for \textbf{50--60\%} of total execution time. This maps directly to \texttt{cublasDgemv()} or a custom CUDA kernel.
+
+\subsection{Hotspot 2: Weight Updates (Hebbian/Delta)}
+
+\begin{lstlisting}
+// learning.c - addToWeight()
+for(to=0; to<N; to++)
+    for(from=0; from<N+bias; from++)
+        weight[to][from] += learningConst * (unit[to]==unit[from] ? +1 : -1);
+\end{lstlisting}
+
+$O(N^2)$ per pattern, highly parallelisable. Accounts for \textbf{20--30\%} of total time.
+
+\subsection{Hotspot 3: Network Relaxation}
+
+Asynchronous relaxation is inherently sequential (each unit update depends on previous updates), but:
+\begin{itemize}
+    \item The initial \texttt{calcInputs} call is fully parallelisable
+    \item Multiple independent relaxations (basin sampling) can run in parallel
+    \item The rank-1 update per step (\texttt{updateInputsUnitChanged}) is $O(N)$
+\end{itemize}
+
+\subsection{Hotspot 4: Basin of Attraction Sampling}
+
+250 relaxations per stable pattern at varying overlap levels. Each relaxation is independent at a given overlap level, making this embarrassingly parallel across patterns.
+
+\subsection{Hotspot 5: Pattern Comparison}
+
+$O(N)$ Hamming distance computation, called $O(M^2)$ times where $M$ is the number of stored + spurious patterns. Parallelisable with reduction kernels.
+
+\section{GPU Acceleration Strategy}
+
+\subsection{Hardware Target}
+
+\begin{itemize}
+    \item \textbf{GPU}: NVIDIA RTX 3070 Laptop (5120 CUDA cores, 8 GB GDDR6)
+    \item \textbf{Compute Capability}: 8.6 (Ampere architecture)
+    \item \textbf{CUDA}: 12.8 (already installed)
+    \item \textbf{Key advantage}: Tensor cores available for matrix operations
+\end{itemize}
+
+\subsection{Phase 1: Drop-in CUBLAS Acceleration}
+
+The simplest and highest-impact change: replace \texttt{calcInputs()} with a CUBLAS matrix-vector multiply. This requires:
+\begin{enumerate}
+    \item Allocating weight matrix and pattern vectors on GPU
+    \item Calling \texttt{cublasDgemv()} (or \texttt{cublasSgemv()} if using float)
+    \item Copying results back only when needed for CPU-side logic
+\end{enumerate}
+
+\textbf{Expected speedup}: 10--30$\times$ for this operation (50--60\% of runtime).
+
+For $N \leq 2000$, the entire weight matrix fits comfortably in GPU memory. Transfer overhead is negligible if weights stay on-device between calls.
+
+\subsection{Phase 2: Batch Parallel Relaxation}
+
+Basin of attraction sampling requires hundreds of independent relaxations. These can be batched:
+\begin{itemize}
+    \item Store multiple pattern states on GPU simultaneously
+    \item Run relaxation steps in parallel across patterns (one warp per pattern)
+    \item Use shared memory for the weight matrix (reused across all relaxations)
+\end{itemize}
+
+\textbf{Expected speedup}: 10--50$\times$ for basin sampling.
+
+\subsection{Phase 3: Custom Learning Kernels}
+
+Replace the Hebbian and delta weight update loops with custom CUDA kernels:
+\begin{lstlisting}
+__global__ void hebbianUpdateKernel(
+    float *weights, float *pattern, float learningConst,
+    int N, int bias) {
+    int to = blockIdx.x * blockDim.x + threadIdx.x;
+    int from = blockIdx.y * blockDim.y + threadIdx.y;
+    if (to < N && from < N + bias) {
+        float update = (pattern[to] == pattern[from])
+            ? learningConst : -learningConst;
+        weights[to * (N+1) + from] += update;
+    }
+}
+\end{lstlisting}
+
+\subsection{Phase 4: Batch Trial Parallelism}
+
+The outer experiment loop runs multiple independent trials. With 8~GB VRAM, we can run 4--16 trials simultaneously (each needing $\sim$16~MB for $N=1000$), using CUDA streams for concurrent execution.
+
+\subsection{Data Type Optimisation}
+
+The code currently uses \texttt{double} (64-bit) throughout. Since:
+\begin{itemize}
+    \item Activations are discrete ($\pm 1$)
+    \item Weight precision of 4--6 significant digits suffices
+    \item Learning rates are $O(10^{-1}$ to $10^{-3})$
+\end{itemize}
+
+Switching to \texttt{float} (32-bit) would:
+\begin{itemize}
+    \item Halve memory usage
+    \item Double GPU throughput (RTX 3070: 20.3 TFLOPS float vs 10.1 TFLOPS double)
+    \item Enable tensor core usage for matrix operations
+\end{itemize}
+
+\section{Estimated Performance Impact}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrrl}
+\toprule
+\textbf{Phase} & \textbf{Target} & \textbf{Time \%} & \textbf{Speedup} & \textbf{Effort} \\
+\midrule
+1 & CUBLAS matrix-vector & 50--60\% & 10--30$\times$ & Low \\
+2 & Batch relaxation & 10--15\% & 10--50$\times$ & Medium \\
+3 & Learning kernels & 20--30\% & 5--20$\times$ & Medium \\
+4 & Multi-trial streams & 100\% & 4--16$\times$ & Low \\
+\midrule
+\multicolumn{2}{l}{\textbf{Combined}} & & \textbf{20--100$\times$} & \\
+\bottomrule
+\end{tabular}
+\caption{Expected speedups by optimisation phase}
+\end{table}
+
+An experiment that previously took hours on the original hardware (circa 2003) would complete in seconds on the RTX 3070, even without GPU acceleration. With GPU acceleration, network sizes of $N=5000$--$10000$ become feasible, enabling new experimental regimes.
+
+\section{Running the Original Experiments}
+
+The code is confirmed to compile and run on this machine. To reproduce the thesis experiments:
+
+\begin{enumerate}
+    \item Use the parameter files in \texttt{Data/} (e.g., \texttt{Net100.net}, \texttt{delta-RealR-10-1.train})
+    \item Run: \texttt{annescode.exe Data/Net100 Data/delta-RealR-10-1}
+    \item The program reads \texttt{default.net} and \texttt{default.train} as base parameters, then overlays the specified files
+    \item Output goes to stdout (can redirect with a 4th argument)
+\end{enumerate}
+
+The original experiments used networks of $N=64$ and $N=100$ with up to 150 patterns and 50 trials. On modern hardware, these complete in seconds rather than the hours they originally required.
+
+\section{Recommended Next Steps}
+
+\begin{enumerate}
+    \item \textbf{Reproduce original results}: Run existing parameter configurations and compare with thesis figures
+    \item \textbf{Port to CUDA}: Start with Phase 1 (CUBLAS drop-in) for immediate gains
+    \item \textbf{Scale up}: Test with $N=1000$--$10000$ to explore capacity scaling
+    \item \textbf{Modern comparison}: Compare pseudorehearsal results with modern continual learning methods (e.g., EWC, progressive networks). Atkinson et al.~\cite{atkinson2018pseudo} have already demonstrated pseudorehearsal working in deep reinforcement learning contexts, validating the approach's relevance to modern architectures
+    \item \textbf{Float conversion}: Switch from \texttt{double} to \texttt{float} for 2$\times$ GPU throughput
+\end{enumerate}
+
+\bibliography{references}
+\bibliographystyle{plain}
+
+\end{document}

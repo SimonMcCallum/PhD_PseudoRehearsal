@@ -14,6 +14,9 @@
 
 pattern * allocPattern(netinfo * net, pattern*pat);
 pattern * initPattern(netinfo * net, pattern*pat);
+
+int initPatternMemory(netinfo * net, traininginfo * training);
+
 void freePattern(pattern*pat);
 
 

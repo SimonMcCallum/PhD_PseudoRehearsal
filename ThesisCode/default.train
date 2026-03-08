@@ -9,6 +9,7 @@ patternFilename			letters.txt  // the file containing
 trainingEpochs          	1000
         
 learningType          		PSEUDODELTA
+unlearningType 			unlearningStandard
 			
 numCheck          		20
 maxSpuriousPatts		1000

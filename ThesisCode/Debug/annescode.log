@@ -1,0 +1,24 @@
+﻿Build started 03.02.2017 12:56:34.
+     1>Project "D:\git\thesiscode\ThesisCode\annescode.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug/annescode.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:".\Debug/annescode.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:".\Debug\annescode.lib" /MACHINE:X86 /SAFESEH .\Debug/allocation.obj
+         .\Debug/annescode.obj
+         .\Debug/display.obj
+         .\Debug/general.obj
+         .\Debug/learning.obj
+         .\Debug/net.obj
+         .\Debug/param.obj
+         .\Debug/patternFileIO.obj
+         .\Debug/pseudolearning.obj
+         .\Debug/random.obj
+         .\Debug/sampling.obj
+         .\Debug/training.obj
+         .\Debug/unlearning.obj
+         annescode.vcxproj -> D:\git\thesiscode\ThesisCode\.\Debug\annescode.exe
+       BscMake:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\bscmake.exe /nologo /o".\Debug/annescode.bsc" .\Debug\allocation.sbr .\Debug\annescode.sbr .\Debug\display.sbr .\Debug\general.sbr .\Debug\learning.sbr .\Debug\net.sbr .\Debug\param.sbr .\Debug\patternFileIO.sbr .\Debug\pseudolearning.sbr .\Debug\random.sbr .\Debug\sampling.sbr .\Debug\training.sbr .\Debug\unlearning.sbr
+     1>Done Building Project "D:\git\thesiscode\ThesisCode\annescode.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.92

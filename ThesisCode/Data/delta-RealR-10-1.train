@@ -1,4 +1,4 @@
-numTrials			100 
+numTrials			10 
 learningConst    		1 			  //	(double)net->N // learning scalar
 momentum                	0.5
 maxLearntPatts          	1.5*N

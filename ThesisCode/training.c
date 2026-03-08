@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 
 #include "general.h"
 #include "net.h"
 #include "training.h"
+#include "allocation.h"
 
 
 /********************************************************************************************************
