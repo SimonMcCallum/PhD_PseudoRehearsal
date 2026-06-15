@@ -276,14 +276,185 @@ The code is confirmed to compile and run on this machine. To reproduce the thesi
 
 The original experiments used networks of $N=64$ and $N=100$ with up to 150 patterns and 50 trials. On modern hardware, these complete in seconds rather than the hours they originally required.
 
+\section{Gaussian Noise as Soft-Threshold Activation}
+
+A key insight from the thesis code is the use of Gaussian noise combined with threshold activation. When Gaussian noise $\mathcal{N}(0, \sigma)$ is added to the net input before applying a hard threshold:
+\[
+\text{output} = \begin{cases} +1 & \text{if } h_i + \epsilon > 0 \\ -1 & \text{otherwise} \end{cases}, \quad \epsilon \sim \mathcal{N}(0, \sigma)
+\]
+
+The \emph{expected} activation becomes:
+\[
+\mathbb{E}[\text{output}] = 2\Phi\left(\frac{h_i}{\sigma}\right) - 1
+\]
+
+where $\Phi$ is the standard normal CDF. This is mathematically equivalent to a sigmoid activation with slope $1/\sigma$:
+\[
+\tanh\left(\frac{h_i}{\sigma\sqrt{2}}\right) \approx 2\Phi\left(\frac{h_i}{\sigma}\right) - 1
+\]
+
+This has profound implications:
+\begin{itemize}
+    \item \textbf{Training}: The stochastic gradient through the noisy threshold approximates the gradient through a sigmoid, enabling gradient-like learning on binary units
+    \item \textbf{Energy landscape}: Noise smooths the discrete energy surface, reducing local minima and improving convergence
+    \item \textbf{Temperature analogy}: The noise standard deviation $\sigma$ acts as a temperature parameter---high $\sigma$ gives a flat (exploratory) activation, low $\sigma$ approaches the hard threshold
+    \item \textbf{Biological plausibility}: Neural noise is ubiquitous in biological systems; this mechanism provides a functional role for it
+\end{itemize}
+
+The code implements this in two places: \texttt{blurPattInputs()} during learning (controlled by \texttt{noiseOnInput}), and \texttt{blurNetInputs()} during relaxation (controlled by \texttt{noiseDuringRelaxation}). Both support relative noise (proportional to mean input) and absolute noise modes.
+
+\section{Parameter Space Analysis}
+
+The codebase exposes approximately 60 configurable parameters across two files (\texttt{.net} and \texttt{.train}). These can be grouped into functional categories:
+
+\subsection{Network Architecture Parameters}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lp{5cm}l}
+\toprule
+\textbf{Parameter} & \textbf{Effect} & \textbf{Range} \\
+\midrule
+\texttt{N} & Network size (units) & 6--2000+ \\
+\texttt{activationType} & THRESHOLD or SIGMOID & enum \\
+\texttt{ON/OFF} & Activation levels & +1/-1 or 1/0 \\
+\texttt{bias} & Include bias unit & TRUE/FALSE \\
+\texttt{relaxation} & SYNCHRONOUS or ASYNCHRONOUS & enum \\
+\texttt{maxCycles} & Relaxation timeout & $1$--$4N$ \\
+\texttt{symmetricWeights} & Force $w_{ij} = w_{ji}$ & TRUE/FALSE \\
+\bottomrule
+\end{tabular}
+\caption{Network architecture parameters}
+\end{table}
+
+\subsection{Learning Parameters}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lp{5cm}l}
+\toprule
+\textbf{Parameter} & \textbf{Effect} & \textbf{Range} \\
+\midrule
+\texttt{learningType} & HEBBIAN, STRICTDELTA, PSEUDODELTA, UNLEARNING & enum \\
+\texttt{learningConst} & Learning rate & 0.001--1.0 \\
+\texttt{trainingEpochs} & Max epochs for delta learning & 10--10000 \\
+\texttt{errorCriteria} & Convergence threshold & 0.0001--0.1 \\
+\texttt{errorTail} & Error decay (exponential average) & 0.9--0.999 \\
+\texttt{hebbianCycles} & Passes for Hebbian learning & 1--10 \\
+\texttt{hebbianNoiseLevel} & Noise during Hebbian updates & 0.0--0.5 \\
+\bottomrule
+\end{tabular}
+\caption{Learning parameters}
+\end{table}
+
+\subsection{Noise and Regularisation Parameters}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lp{5cm}l}
+\toprule
+\textbf{Parameter} & \textbf{Effect} & \textbf{Range} \\
+\midrule
+\texttt{noiseOnInput} & Gaussian noise on inputs during training & TRUE/FALSE \\
+\texttt{gaussianNoiseType} & RELATIVE (to mean) or ABSOLUTE & enum \\
+\texttt{gaussianRelativeRange} & Noise $\sigma$ as fraction of mean input & 0.01--1.0 \\
+\texttt{noiseHetroAssociative} & Map noisy$\rightarrow$clean patterns & TRUE/FALSE \\
+\texttt{hetroNoiseLevel} & Fraction of units to flip & 0.01--0.3 \\
+\texttt{weightCappingType} & NOCAP, HARDCAP, SOFTCAP & enum \\
+\texttt{weightDecay} & Multiplicative decay per epoch & TRUE/FALSE \\
+\texttt{weightDecayValue} & $w \leftarrow w(1-v)$ & 0.001--0.2 \\
+\texttt{weightNormalisationType} & Per-unit or per-network & enum \\
+\bottomrule
+\end{tabular}
+\caption{Noise and regularisation parameters}
+\end{table}
+
+\subsection{Pseudorehearsal Parameters}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lp{5cm}l}
+\toprule
+\textbf{Parameter} & \textbf{Effect} & \textbf{Range} \\
+\midrule
+\texttt{maxPseudoPatts} & Number of pseudo-patterns to generate & 0--1000 \\
+\texttt{maxSamplesForPseudoPatts} & Sampling budget & 100--10000 \\
+\texttt{pseudoRehearsalCutoff} & Energy ratio threshold ($<0$ = disabled) & $-1.0$--$0.8$ \\
+\texttt{uniquePseudoPatts} & No duplicate pseudo-patterns & TRUE/FALSE \\
+\texttt{removeLearntFromPseudoPatts} & Exclude learned patterns & TRUE/FALSE \\
+\texttt{realRehearsal} & Use actual patterns instead & TRUE/FALSE \\
+\texttt{realRehearsalPercent} & Fraction of old patterns to rehearse & 0.01--1.0 \\
+\texttt{learningRatioPseudoPatts} & Learning rate multiplier for pseudo & 0.1--1.0 \\
+\bottomrule
+\end{tabular}
+\caption{Pseudorehearsal parameters}
+\end{table}
+
+\section{Modern Equivalents and PyTorch Reimplementation}
+
+\subsection{Mapping Thesis Concepts to Modern Continual Learning}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{p{4cm}p{4cm}p{5cm}}
+\toprule
+\textbf{Thesis Concept} & \textbf{Modern Equivalent} & \textbf{Key Difference} \\
+\midrule
+Pseudorehearsal & Generative replay (GR)\newline \cite{atkinson2018pseudo} & GR uses deep generative models (VAEs, GANs) instead of network relaxation \\
+Energy ratio filtering & Out-of-distribution detection & Modern methods use softmax entropy or Mahalanobis distance \\
+Unlearning & Machine unlearning & Now a privacy/safety concern; similar anti-Hebbian ideas \\
+Real rehearsal & Experience replay & Standard in RL; prioritised replay adds importance weighting \\
+Weight decay & L2 regularisation & Identical mathematical formulation \\
+Hebbian noise & Dropout / noise injection & Dropout randomly zeros activations; similar regularisation effect \\
+Weight capping & Weight clipping / spectral norm & Modern norm constraints are smoother \\
+Gaussian noise + threshold & Straight-through estimator (STE) & STE uses sigmoid in backward pass, threshold in forward \\
+Basin of attraction & Loss landscape analysis & Modern tools: Hessian eigenvalues, mode connectivity \\
+\bottomrule
+\end{tabular}
+\caption{Mapping thesis concepts to modern continual learning}
+\end{table}
+
+\subsection{Modern Methods Not in the Thesis}
+
+\begin{description}
+    \item[Elastic Weight Consolidation (EWC)] Adds a penalty $\lambda \sum_i F_i(w_i - w_i^*)^2$ that prevents important weights from changing. Uses Fisher Information to identify which weights matter. Implemented in the PyTorch code as \texttt{EWCHopfield}.
+
+    \item[PackNet / Piggyback] Prunes and freezes weights after each task. Remaining free weights learn new tasks. Implemented as \texttt{PackNetHopfield}.
+
+    \item[Progressive Neural Networks] Adds new capacity (columns) for each task. No forgetting by construction, but grows linearly with tasks.
+
+    \item[Modern Hopfield Networks (2021)] Exponential storage capacity ($2^{N/2}$) using continuous activations. Connection to transformer attention mechanism: $\text{softmax}(QK^T)V$ is equivalent to modern Hopfield retrieval.
+\end{description}
+
+\subsection{PyTorch Implementation}
+
+A complete reimplementation is provided in \texttt{pytorch/hopfield.py}. Key advantages:
+
+\begin{itemize}
+    \item \textbf{Automatic GPU acceleration}: \texttt{torch.mv()} and \texttt{torch.mm()} use cuBLAS transparently
+    \item \textbf{Batch operations}: \texttt{batch\_relax()} relaxes hundreds of patterns simultaneously via matrix-matrix multiply
+    \item \textbf{Gradient support}: PyTorch autograd enables backprop-based learning rules alongside classical Hebbian
+    \item \textbf{Clean parameter space}: \texttt{HopfieldConfig} dataclass replaces the ad-hoc parameter file parsing
+    \item \textbf{Modern comparisons}: EWC and PackNet wrappers enable direct comparison on same infrastructure
+\end{itemize}
+
+\subsection{Visualization Interface}
+
+An interactive visualization system (\texttt{pytorch/visualize.py}) provides:
+
+\begin{enumerate}
+    \item \textbf{Dashboard}: Weight matrix heatmap, stored patterns, stability profiles, energy ratios, and weight distribution in a single view
+    \item \textbf{Experiment tracking}: Per-pattern stability over sequential learning, spurious attractor count, basin sizes
+    \item \textbf{Energy ratio discrimination}: Scatter plot of learned vs spurious patterns in ratio/mean-stability space---the thesis's key diagnostic
+    \item \textbf{Interactive exploration} (optional Plotly/Dash): Slider for noise level to demonstrate the Gaussian soft-threshold effect
+\end{enumerate}
+
 \section{Recommended Next Steps}
 
 \begin{enumerate}
     \item \textbf{Reproduce original results}: Run existing parameter configurations and compare with thesis figures
-    \item \textbf{Port to CUDA}: Start with Phase 1 (CUBLAS drop-in) for immediate gains
-    \item \textbf{Scale up}: Test with $N=1000$--$10000$ to explore capacity scaling
-    \item \textbf{Modern comparison}: Compare pseudorehearsal results with modern continual learning methods (e.g., EWC, progressive networks). Atkinson et al.~\cite{atkinson2018pseudo} have already demonstrated pseudorehearsal working in deep reinforcement learning contexts, validating the approach's relevance to modern architectures
-    \item \textbf{Float conversion}: Switch from \texttt{double} to \texttt{float} for 2$\times$ GPU throughput
+    \item \textbf{Port to CUDA}: CUDA kernels are provided in \texttt{ThesisCode/cuda/}; compile with \texttt{nvcc} and link against cuBLAS
+    \item \textbf{PyTorch experiments}: Run \texttt{pytorch/visualize.py} for an immediate demonstration on the RTX 3070
+    \item \textbf{Scale up}: Test with $N=1000$--$10000$ to explore capacity scaling beyond original thesis range
+    \item \textbf{Modern comparison}: Compare pseudorehearsal with EWC, PackNet, and generative replay. Atkinson et al.~\cite{atkinson2018pseudo} have already demonstrated pseudorehearsal working in deep reinforcement learning contexts, validating the approach's relevance to modern architectures
+    \item \textbf{Noise analysis}: Systematically vary Gaussian noise $\sigma$ to map the soft-threshold activation landscape and its effect on learning dynamics
+    \item \textbf{Modern Hopfield connection}: Investigate the link between the energy ratio measure and attention-based retrieval in modern Hopfield networks / transformers
 \end{enumerate}
 
 \bibliography{references}
